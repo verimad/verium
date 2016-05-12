@@ -7,12 +7,12 @@ software written by Eric Young (eay@cryptsoft.com) and UPnP software written by
 Thomas Bernard.
 
 
-Mac OS X vericoind build instructions
+Mac OS X veriumd build instructions
 Laszlo Hanyecz <solar@heliacal.net>
 Douglas Huff <dhuff@jrbobdobbs.org>
 
 
-See readme-qt.rst for instructions on building VeriCoin QT, the
+See readme-qt.rst for instructions on building Verium QT, the
 graphical user interface.
 
 Tested on 10.5 and 10.6 and 10.9.5 intel.  PPC is not supported because it's big-endian.
@@ -44,16 +44,16 @@ sudo port install qrencode
 
 3.  Clone the github tree to get the source code:
 
-git clone https://github.com/vericoin/vericoin.git
+git clone https://github.com/verium/verium.git
 
-4.  Now you should be able to build vericoind:
+4.  Now you should be able to build veriumd:
 
-cd vericoin/src
+cd verium/src
 make -f makefile.osx
 
 Run:
-  ./vericoind --help  # for a list of command-line options.
+  ./veriumd --help  # for a list of command-line options.
 Run
-  ./vericoind -daemon # to start the vericoin daemon.
+  ./veriumd -daemon # to start the verium daemon.
 Run
-  ./vericoind help # When the daemon is running, to get a list of RPC commands
+  ./veriumd help # When the daemon is running, to get a list of RPC commands

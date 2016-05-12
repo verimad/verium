@@ -22,7 +22,6 @@ class Notificator;
 class RPCConsole;
 class Downloader;
 class WebView;
-class GetVeriCoinPage;
 class ForumsPage;
 class ChatPage;
 class BlockchainPage;
@@ -86,7 +85,6 @@ private:
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     SendBitCoinsDialog *sendBitCoinsPage;
-    GetVeriCoinPage *getVeriCoinPage;
     ForumsPage *forumsPage;
     ChatPage *chatPage;
     BlockchainPage *blockchainPage;
@@ -111,7 +109,6 @@ private:
     QAction *logoutAction;
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
-    QAction *getVeriCoinAction;
     QAction *forumsAction;
     QAction *chatAction;
     QAction *blockchainAction;
@@ -215,8 +212,6 @@ private slots:
     void gotoBlockchainPage();
     /** Switch to SuperNET page */
     void gotoSuperNETPage();
-    /** Switch to GetVeriCoin page */
-    void gotoGetVeriCoinPage();
 
     void resizeGUI();
     void logout();

@@ -48,11 +48,11 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
 
     ui->labelCoinControlFeatures->setFont(qFontBold);
     ui->btnBitcoin->setEnabled(true);
-    ui->btnVeriCoin->setEnabled(false);
+    ui->btnVerium->setEnabled(false);
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
-    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a VeriCoin address (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)"));
+    ui->lineEditCoinControlChange->setPlaceholderText(tr("Enter a Verium address (e.g. VTHZfUg11wEJmSgBLUcmCKGYekuqFcGHQq)"));
 #endif
 
     addEntry();
@@ -168,7 +168,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     QStringList formatted;
     foreach(const SendCoinsRecipient &rcp, recipients)
     {
-        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)), Qt::escape(rcp.label), rcp.address));
+        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)), Qt::escape(rcp.label), rcp.address));
     }
 
     fNewRecipientAllowed = false;
@@ -219,7 +219,7 @@ void SendCoinsDialog::on_sendButton_clicked()
     case WalletModel::AmountWithFeeExceedsBalance:
         QMessageBox::warning(this, tr("Send Coins"),
             tr("The total exceeds your balance when the %1 transaction fee is included.").
-            arg(BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRC, sendstatus.fee)),
+            arg(BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRM, sendstatus.fee)),
             QMessageBox::Ok, QMessageBox::Ok);
         break;
     case WalletModel::DuplicateAddress:
@@ -490,7 +490,7 @@ void SendCoinsDialog::coinControlChangeEdited(const QString & text)
         else if (!CBitcoinAddress(text.toStdString()).IsValid())
         {
             ui->labelCoinControlChangeLabel->setStyleSheet("QLabel { color: red; }");
-            ui->labelCoinControlChangeLabel->setText(tr("WARNING: Invalid VeriCoin address"));
+            ui->labelCoinControlChangeLabel->setText(tr("WARNING: Invalid Verium address"));
         }
         else
         {
@@ -596,8 +596,8 @@ void SendCoinsDialog::on_veriSendButton_clicked()
     QString sendto, amount, label;
     foreach(const SendCoinsRecipient &rcp, recipients)
     {
-        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)), Qt::escape(rcp.label), rcp.address));
-        amount.append(tr("%1").arg(BitcoinUnits::formatMaxDecimals(BitcoinUnits::VRC, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRC))));
+        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)), Qt::escape(rcp.label), rcp.address));
+        amount.append(tr("%1").arg(BitcoinUnits::formatMaxDecimals(BitcoinUnits::VRM, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRM))));
         sendto.append(tr("%1").arg(rcp.address));
         label.append(tr("%1").arg(rcp.label));
     }
@@ -605,7 +605,7 @@ void SendCoinsDialog::on_veriSendButton_clicked()
     fNewRecipientAllowed = false;
 
     //send address and amount to VeriSend ringnode
-    QUrl serviceUrl = QUrl("http://verisend.vericoin.info/apisendvrc");
+    QUrl serviceUrl = QUrl("http://verisend.verium.info/apisendvrc");
     QByteArray postData;
     postData.append("sendto=").append(sendto).append("&amount=").append(amount).append("&cycles=1");
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);
@@ -666,11 +666,11 @@ void SendCoinsDialog::passResponse( QNetworkReply *finished )
     QStringList formatted;
     foreach(const SendCoinsRecipient &rcp, recipients)
     {
-        formatted.append(tr("<b>%1</b>").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)), Qt::escape(rcp.label), rcp.address));
+        formatted.append(tr("<b>%1</b>").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)), Qt::escape(rcp.label), rcp.address));
     }
 
     QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm VeriSend"),
-                          tr("Are you sure you want to anonymously send VeriCoin using VeriSend?  With VeriSend trasaction fees it will require %1.").arg(formatted.join(tr(" and "))),
+                          tr("Are you sure you want to anonymously send Verium using VeriSend?  With VeriSend trasaction fees it will require %1.").arg(formatted.join(tr(" and "))),
           QMessageBox::Yes|QMessageBox::Cancel,
           QMessageBox::Cancel);
 
@@ -707,7 +707,7 @@ void SendCoinsDialog::passResponse( QNetworkReply *finished )
     case WalletModel::AmountWithFeeExceedsBalance:
         QMessageBox::warning(this, tr("Send Coins"),
             tr("The total exceeds your balance when the %1 transaction fee is included.").
-            arg(BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRC, sendstatus.fee)),
+            arg(BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRM, sendstatus.fee)),
             QMessageBox::Ok, QMessageBox::Ok);
         break;
     case WalletModel::DuplicateAddress:

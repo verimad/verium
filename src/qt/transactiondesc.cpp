@@ -129,7 +129,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                 nUnmatured += wallet->GetCredit(txout);
             strHTML += "<b>" + tr("Credit") + ":</b> ";
             if (wtx.IsInMainChain())
-                strHTML += BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nUnmatured, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + " (" + tr("matures in %n more block(s)", "", wtx.GetBlocksToMaturity()) + ")";
+                strHTML += BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, nUnmatured, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + " (" + tr("matures in %n more block(s)", "", wtx.GetBlocksToMaturity()) + ")";
             else
                 strHTML += "(" + tr("not accepted") + ")";
             strHTML += "<br>";
@@ -140,9 +140,9 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
             // Credit
             //
             if (nNet > 0)
-                strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
             else
-                strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, wtx.GetValueOut() - nDebit, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, wtx.GetValueOut() - nDebit, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
         }
         else if (nDebit > 0)
         {
@@ -178,7 +178,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                         }
                     }
 
-                    strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, -txout.nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                    strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, -txout.nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
                 }
 
                 if (fAllToMe)
@@ -186,13 +186,13 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                     // Payment to self
                     int64_t nChange = wtx.GetChange();
                     int64_t nValue = nCredit - nChange;
-                    strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, -nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
-                    strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                    strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, -nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
+                    strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
                 }
 
                 int64_t nTxFee = nDebit - wtx.GetValueOut();
                 if (nTxFee > 0)
-                    strHTML += "<b>" + tr("Transaction fee") + ":</b> " + BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRC, -nTxFee) + "<br>";
+                    strHTML += "<b>" + tr("Transaction fee") + ":</b> " + BitcoinUnits::formatWithUnitFee(BitcoinUnits::VRM, -nTxFee) + "<br>";
             }
             else
             {
@@ -201,17 +201,17 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                 //
                 BOOST_FOREACH(const CTxIn& txin, wtx.vin)
                     if (wallet->IsMine(txin))
-                        strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, -wallet->GetDebit(txin), BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                        strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, -wallet->GetDebit(txin), BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
                 BOOST_FOREACH(const CTxOut& txout, wtx.vout)
                     if (wallet->IsMine(txout))
-                        strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, wallet->GetCredit(txout), BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                        strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, wallet->GetCredit(txout), BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
             }
         }
 
         if (wtx.IsCoinBase() || wtx.IsCoinStake())
-            strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, wtx.GetValueOut() - nDebit, BitcoinUnits::maxdecimals(BitcoinUnits::VRC), true) + "<br>";
+            strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, wtx.GetValueOut() - nDebit, BitcoinUnits::maxdecimals(BitcoinUnits::VRM), true) + "<br>";
         else
-            strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRC), true) + "<br>";
+            strHTML += "<b>" + tr("Net amount") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, nNet, BitcoinUnits::maxdecimals(BitcoinUnits::VRM), true) + "<br>";
 
         //
         // Message
@@ -234,10 +234,10 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
             strHTML += "<hr><br>" + tr("Debug information") + "<br><br>";
             BOOST_FOREACH(const CTxIn& txin, wtx.vin)
                 if(wallet->IsMine(txin))
-                    strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, -wallet->GetDebit(txin), BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                    strHTML += "<b>" + tr("Debit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, -wallet->GetDebit(txin), BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
             BOOST_FOREACH(const CTxOut& txout, wtx.vout)
                 if(wallet->IsMine(txout))
-                    strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, wallet->GetCredit(txout), BitcoinUnits::maxdecimals(BitcoinUnits::VRC)) + "<br>";
+                    strHTML += "<b>" + tr("Credit") + ":</b> " + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, wallet->GetCredit(txout), BitcoinUnits::maxdecimals(BitcoinUnits::VRM)) + "<br>";
 
             strHTML += "<br><b>" + tr("Transaction") + ":</b><br>";
             strHTML += GUIUtil::HtmlEscape(wtx.ToString(), true);
@@ -267,7 +267,7 @@ QString TransactionDesc::toHTML(CWallet *wallet, CWalletTx &wtx)
                                     strHTML += GUIUtil::HtmlEscape(wallet->mapAddressBook[address]) + " ";
                                 strHTML += QString::fromStdString(CBitcoinAddress(address).ToString());
                             }
-                            strHTML = strHTML + " " + tr("Amount") + "=" + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRC, vout.nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRC));
+                            strHTML = strHTML + " " + tr("Amount") + "=" + BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, vout.nValue, BitcoinUnits::maxdecimals(BitcoinUnits::VRM));
                             strHTML = strHTML + " IsMine=" + (wallet->IsMine(vout) ? tr("true") : tr("false")) + "</li>";
                         }
                     }

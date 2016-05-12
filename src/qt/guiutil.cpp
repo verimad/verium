@@ -140,7 +140,7 @@ void setFontPixelSizes()
     setFontPixelSize((QFont *)&qFontLargerBold);
 }
 
-// Common VeriCoin stylesheets
+// Common Verium stylesheets
 QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; } ");
 QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STR_FONT_COLOR + "; border: 1px; }");
 
@@ -230,7 +230,7 @@ void setupAddressWidget(QLineEdit *widget, QWidget *parent)
 void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 {
     QDoubleValidator *amountValidator = new QDoubleValidator(parent);
-    amountValidator->setDecimals(BitcoinUnits::decimals(BitcoinUnits::VRC));
+    amountValidator->setDecimals(BitcoinUnits::decimals(BitcoinUnits::VRM));
     amountValidator->setBottom(0.0);
     widget->setValidator(amountValidator);
     widget->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
@@ -238,8 +238,8 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // VeriCoin: check prefix
-    if(uri.scheme() != QString("vericoin"))
+    // Verium: check prefix
+    if(uri.scheme() != QString("verium"))
         return false;
 
     SendCoinsRecipient rv;
@@ -264,7 +264,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!BitcoinUnits::parse(BitcoinUnits::VRC, i->second, &rv.amount))
+                if(!BitcoinUnits::parse(BitcoinUnits::VRM, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -284,13 +284,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert vericoin:// to vericoin:
+    // Convert verium:// to verium:
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("vericoin://"))
+    if(uri.startsWith("verium://"))
     {
-        uri.replace(0, 12, "vericoin:");
+        uri.replace(0, 12, "verium:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -434,7 +434,7 @@ bool ToolTipToRichTextFilter::eventFilter(QObject *obj, QEvent *evt)
 #ifdef WIN32
 boost::filesystem::path static StartupShortcutPath()
 {
-    return GetSpecialFolderPath(CSIDL_STARTUP) / "VeriCoin.lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / "Verium.lnk";
 }
 
 bool GetStartOnSystemStartup()
@@ -516,7 +516,7 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
-    return GetAutostartDir() / "vericoin.desktop";
+    return GetAutostartDir() / "verium.desktop";
 }
 
 bool GetStartOnSystemStartup()
@@ -557,7 +557,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         // Write a bitcoin.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
-        optionFile << "Name=VeriCoin\n";
+        optionFile << "Name=Verium\n";
         optionFile << "Exec=" << pszExePath << " -min\n";
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -578,10 +578,10 @@ bool SetStartOnSystemStartup(bool fAutoStart) { return false; }
 HelpMessageBox::HelpMessageBox(QWidget *parent) :
     QMessageBox(parent)
 {
-    header = tr("VeriCoin-Qt") + " " + tr("version") + " " +
+    header = tr("Verium-Qt") + " " + tr("version") + " " +
         QString::fromStdString(FormatFullVersion()) + "\n\n" +
         tr("Usage:") + "\n" +
-        "  vericoin-qt [" + tr("command-line options") + "]                     " + "\n";
+        "  verium-qt [" + tr("command-line options") + "]                     " + "\n";
 
     coreOptions = QString::fromStdString(HelpMessage());
 
@@ -590,7 +590,7 @@ HelpMessageBox::HelpMessageBox(QWidget *parent) :
         "  -min                   " + tr("Start minimized") + "\n" +
         "  -splash                " + tr("Show splash screen on startup (default: 1)") + "\n";
 
-    setWindowTitle(tr("VeriCoin-Qt"));
+    setWindowTitle(tr("Verium-Qt"));
     setTextFormat(Qt::PlainText);
     // setMinimumWidth is ignored for QMessageBox so put in non-breaking spaces to make it wider.
     setText(header + QString(QChar(0x2003)).repeated(50));

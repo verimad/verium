@@ -27,7 +27,6 @@ class CInv;
 class CRequestTracker;
 class CNode;
 
-static const int LAST_POW_BLOCK = 20160;             // If you change this, or mining rewards, adjust INITIAL_COIN_SUPPLY
 static const int64_t INITIAL_COIN_SUPPLY = 26751452; // Used in calculating interest rate
 
 static const unsigned int MAX_BLOCK_SIZE = 1000000;
@@ -702,7 +701,7 @@ public:
     bool CheckTransaction() const;
     bool AcceptToMemoryPool(CTxDB& txdb, bool fCheckInputs=true, bool* pfMissingInputs=NULL);
     bool GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
-    bool GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* pindexPrev) const;  // VeriCoin: get transaction staketime
+    bool GetStakeTime(CTxDB& txdb, uint64_t& nStakeTime, CBlockIndex* pindexPrev) const;  // Verium: get transaction staketime
 
 protected:
     const CTxOut& GetOutputFor(const CTxIn& input, const MapPrevTx& inputs) const;

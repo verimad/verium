@@ -73,7 +73,7 @@ map<uint256, set<uint256> > mapOrphanTransactionsByPrev;
 // Constant stuff for coinbase transactions we create:
 CScript COINBASE_FLAGS;
 
-const string strMessageMagic = "VeriCoin Signed Message:\n";
+const string strMessageMagic = "Verium Signed Message:\n";
 
 // Settings
 int64_t nTransactionFee = MIN_TX_FEE;
@@ -1131,37 +1131,7 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfSta
     return pindex;
 }
 
-static unsigned int GetNextTargetRequiredV1(const CBlockIndex* pindexLast, bool fProofOfStake)
-{
-    CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
-
-    if (pindexLast == NULL)
-        return bnTargetLimit.GetCompact(); // genesis block
-
-    const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
-    if (pindexPrev->pprev == NULL)
-        return bnTargetLimit.GetCompact(); // first block
-    const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
-    if (pindexPrevPrev->pprev == NULL)
-        return bnTargetLimit.GetCompact(); // second block
-
-    int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-
-    // ppcoin: target change every block
-    // ppcoin: retarget with exponential moving toward target spacing
-    CBigNum bnNew;
-    bnNew.SetCompact(pindexPrev->nBits);
-    int64_t nInterval = nTargetTimespan / nTargetSpacing;
-    bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
-    bnNew /= ((nInterval + 1) * nTargetSpacing);
-
-    if (bnNew > bnTargetLimit)
-        bnNew = bnTargetLimit;
-
-    return bnNew.GetCompact();
-}
-
-static unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool fProofOfStake)
+unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
 {
     CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
 
@@ -1191,46 +1161,6 @@ static unsigned int GetNextTargetRequiredV2(const CBlockIndex* pindexLast, bool 
         bnNew = bnTargetLimit;
 
     return bnNew.GetCompact();
-}
-
-static unsigned int GetNextTargetRequiredVRM(const CBlockIndex* pindexLast, bool fProofOfStake)
-{
-    CBigNum bnTargetLimit = fProofOfStake ? bnProofOfStakeLimit : bnProofOfWorkLimit;
-
-    if (pindexLast == NULL)
-        return bnTargetLimit.GetCompact(); // genesis block
-
-    const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
-    if (pindexPrev->pprev == NULL)
-        return bnTargetLimit.GetCompact(); // first block
-    const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
-    if (pindexPrevPrev->pprev == NULL)
-        return bnTargetLimit.GetCompact(); // second block
-
-    int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-    int64_t nVariableTarget = (nTargetSpacing - nActualSpacing) + nTargetSpacing;
-    // ppcoin: target change every block
-    // ppcoin: retarget with exponential moving toward target spacing
-    CBigNum bnNew;
-    bnNew.SetCompact(pindexPrev->nBits);
-    int64_t nInterval = nTargetTimespan / nVariableTarget;
-    bnNew *= ((nInterval - 1) * nVariableTarget);
-    bnNew /= ((nInterval + 1) * nVariableTarget);
-
-    if (bnNew <= 0 || bnNew > bnTargetLimit)
-        bnNew = bnTargetLimit;
-
-    return bnNew.GetCompact();
-}
-
-unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast, bool fProofOfStake)
-{
-    if (pindexLast->nHeight < 38424)
-        return GetNextTargetRequiredV1(pindexLast, fProofOfStake);
-    else if (fTestNet)
-        return GetNextTargetRequiredV2(pindexLast, fProofOfStake);
-    else
-        return GetNextTargetRequiredV2(pindexLast, fProofOfStake);
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)
@@ -1694,14 +1624,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
 
             int64_t nTxValueIn = tx.GetValueIn(mapInputs);
             int64_t nTxValueOut = tx.GetValueOut();
-            int currentHeight = pindex->pprev->nHeight+1;
-            if (tx.IsCoinStake() && currentHeight < 299000 && !fTestNet)
-            {
-                double nNetworkDriftBuffer = nTxValueOut*.02;
-                nTxValueOut = nTxValueOut-nNetworkDriftBuffer;
-                nStakeReward = nTxValueOut - nTxValueIn;
-            }
-            if ((tx.IsCoinStake() && currentHeight >= 299000) || (tx.IsCoinStake() && fTestNet))
+            if (tx.IsCoinStake())
             {
                 nStakeReward = nTxValueOut - nTxValueIn;
             }
@@ -1734,7 +1657,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         int currentHeight = pindex->pprev->nHeight+1;
         if (PoSTprotocol(currentHeight) || fTestNet) //PoST
         {
-            // VeriCoin: coin stake tx earns reward instead of paying fee
+            // Verium: coin stake tx earns reward instead of paying fee
             uint64_t nStakeTime;
             if (!vtx[1].GetStakeTime(txdb, nStakeTime, pindex->pprev))
                 return error("() : %s unable to get coin age for coinstake", vtx[1].GetHash().ToString().substr(0,10).c_str());
@@ -2075,7 +1998,7 @@ bool CTransaction::GetCoinAge(CTxDB& txdb, uint64_t& nCoinAge) const
     return true;
 }
 
-// VeriCoin: total stake time spent in transaction that is accepted by the network, in the unit of coin-days.
+// Verium: total stake time spent in transaction that is accepted by the network, in the unit of coin-days.
 // Only those coins meeting minimum age requirement counts. As those
 // transactions not in main chain are not currently indexed so we
 // might not find out about their coin age. Older transactions are
@@ -2240,7 +2163,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
         if (!CheckCoinStakeTimestamp(GetBlockTime(), (int64_t)vtx[1].nTime))
             return DoS(50, error("CheckBlock() : coinstake timestamp violation nTimeBlock=%"PRId64" nTimeTx=%u", GetBlockTime(), vtx[1].nTime));
 
-        // VeriCoin: check proof-of-stake block signature
+        // Verium: check proof-of-stake block signature
         if (fCheckSig && !CheckBlockSignature(true))
             return DoS(100, error("CheckBlock() : bad proof-of-stake block signature"));
     }
@@ -2295,9 +2218,6 @@ bool CBlock::AcceptBlock()
         return DoS(10, error("AcceptBlock() : prev block not found"));
     CBlockIndex* pindexPrev = (*mi).second;
     int nHeight = pindexPrev->nHeight+1;
-
-    if (IsProofOfWork() && nHeight > LAST_POW_BLOCK)
-        return DoS(100, error("AcceptBlock() : reject proof-of-work at height %d", nHeight));
 
     // Check proof-of-work or proof-of-stake
     if (nBits != GetNextTargetRequired(pindexPrev, IsProofOfStake()))
@@ -2501,7 +2421,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
     return true;
 }
 
-// vericoin: attempt to generate suitable proof-of-stake
+// verium: attempt to generate suitable proof-of-stake
 bool CBlock::SignBlock(CWallet& wallet, int64_t nFees, int64_t nHeight)
 
 {
@@ -2645,7 +2565,7 @@ bool CheckDiskSpace(uint64_t nAdditionalBytes)
         string strMessage = _("Warning: Disk space is low!");
         strMiscWarning = strMessage;
         printf("*** %s\n", strMessage.c_str());
-        uiInterface.ThreadSafeMessageBox(strMessage, "VeriCoin", CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION | CClientUIInterface::MODAL);
+        uiInterface.ThreadSafeMessageBox(strMessage, "Verium", CClientUIInterface::OK | CClientUIInterface::ICON_EXCLAMATION | CClientUIInterface::MODAL);
         StartShutdown();
         return false;
     }
