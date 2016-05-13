@@ -29,7 +29,7 @@ Value getsubsidy(const Array& params, bool fHelp)
     }
     else
     {
-        nBits = GetNextTargetRequired(pindexBest, false);
+        nBits = GetNextTargetRequired(pindexBest);
     }
 
     return (uint64_t)GetProofOfWorkReward(0);
@@ -42,30 +42,19 @@ Value getmininginfo(const Array& params, bool fHelp)
             "getmininginfo\n"
             "Returns an object containing mining-related information.");
 
-    uint64_t nWeight = 0;
-    pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
-    double averageStakeWeight = GetAverageStakeWeight(pindexBest->pprev);
-
     Object obj, diff, weight;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
     obj.push_back(Pair("currentblocksize",(uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
 
     diff.push_back(Pair("proof-of-work",        GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake",       GetDifficulty(GetLastBlockIndex(pindexBest, true))));
     diff.push_back(Pair("search-interval",      (int)nLastCoinStakeSearchInterval));
     obj.push_back(Pair("difficulty",    diff));
 
     obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(0)));
     obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
-    obj.push_back(Pair("netstakeweight", averageStakeWeight));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
-
-    weight.push_back(Pair("combined",  (uint64_t)nWeight));
-    obj.push_back(Pair("stakeweight", weight));
-    obj.push_back(Pair("stakeinterest",    (double)GetCurrentInterestRate(pindexBest)));
-    obj.push_back(Pair("stakeinflation",    (double)GetCurrentInflationRate(averageStakeWeight)));
     obj.push_back(Pair("blocksperhour", GetBlockRatePerHour()));
     obj.push_back(Pair("testnet",       fTestNet));
     return obj;

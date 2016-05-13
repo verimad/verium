@@ -75,7 +75,6 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
     obj.push_back(Pair("balance",       ValueFromAmount(pwalletMain->GetBalance())));
     obj.push_back(Pair("newmint",       ValueFromAmount(pwalletMain->GetNewMint())));
-    obj.push_back(Pair("stake",         ValueFromAmount(pwalletMain->GetStake())));
     obj.push_back(Pair("blocks",        (int)nBestHeight));
     obj.push_back(Pair("timeoffset",    (boost::int64_t)GetTimeOffset()));
     obj.push_back(Pair("connections",   (int)vNodes.size()));
@@ -83,25 +82,8 @@ Value getinfo(const Array& params, bool fHelp)
     obj.push_back(Pair("ip",            addrSeenByPeer.ToStringIP()));
 
     diff.push_back(Pair("proof-of-work",  GetDifficulty()));
-    diff.push_back(Pair("proof-of-stake", GetDifficulty(GetLastBlockIndex(pindexBest, true))));
     
     obj.push_back(Pair("difficulty",    diff));
-
-    if (PoSTprotocol(pindexBest->nHeight))
-    {
-        double nNetworkWeight = GetAverageStakeWeight(pindexBest->pprev);
-    obj.push_back(Pair("networkweight", nNetworkWeight));
-        if (nNetworkWeight > 0)
-        {
-    obj.push_back(Pair("inflationrate", GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev))));
-    obj.push_back(Pair("interestrate",  GetCurrentInterestRate(pindexBest->pprev)));
-        }
-        else
-        {
-    obj.push_back(Pair("inflationrate", "n/a"));
-    obj.push_back(Pair("interestrate",  "n/a"));
-        }
-    }
 
     obj.push_back(Pair("blocksperhour", GetBlockRatePerHour()));
     obj.push_back(Pair("testnet",       fTestNet));
@@ -113,39 +95,6 @@ Value getinfo(const Array& params, bool fHelp)
         obj.push_back(Pair("unlocked_until", (boost::int64_t)nWalletUnlockTime / 1000));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     return obj;
-}
-
-Value getnetworkweight(const Array& params, bool fHelp)
-{
-    if (fHelp || params.size() != 0)
-        throw runtime_error(
-            "getnetworkweight\n"
-            "Returns the current average stake weight.");
-
-    return (GetAverageStakeWeight(pindexBest->pprev));
-}
-
-Value getinflationrate(const Array& params, bool fHelp)
-{
-    if (fHelp || params.size() != 0)
-        throw runtime_error(
-            "getinflationrate\n"
-            "Returns the current inflation rate.");
-
-    return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
-}
-
-Value getinterestrate(const Array& params, bool fHelp)
-{
-    if (fHelp || params.size() != 0)
-        throw runtime_error(
-            "getinterestrate\n"
-            "Returns the current staking interest rate.");
-
-    if (PoSTprotocol(pindexBest->nHeight))
-        return (GetCurrentInterestRate(pindexBest->pprev));
-    else
-        return (GetCurrentInflationRate(GetAverageStakeWeight(pindexBest->pprev)));
 }
 
 Value getnewpubkey(const Array& params, bool fHelp)

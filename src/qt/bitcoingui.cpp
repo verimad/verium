@@ -268,13 +268,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     balanceLabel->setText(QString(""));
     balanceLabel->setFixedWidth(FRAMEBLOCKS_LABEL_WIDTH);
 
-    stakingLabel = new QLabel();
-    stakingLabel->setFont(qFontSmall);
-    stakingLabel->setText(QString("Syncing..."));
-    QFontMetrics fm(stakingLabel->font());
-    int labelWidth = fm.width(stakingLabel->text());
-    stakingLabel->setFixedWidth(labelWidth + 10);
-
     connectionsLabel= new QLabel();
     connectionsLabel->setFont(qFontSmall);
     connectionsLabel->setText(QString("Connecting..."));
@@ -282,8 +275,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     labelBalanceIcon = new QLabel();
     labelBalanceIcon->setPixmap(QIcon(":/icons/balance").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-    labelStakingIcon = new QLabel();
-    labelStakingIcon->setVisible(false);
     labelConnectionsIcon = new QLabel();
     labelConnectionsIcon->setFont(qFontSmall);
     labelBlocksIcon = new QLabel();
@@ -302,9 +293,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelBalanceIcon);
     frameBlocksLayout->addWidget(balanceLabel);
-    frameBlocksLayout->addWidget(labelStakingIcon);
     frameBlocksLayout->addWidget(labelBlocksIcon);
-    frameBlocksLayout->addWidget(stakingLabel);
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelConnectionsIcon);
     frameBlocksLayout->addWidget(connectionsLabel);
@@ -332,14 +321,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->addPermanentWidget(frameBlocks);
 
     syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
-
-    if (GetBoolArg("-staking", true))
-    {
-        QTimer *timerStakingIcon = new QTimer(labelStakingIcon);
-        connect(timerStakingIcon, SIGNAL(timeout()), this, SLOT(updateStakingIcon()));
-        timerStakingIcon->start(30 * 1000);
-        updateStakingIcon();
-    }
 
     // Set a timer to check for updates daily
     QTimer *tCheckForUpdate = new QTimer(this);
@@ -540,7 +521,6 @@ void BitcoinGUI::createActions()
     addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book"), this);
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
-    //accessNxtInsideAction = new QAction(QIcon(":/icons/supernet"), tr("Enter &SuperNET"), this);
     checkForUpdateAction = new QAction(QIcon(":/icons/update"), tr("Check For &Update"), this);
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumAction = new QAction(QIcon(":/icons/bitcoin"), tr("Verium &Forums"), this);
@@ -733,7 +713,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
 
         // Set balance in status bar
         connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel(qint64,qint64,qint64,qint64)));
-        setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
+        setBalanceLabel(walletModel->getBalance(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 
         // Passphrase required.
         lockWalletFeatures(true); // Lock features
@@ -789,7 +769,7 @@ void BitcoinGUI::optionsClicked()
     dlg.exec();
 
     // force a balance update instead of waiting on timer
-    setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
+    setBalanceLabel(walletModel->getBalance(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 }
 
 void BitcoinGUI::forumClicked()
@@ -816,17 +796,16 @@ void BitcoinGUI::aboutPostClicked()
     dlg.exec();
 }
 
-void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature)
+void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 unconfirmed, qint64 immature)
 {
     if (clientModel && walletModel)
     {
-        qint64 total = balance + stake + unconfirmed + immature;
+        qint64 total = balance + unconfirmed + immature;
         QString balanceStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), balance, false, walletModel->getOptionsModel()->getHideAmounts());
-        QString stakeStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), stake, false, walletModel->getOptionsModel()->getHideAmounts());
         QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
         //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
         balanceLabel->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
-        labelBalanceIcon->setToolTip(tr("Spendable: %1\nStaking: %2\nUnconfirmed: %3").arg(balanceStr).arg(stakeStr).arg(unconfirmedStr));
+        labelBalanceIcon->setToolTip(tr("Spendable: %1\nUnconfirmed: %2").arg(balanceStr).arg(unconfirmedStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
@@ -973,8 +952,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
     else
     {
-        stakingLabel->setText(QString("Syncing..."));
-        labelStakingIcon->hide();
         labelBlocksIcon->show();
         tooltip = tr("Syncing") + QString(".\n") + tooltip;
         labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
@@ -1456,7 +1433,6 @@ void BitcoinGUI::lockWallet()
         AskPassphraseDialog dlg(AskPassphraseDialog::Lock, this);
         dlg.setModel(walletModel);
         dlg.exec();
-        stakingLabel->setText("Staking...");
     }
 }
 
@@ -1471,7 +1447,6 @@ void BitcoinGUI::unlockWallet()
         AskPassphraseDialog dlg(AskPassphraseDialog::Unlock, this);
         dlg.setModel(walletModel);
         dlg.exec();
-        stakingLabel->setText("Staking...");
     }
 }
 
@@ -1500,101 +1475,6 @@ void BitcoinGUI::showNormalIfMinimized(bool fToggleHidden)
 void BitcoinGUI::toggleHidden()
 {
     showNormalIfMinimized(true);
-}
-
-void BitcoinGUI::updateStakingIcon()
-{
-    if (!walletModel || pindexBest == pindexGenesisBlock)
-        return;
-
-    QDateTime lastBlockDate = clientModel->getLastBlockDate();
-    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    int64_t currentBlock = clientModel->getNumBlocks();
-    int peerBlock = clientModel->getNumBlocksOfPeers();
-    if ((secs >= 90*60 && currentBlock < peerBlock) || !pwalletMain)
-    {
-        return;
-    }
-    uint64_t nWeight = 0;
-    pwalletMain->GetStakeWeight(*pwalletMain, nWeight);
-    progressBar->setVisible(false);
-    overviewPage->showOutOfSyncWarning(false);
-    double nNetworkWeight = GetPoSKernelPS();
-    if (walletModel->getEncryptionStatus() == WalletModel::Unlocked && nLastCoinStakeSearchInterval && nWeight)
-    {
-        u_int64_t nEstimateTime = nTargetSpacing * nNetworkWeight / nWeight;
-        QString text;
-        if (nEstimateTime < 60)
-        {
-            text = tr("%n second(s)", "", nEstimateTime);
-        }
-        else if (nEstimateTime < 60*60)
-        {
-            text = tr("%n minute(s)", "", nEstimateTime/60);
-        }
-        else if (nEstimateTime < 24*60*60)
-        {
-            text = tr("%n hour(s)", "", nEstimateTime/(60*60));
-        }
-        else
-        {
-            text = tr("%n day(s)", "", nEstimateTime/(60*60*24));
-        }
-        stakingLabel->setText(QString("Staking"));
-        labelBlocksIcon->hide();
-        labelStakingIcon->show();
-        int nStakeTimePower = pwalletMain->StakeTimeEarned(nWeight, pindexBest->pprev);
-        if (PoSTprotocol(currentBlock) || fTestNet)
-        {
-            if (nStakeTimePower <= 100 && nStakeTimePower > 75)
-            {
-                labelStakingIcon->setPixmap(QIcon(":/icons/stake100").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-            }
-            if (nStakeTimePower <= 75 && nStakeTimePower > 50)
-            {
-                labelStakingIcon->setPixmap(QIcon(":/icons/stake75").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-            }
-            if (nStakeTimePower <= 50 && nStakeTimePower > 25)
-            {
-                labelStakingIcon->setPixmap(QIcon(":/icons/stake50").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-            }
-            if (nStakeTimePower <= 25 && nStakeTimePower > 5)
-            {
-                labelStakingIcon->setPixmap(QIcon(":/icons/stake25").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-            }
-            if (nStakeTimePower <= 5 && nStakeTimePower >= 0)
-            {
-                labelStakingIcon->setPixmap(QIcon(":/icons/stake0").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-            }
-        }
-        else
-        {
-            labelStakingIcon->setPixmap(QIcon(":/icons/staking_on").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        }
-        if (PoSTprotocol(currentBlock) || fTestNet)
-        {
-            labelStakingIcon->setToolTip(tr("In sync and staking...\nEarnable matured interest: %1%\nBlock number: %2\nExpected time to earn interest: %3").arg(nStakeTimePower).arg(currentBlock).arg(text));
-        }
-        else
-        {
-            labelStakingIcon->setToolTip(tr("In sync and staking...\nBlock number: %1\nExpected time to earn interest: %2").arg(currentBlock).arg(text));
-        }
-    }
-    else
-    {
-        stakingLabel->setText(QString("In Sync"));
-        labelBlocksIcon->hide();
-        labelStakingIcon->show();
-        labelStakingIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE,STATUSBAR_ICONSIZE));
-        if (pwalletMain && pwalletMain->IsLocked())
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, enable staking in the Settings menu.").arg(currentBlock));
-        else if (vNodes.empty())
-            labelStakingIcon->setToolTip(tr("Out of sync and not staking because the wallet is offline."));
-        else
-            labelStakingIcon->setToolTip(tr("In sync at block %1\nNot staking, earning Stake-Time.").arg(currentBlock));
-    }
-    // Update balance in balanceLabel
-    setBalanceLabel(walletModel->getBalance(), walletModel->getStake(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 }
 
 void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)

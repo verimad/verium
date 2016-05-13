@@ -6,7 +6,6 @@
 
 #include "txdb.h"
 #include "miner.h"
-#include "kernel.h"
 
 using namespace std;
 
@@ -166,7 +165,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
     if (mapArgs.count("-mintxfee"))
         ParseMoney(mapArgs["-mintxfee"], nMinTxFee);
 
-    pblock->nBits = GetNextTargetRequired(pindexPrev, fProofOfStake);
+    pblock->nBits = GetNextTargetRequired(pindexPrev);
 
     // Collect memory pool transactions into the block
     int64_t nFees = 0;
@@ -359,7 +358,6 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
         if (fDebug && GetBoolArg("-printpriority"))
             printf("CreateNewBlock(): total size %"PRIu64"\n", nBlockSize);
 
-        if (!fProofOfStake)
             pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees);
 
         if (pFees)
@@ -480,89 +478,4 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
     }
 
     return true;
-}
-
-bool CheckStake(CBlock* pblock, CWallet& wallet)
-{
-    uint256 proofHash = 0, hashTarget = 0;
-    uint256 hashBlock = pblock->GetHash();
-
-    if(!pblock->IsProofOfStake())
-        return error("CheckStake() : %s is not a proof-of-stake block", hashBlock.GetHex().c_str());
-
-    // verify hash target and signature of coinstake tx
-    if (!CheckProofOfStake(pblock->vtx[1], pblock->nBits, proofHash, hashTarget))
-        return error("CheckStake() : proof-of-stake checking failed");
-
-    //// debug print
-    printf("CheckStake() : new proof-of-stake block found  \n  hash: %s \nproofhash: %s  \ntarget: %s\n", hashBlock.GetHex().c_str(), proofHash.GetHex().c_str(), hashTarget.GetHex().c_str());
-    pblock->print();
-    printf("out %s\n", FormatMoney(pblock->vtx[1].GetValueOut()).c_str());
-
-    // Found a solution
-    {
-        LOCK(cs_main);
-        if (pblock->hashPrevBlock != hashBestChain)
-            return error("CheckStake() : generated block is stale");
-
-        // Track how many getdata requests this block gets
-        {
-            LOCK(wallet.cs_wallet);
-            wallet.mapRequestCount[hashBlock] = 0;
-        }
-
-        // Process this block the same as if we had received it from another node
-        if (!ProcessBlock(NULL, pblock))
-            return error("CheckStake() : ProcessBlock, block not accepted");
-    }
-
-    return true;
-}
-
-void StakeMiner(CWallet *pwallet)
-{
-    SetThreadPriority(THREAD_PRIORITY_LOWEST);
-
-    // Make this thread recognisable as the mining thread
-    RenameThread("verium-miner");
-
-    while (true)
-    {
-        if (fShutdown)
-            return;
-
-        while (pwallet->IsLocked() || !pwallet->IsCrypted())
-        {
-            MilliSleep(1000);
-            if (fShutdown)
-                return;
-        }
-
-        while ((vNodes.size() < 5 && !fTestNet) || vNodes.size() < 1 || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
-        {
-            nLastCoinStakeSearchInterval = 0;
-            MilliSleep(60000);
-            if (fShutdown)
-                return;
-        }
-
-        //
-        // Create new block
-        //
-        int64_t nFees;
-        auto_ptr<CBlock> pblock(CreateNewBlock(pwallet, true, &nFees));
-        if (!pblock.get())
-            return;
-
-        // Trying to sign a block
-        if (pblock->SignBlock(*pwallet, nFees, pindexBest->nHeight))
-        {
-            SetThreadPriority(THREAD_PRIORITY_NORMAL);
-            CheckStake(pblock.get(), *pwallet);
-            SetThreadPriority(THREAD_PRIORITY_LOWEST);
-            MilliSleep(500);
-        }
-        else
-            MilliSleep(nMinerSleep);
-    }
 }

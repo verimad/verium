@@ -157,7 +157,7 @@ public slots:
     /** Lock/Unlock Wallet features until/when passphrase is entered */
     void lockWalletFeatures(bool lock);
     /** Set balance in status bar */
-    void setBalanceLabel(qint64 balance, qint64 stake, qint64 unconfirmed, qint64 immature);
+    void setBalanceLabel(qint64 balance, qint64 unconfirmed, qint64 immature);
     /** Set version icon good/bad */
     void setVersionIcon(bool newVersion);
     /** Set number of connections shown in the UI */
@@ -264,8 +264,6 @@ private slots:
     void showNormalIfMinimized(bool fToggleHidden = false);
     /** simply calls showNormalIfMinimized(true) for use in SLOT() macro */
     void toggleHidden();
-
-    void updateStakingIcon();
 };
 
 #endif

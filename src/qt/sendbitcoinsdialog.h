@@ -41,7 +41,7 @@ public slots:
     void accept();
     SendBitCoinsEntry *addEntry();
     void updateRemoveEnabled();
-    void setBalance(qint64 balance, qint64 stake, qint64 unconfirmedBalance, qint64 immatureBalance);
+    void setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 immatureBalance);
     void passResponse(QNetworkReply *finished);
 
 signals:
