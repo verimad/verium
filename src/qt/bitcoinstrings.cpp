@@ -57,7 +57,6 @@ QT_TRANSLATE_NOOP("bitcoin-core", "Find peers using internet relay chat (default
 QT_TRANSLATE_NOOP("bitcoin-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Bind to given address. Use [host]:port notation for IPv6"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Find peers using DNS lookup (default: 1)"),
-QT_TRANSLATE_NOOP("bitcoin-core", "Stake your coins to support network and gain reward (default: 1)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Sync checkpoints policy (default: strict)"),
 QT_TRANSLATE_NOOP("bitcoin-core", "Threshold for disconnecting misbehaving peers (default: 100)"),
 QT_TRANSLATE_NOOP("bitcoin-core", ""

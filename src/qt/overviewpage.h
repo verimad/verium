@@ -41,7 +41,6 @@ private:
     Ui::OverviewPage *ui;
     WalletModel *model;
     qint64 currentBalance;
-    qint64 currentStake;
     qint64 currentUnconfirmedBalance;
     qint64 currentImmatureBalance;
 

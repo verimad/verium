@@ -79,7 +79,6 @@ public:
 
 uint64_t nLastBlockTx = 0;
 uint64_t nLastBlockSize = 0;
-int64_t nLastCoinStakeSearchInterval = 0;
  
 // We want to sort transactions by priority and fee, so:
 typedef boost::tuple<double, double, CTransaction*> TxPriority;
@@ -105,8 +104,8 @@ public:
     }
 };
 
-// CreateNewBlock: create new block (without proof-of-work/proof-of-stake)
-CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
+// CreateNewBlock: create new block
+CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
 {
     // Create new block
     auto_ptr<CBlock> pblock(new CBlock());
@@ -121,22 +120,11 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
     txNew.vin[0].prevout.SetNull();
     txNew.vout.resize(1);
 
-    if (!fProofOfStake)
-    {
-        CReserveKey reservekey(pwallet);
-        CPubKey pubkey;
-        if (!reservekey.GetReservedKey(pubkey))
-            return NULL;
-        txNew.vout[0].scriptPubKey.SetDestination(pubkey.GetID());
-    }
-    else
-    {
-        // Height first in coinbase required for block.version=2
-        txNew.vin[0].scriptSig = (CScript() << pindexPrev->nHeight+1) + COINBASE_FLAGS;
-        assert(txNew.vin[0].scriptSig.size() <= 100);
-
-        txNew.vout[0].SetEmpty();
-    }
+    CReserveKey reservekey(pwallet);
+    CPubKey pubkey;
+    if (!reservekey.GetReservedKey(pubkey))
+        return NULL;
+    txNew.vout[0].scriptPubKey.SetDestination(pubkey.GetID());
 
     // Add our coinbase tx as first transaction
     pblock->vtx.push_back(txNew);
@@ -183,7 +171,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
         for (map<uint256, CTransaction>::iterator mi = mempool.mapTx.begin(); mi != mempool.mapTx.end(); ++mi)
         {
             CTransaction& tx = (*mi).second;
-            if (tx.IsCoinBase() || tx.IsCoinStake() || !tx.IsFinal())
+            if (tx.IsCoinBase() || !tx.IsFinal())
                 continue;
 
             COrphan* porphan = NULL;
@@ -279,7 +267,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
                 continue;
 
             // Timestamp limit
-            if (tx.nTime > GetAdjustedTime() || (fProofOfStake && tx.nTime > pblock->vtx[0].nTime))
+            if (tx.nTime > GetAdjustedTime())
                 continue;
 
             // Transaction fee
@@ -367,8 +355,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, bool fProofOfStake, int64_t* pFees)
         pblock->hashPrevBlock  = pindexPrev->GetBlockHash();
         pblock->nTime          = max(pindexPrev->GetMedianTimePast()+1, pblock->GetMaxTransactionTime());
         pblock->nTime          = max(pblock->GetBlockTime(), PastDrift(pindexPrev->GetBlockTime()));
-        if (!fProofOfStake)
-            pblock->UpdateTime(pindexPrev);
+        pblock->UpdateTime(pindexPrev);
         pblock->nNonce         = 0;
     }
 
@@ -445,9 +432,6 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 {
     uint256 hashBlock = pblock->GetHash();
     uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
-
-    if(!pblock->IsProofOfWork())
-        return error("CheckWork() : %s is not a proof-of-work block", hashBlock.GetHex().c_str());
 
     if (hashBlock > hashTarget)
         return error("CheckWork() : proof-of-work not meeting target");

@@ -105,7 +105,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::OverviewPage),
     currentBalance(-1),
-    currentStake(0),
     currentUnconfirmedBalance(-1),
     currentImmatureBalance(-1),
     txdelegate(new TxViewDelegate()),
@@ -137,8 +136,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     ui->labelSpendableText->setFont(qFont);
     ui->labelSpendable->setFont(qFont);
-    ui->labelStakeText->setFont(qFont);
-    ui->labelStake->setFont(qFont);
     ui->labelUnconfirmedText->setFont(qFont);
     ui->labelUnconfirmed->setFont(qFont);
     ui->labelTotalText->setFont(qFont);
@@ -146,7 +143,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // Add icons to the Balance section
     ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
-    ui->labelStakeText->setText("<html><img src=':icons/staking' width=16 height=16 border=0 align='bottom'> Staking:</html>");
     ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
     ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
 

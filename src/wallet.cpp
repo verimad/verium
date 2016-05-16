@@ -696,10 +696,6 @@ void CWalletTx::GetAmounts(list<pair<CTxDestination, int64_t> >& listReceived,
     // Sent/received.
     BOOST_FOREACH(const CTxOut& txout, vout)
     {
-        // Skip special stake out
-        if (txout.scriptPubKey.empty())
-            continue;
-
         bool fIsMine;
         // Only need to handle txouts if AT LEAST one of these is true:
         //   1) they debit from us (sent)
@@ -1634,17 +1630,11 @@ void CWallet::PrintWallet(const CBlock& block)
 {
     {
         LOCK(cs_wallet);
-        if (block.IsProofOfWork() && mapWallet.count(block.vtx[0].GetHash()))
+        if (mapWallet.count(block.vtx[0].GetHash()))
         {
             CWalletTx& wtx = mapWallet[block.vtx[0].GetHash()];
             printf("    mine:  %d  %d  %"PRId64"", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
         }
-        if (block.IsProofOfStake() && mapWallet.count(block.vtx[1].GetHash()))
-        {
-            CWalletTx& wtx = mapWallet[block.vtx[1].GetHash()];
-            printf("    stake: %d  %d  %"PRId64"", wtx.GetDepthInMainChain(), wtx.GetBlocksToMaturity(), wtx.GetCredit());
-         }
-
     }
     printf("\n");
 }
@@ -1855,7 +1845,7 @@ std::map<CTxDestination, int64_t> CWallet::GetAddressBalances()
             if (!pcoin->IsFinal() || !pcoin->IsTrusted())
                 continue;
 
-            if ((pcoin->IsCoinBase() || pcoin->IsCoinStake()) && pcoin->GetBlocksToMaturity() > 0)
+            if (pcoin->IsCoinBase() && pcoin->GetBlocksToMaturity() > 0)
                 continue;
 
             int nDepth = pcoin->GetDepthInMainChain();
@@ -2010,28 +2000,6 @@ void CWallet::FixSpentCoins(int& nMismatchFound, int64_t& nBalanceInQuestion, bo
                     pcoin->MarkSpent(n);
                     pcoin->WriteToDisk();
                 }
-            }
-        }
-    }
-}
-
-// ppcoin: disable transaction (only for coinstake)
-void CWallet::DisableTransaction(const CTransaction &tx)
-{
-    if (!tx.IsCoinStake() || !IsFromMe(tx))
-        return; // only disconnecting coinstake requires marking input unspent
-
-    LOCK(cs_wallet);
-    BOOST_FOREACH(const CTxIn& txin, tx.vin)
-    {
-        map<uint256, CWalletTx>::iterator mi = mapWallet.find(txin.prevout.hash);
-        if (mi != mapWallet.end())
-        {
-            CWalletTx& prev = (*mi).second;
-            if (txin.prevout.n < prev.vout.size() && IsMine(prev.vout[txin.prevout.n]))
-            {
-                prev.MarkUnspent(txin.prevout.n);
-                prev.WriteToDisk();
             }
         }
     }

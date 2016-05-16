@@ -90,7 +90,6 @@
 using namespace GUIUtil;
 
 extern CWallet* pwalletMain;
-extern int64_t nLastCoinStakeSearchInterval;
 extern unsigned int nTargetSpacing;
 double GetPoSKernelPS();
 bool blocksIcon = true;
@@ -512,10 +511,10 @@ void BitcoinGUI::createActions()
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password"), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
-    lockWalletAction = new QAction(QIcon(":/icons/stake100"), tr("&Disable Staking"), this);
-    lockWalletAction->setToolTip(tr("Turn staking off"));
-    unlockWalletAction = new QAction(QIcon(":/icons/stake100"), tr("&Enable Staking"), this);
-    unlockWalletAction->setToolTip(tr("Turn staking on"));
+    lockWalletAction = new QAction(QIcon(":/icons/lock"), tr("&Lock wallet"), this);
+    lockWalletAction->setToolTip(tr("Lock wallet"));
+    unlockWalletAction = new QAction(QIcon(":/icons/lock"), tr("&Unlock wallet"), this);
+    unlockWalletAction->setToolTip(tr("Unlock wallet"));
     encryptWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("En&crypt Wallet"), this);
     encryptWalletAction->setToolTip(tr("Encrypt the wallet for staking"));
     addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book"), this);
