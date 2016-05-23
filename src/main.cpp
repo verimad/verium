@@ -40,7 +40,7 @@ CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 unsigned int nTargetSpacing = 1 * 60; // 1 minute
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed
 
-int nCoinbaseMaturity = 500;
+int nCoinbaseMaturity = 10;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
