@@ -10,11 +10,17 @@ software written by Thomas Bernard.
 UNIX BUILD NOTES
 ================
 
-To Build
---------
+Dependency Build Instructions: Ubuntu & Debian
+----------------------------------------------
+
+sudo apt-get install build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev freeglut3-dev git
+
+If using Boost 1.37, append -mt to the boost libraries in the makefile.
 
 cd src/
 make -f makefile.unix            # Headless verium
+
+also install qt 5.4 or earlier for UI version
 
 See readme-qt.rst for instructions on building Verium QT,
 the graphical verium.
@@ -58,17 +64,6 @@ Versions used in this release:
  Berkeley DB   4.8.30.NC
  Boost         1.55
  miniupnpc     1.9
-
-Dependency Build Instructions: Ubuntu & Debian
-----------------------------------------------
-sudo apt-get install build-essential
-#sudo apt-get install libssl-dev
-#sudo apt-get install libdb++-dev
-#sudo apt-get install libboost-all-dev
-#sudo apt-get install libqrencode-dev
-
-If using Boost 1.37, append -mt to the boost libraries in the makefile.
-
 
 Dependency Build Instructions: Gentoo
 -------------------------------------
