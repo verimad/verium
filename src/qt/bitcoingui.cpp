@@ -711,7 +711,7 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         connect(walletModel, SIGNAL(requireUnlock()), this, SLOT(unlockWallet()));
 
         // Set balance in status bar
-        connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64,qint64)), this, SLOT(setBalanceLabel(qint64,qint64,qint64,qint64)));
+        connect(walletModel, SIGNAL(balanceChanged(qint64,qint64,qint64)), this, SLOT(setBalanceLabel(qint64,qint64,qint64)));
         setBalanceLabel(walletModel->getBalance(), walletModel->getUnconfirmedBalance(), walletModel->getImmatureBalance());
 
         // Passphrase required.
@@ -804,7 +804,7 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 unconfirmed, qint64 imma
         QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
         QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
         balanceLabel->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
-        labelBalanceIcon->setToolTip(tr("Spendable: %1\nUnconfirmed: %2").arg(balanceStr).arg(unconfirmedStr));
+        labelBalanceIcon->setToolTip(tr("Spendable: %1\nUnconfirmed: %2\nImmature: %3").arg(balanceStr).arg(unconfirmedStr).arg(immatureStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
