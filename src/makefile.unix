@@ -183,7 +183,7 @@ veriumd: $(OBJS:obj/%=obj/%)
 	$(LINK) $(xCXXFLAGS) -o $@ $^ $(xLDFLAGS) $(LIBS)
 
 clean:
-	-rm -f verium
+	-rm -f veriumd
 	-rm -f obj/*.o
 	-rm -f obj/*.P
 	-rm -f obj/build.h

@@ -802,7 +802,7 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 unconfirmed, qint64 imma
         qint64 total = balance + unconfirmed + immature;
         QString balanceStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), balance, false, walletModel->getOptionsModel()->getHideAmounts());
         QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
-        //QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
+        QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
         balanceLabel->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
         labelBalanceIcon->setToolTip(tr("Spendable: %1\nUnconfirmed: %2").arg(balanceStr).arg(unconfirmedStr));
         QFontMetrics fm(balanceLabel->font());

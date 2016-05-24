@@ -218,10 +218,10 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
     ui->labelSpendable->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, balance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     ui->labelUnconfirmed->setText(bcu->formatWithUnit(unit, unconfirmedBalance, false, hideAmounts));
     ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    //ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance, false, hideAmounts));
-    //ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    //ui->labelImmature->setVisible(true);
-    //ui->labelImmatureText->setVisible(true);
+    ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance, false, hideAmounts));
+    ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
+    ui->labelImmature->setVisible(true);
+    ui->labelImmatureText->setVisible(true);
     ui->labelTotal->setText(bcu->formatWithUnit(unit, total, false, hideAmounts));
     ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
 
