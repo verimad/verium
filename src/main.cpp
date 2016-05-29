@@ -2237,7 +2237,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1399690945;
         block.nBits    = 0x1e0ffff0;//bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 612416 : 712750;
+        block.nNonce   = !fTestNet ? 5749262 : 5749262;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
@@ -2245,37 +2245,39 @@ bool LoadBlockIndex(bool fAllowNew)
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
         assert(block.hashMerkleRoot == uint256("0xde7bd69122e7d381ed4e53cf3436d26fdae982287b49b1f884872ec81153ee29"));
         block.print();
-
-        // If genesis block hash does not match, then generate new genesis hash.
+	
+	// If genesis block hash does not match, then generate new genesis hash.
         if (block.GetHash() != hashGenesisBlock)
         {
-            printf("Searching for genesis block...\n");
-            // This will figure out a valid hash and Nonce if you're
-            // creating a different genesis block:
-            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-            uint256 thash;
-
-            while(true)
-            {
-                scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash));
-                if (thash <= hashTarget)
-                    break;
-                if ((block.nNonce & 0xFFF) == 0)
+                printf("Searching for genesis block...\n");
+                // This will figure out a valid hash and Nonce if you're
+                // creating a different genesis block:
+                uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+                uint256 thash;
+		
+                while (true)
                 {
-                    printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                    scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash));
+    
+                    if (thash <= hashTarget)
+                        break;
+                    if ((block.nNonce & 0xFFF) == 0)
+                    {
+                        printf("nonce %08X: hash = %s (target = %s)\n", block.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                    }
+                    ++block.nNonce;
+                    if (block.nNonce == 0)
+                    {
+                        printf("NONCE WRAPPED, incrementing time\n");
+                        ++block.nTime;
+                    }
                 }
-                ++block.nNonce;
-                if (block.nNonce == 0)
-                {
-                    printf("NONCE WRAPPED, incrementing time\n");
-                    ++block.nTime;
-                }
-            }
-            printf("block.nTime = %u \n", block.nTime);
-            printf("block.nNonce = %u \n", block.nNonce);
-            printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
+                printf("block.nTime = %u \n", block.nTime);
+                printf("block.nNonce = %u \n", block.nNonce);
+                printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
         }
-        assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
+
+	assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
 
         // Start new block file
