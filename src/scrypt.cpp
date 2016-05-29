@@ -309,7 +309,7 @@ void scrypt_detect_sse2(unsigned int cpuid_edx)
 
 void scrypt_N_1_1_256(const char *input, char *output)
 {
-    const unsigned char Nfactor = 11;
+    const unsigned char Nfactor = 14;
     char scratchpad[((1 << (Nfactor + 1)) * 128 ) + 63];
 #if defined(USE_SSE2)
         // Detection would work, but in cases where we KNOW it always has SSE2,

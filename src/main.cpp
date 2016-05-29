@@ -2236,14 +2236,14 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
         block.nTime    = 1399690945;
-        block.nBits    = bnProofOfWorkLimit.GetCompact();
+        block.nBits    = 0x1e0ffff0;//bnProofOfWorkLimit.GetCompact();
         block.nNonce   = !fTestNet ? 612416 : 712750;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x60424046d38de827de0ed1a20a351aa7f3557e3e1d3df6bfb34a94bc6161ec68"));
+        assert(block.hashMerkleRoot == uint256("0xde7bd69122e7d381ed4e53cf3436d26fdae982287b49b1f884872ec81153ee29"));
         block.print();
 
         // If genesis block hash does not match, then generate new genesis hash.
