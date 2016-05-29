@@ -264,7 +264,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/util.h \
     src/uint256.h \
     src/scrypt.h \
-    src/pbkdf2.h \
     src/serialize.h \
     src/strlcpy.h \
     src/main.h \
@@ -415,11 +414,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/blockchainpage.cpp \
     src/qt/supernetpage.cpp \
     src/noui.cpp \
-    src/scrypt-arm.S \
-    src/scrypt-x86.S \
-    src/scrypt-x86_64.S \
     src/scrypt.cpp \
-    src/pbkdf2.cpp \
     src/qt/webview.cpp \
     src/qt/postdialog.cpp \
     src/qt/whatsnewdialog.cpp \
