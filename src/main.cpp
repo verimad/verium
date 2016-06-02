@@ -2236,8 +2236,8 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
         block.nTime    = 1399690945;
-        block.nBits    = 0x1e0ffff0;//bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 5749262 : 5749262;
+        block.nBits    = bnProofOfWorkLimit.GetCompact();
+        block.nNonce   = !fTestNet ? 0 : 0;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
