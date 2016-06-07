@@ -114,6 +114,8 @@ bool GetTransaction(const uint256 &hash, CTransaction &tx, uint256 &hashBlock);
 uint256 WantedByOrphan(const CBlock* pblockOrphan);
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex);
 void ResendWalletTransactions();
+void GenerateVerium(bool fGenerate, CWallet* pwallet);
+void static Miner(CWallet *pwallet);
 
 
 
