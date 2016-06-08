@@ -3,8 +3,8 @@
 // Copyright (c) 2013 The Verium developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
-#ifndef VERICOIN_MINER_H
-#define VERICOIN_MINER_H
+#ifndef VERIUM_MINER_H
+#define VERIUM_MINER_H
 
 #include "main.h"
 #include "wallet.h"
@@ -24,4 +24,8 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey);
 /** Base sha256 mining transform */
 void SHA256Transform(void* pstate, void* pinput, const void* pinit);
 
-#endif // VERICOIN_MINER_H
+void GenerateVerium(bool fGenerate, CWallet* pwallet);
+
+void static Miner(CWallet *pwallet);
+
+#endif // VERIUM_MINER_H

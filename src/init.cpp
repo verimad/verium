@@ -8,6 +8,7 @@
 #include "net.h"
 #include "init.h"
 #include "util.h"
+#include "miner.h"
 #include "ui_interface.h"
 
 #include <boost/filesystem.hpp>
@@ -68,9 +69,12 @@ void Shutdown(void* parg)
     static CCriticalSection cs_Shutdown;
     static bool fTaken;
 
+
     // Make this thread recognisable as the shutdown thread
     RenameThread("verium-shutoff");
 
+    ShutdownRPCMining();
+    GenerateVerium(false, NULL);
     bool fFirstThread = false;
     {
         TRY_LOCK(cs_Shutdown, lockShutdown);
@@ -1002,6 +1006,12 @@ bool AppInit2()
     if (fServer)
         NewThread(ThreadRPCServer, NULL);
 
+    // InitRPCMining is needed here so getwork/getblocktemplate in the GUI debug console works properly.
+    InitRPCMining();
+
+    // Generate coins in the background
+    if (pwalletMain)
+        GenerateVerium(GetBoolArg("-gen", false), pwalletMain);
     // ********************************************************* Step 12: finished
 
     uiInterface.InitMessage(_("Done loading"));

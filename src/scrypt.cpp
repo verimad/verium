@@ -309,20 +309,19 @@ void scrypt_detect_sse2(unsigned int cpuid_edx)
 
 void scrypt_N_1_1_256(const char *input, char *output)
 {
-    const unsigned char Nfactor = 14;
-    char scratchpad[((1 << (Nfactor + 1)) * 128 ) + 63];
+    char scratchpad[((1 << (NHardness + 1)) * 128 ) + 63];
 #if defined(USE_SSE2)
         // Detection would work, but in cases where we KNOW it always has SSE2,
         // it is faster to use directly than to use a function pointer or conditional.
 #if defined(_M_X64) || defined(__x86_64__) || defined(_M_AMD64) || (defined(MAC_OSX) && defined(__i386__))
         // Always SSE2: x86_64 or Intel MacOS X
-        scrypt_N_1_1_256_sp_sse2(input, output, scratchpad, Nfactor);
+        scrypt_N_1_1_256_sp_sse2(input, output, scratchpad, NHardness);
 #else
         // Detect SSE2: 32bit x86 Linux or Windows
-        scrypt_N_1_1_256_sp(input, output, scratchpad, Nfactor);
+        scrypt_N_1_1_256_sp(input, output, scratchpad, NHardness);
 #endif
 #else
         // Generic scrypt
-        scrypt_N_1_1_256_sp_generic(input, output, scratchpad, Nfactor);
+        scrypt_N_1_1_256_sp_generic(input, output, scratchpad, NHardness);
 #endif
 }

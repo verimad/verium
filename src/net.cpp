@@ -9,6 +9,7 @@
 #include "init.h"
 #include "strlcpy.h"
 #include "addrman.h"
+#include "miner.h"
 #include "ui_interface.h"
 
 #ifdef WIN32
@@ -1842,7 +1843,8 @@ void StartNode(void* parg)
 bool StopNode()
 {
     printf("StopNode()\n");
-    fShutdown = true;
+    GenerateVerium(false, NULL);
+    fShutdown = true;   
     nTransactionsUpdated++;
     int64_t nStart = GetTime();
     if (semOutbound)

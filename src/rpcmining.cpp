@@ -35,6 +35,67 @@ Value getsubsidy(const Array& params, bool fHelp)
     return (uint64_t)GetProofOfWorkReward(0);
 }
 
+// Key used by getwork/getblocktemplate miners.
+// Allocated in InitRPCMining, free'd in ShutdownRPCMining
+static CReserveKey* pMiningKey = NULL;
+
+void InitRPCMining()
+{
+    if (!pwalletMain)
+        return;
+
+    // getwork/getblocktemplate mining rewards paid here:
+    pMiningKey = new CReserveKey(pwalletMain);
+}
+
+Value getgenerate(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getgenerate\n"
+            "Returns true or false.");
+
+    if (!pMiningKey)
+        return false;
+
+    return GetBoolArg("-gen");
+}
+
+
+void ShutdownRPCMining()
+{
+    if (!pMiningKey)
+        return;
+
+    delete pMiningKey; pMiningKey = NULL;
+}
+
+Value setgenerate(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() < 1 || params.size() > 2)
+        throw runtime_error(
+            "setgenerate <generate> [genproclimit]\n"
+            "<generate> is true or false to turn generation on or off.\n"
+            "Generation is limited to [genproclimit] processors, -1 is unlimited.");
+
+    bool fGenerate = true;
+    if (params.size() > 0)
+        fGenerate = params[0].get_bool();
+
+    if (params.size() > 1)
+    {
+        int nGenProcLimit = params[1].get_int();
+        mapArgs["-genproclimit"] = itostr(nGenProcLimit);
+        if (nGenProcLimit == 0)
+            fGenerate = false;
+    }
+    mapArgs["-gen"] = (fGenerate ? "1" : "0");
+
+    assert(pwalletMain != NULL);
+    GenerateVerium(fGenerate, pwalletMain);
+    return Value::null;
+}
+
 Value getmininginfo(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
