@@ -484,9 +484,9 @@ void static Miner(CWallet *pwallet)
     {
         while (true)
         {
-            while (vNodes.empty())
+            while (vNodes.empty() || IsInitialBlockDownload())
             {
-                MilliSleep(1000);
+                MilliSleep(2000);
             }
 
             //
@@ -495,8 +495,12 @@ void static Miner(CWallet *pwallet)
             unsigned int nTransactionsUpdatedLast = nTransactionsUpdated;
             CBlockIndex* pindexPrev = pindexBest;
 
-            CBlock *pblock = CreateNewBlock(pwallet);
-            IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
+            int64_t nFees;
+            auto_ptr<CBlock> pblock(CreateNewBlock(pwallet));
+            if (!pblock.get())
+                return;
+            IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
+
 
             printf("Running Miner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
                    ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
@@ -508,7 +512,7 @@ void static Miner(CWallet *pwallet)
             char pdatabuf[128+16];    char* pdata     = alignup<16>(pdatabuf);
             char phash1buf[64+16];    char* phash1    = alignup<16>(phash1buf);
 
-            FormatHashBuffers(pblock, pmidstate, pdata, phash1);
+            FormatHashBuffers(pblock.get(), pmidstate, pdata, phash1);
 
             unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
             unsigned int& nBlockBits = *(unsigned int*)(pdata + 64 + 8);
@@ -534,7 +538,7 @@ void static Miner(CWallet *pwallet)
                         // Found a solution
                         printf("Entering to found a solution section");
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        CheckWork(pblock, *pwallet, reservekey);
+                        CheckWork(pblock.get(), *pwallet, reservekey);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                         break;
                     }
@@ -585,7 +589,7 @@ void static Miner(CWallet *pwallet)
                     break;
 
                 // Update nTime every few seconds
-                pblock->UpdateTime(pindexPrev);
+                pblock->nTime = max(pindexPrev->GetMedianTimePast()+1, GetAdjustedTime());
                 nBlockTime = ByteReverse(pblock->nTime);
                 if (fTestNet)
                 {
