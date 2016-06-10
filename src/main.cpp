@@ -34,11 +34,11 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 20); // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 10); // "standard" scrypt target limit for proof of work, results with 0,000244140625 proof-of-work difficulty
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 10);
 
 unsigned int nTargetSpacing = 1 * 60; // 1 minute
-unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed
+unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed vericoin
 
 int nCoinbaseMaturity = 10;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -2237,7 +2237,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1399690945;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 866290 : 866290;
+        block.nNonce   = !fTestNet ? 166 : 166;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
@@ -2246,7 +2246,7 @@ bool LoadBlockIndex(bool fAllowNew)
         assert(block.hashMerkleRoot == uint256("0xde7bd69122e7d381ed4e53cf3436d26fdae982287b49b1f884872ec81153ee29"));
         block.print();
 	
-        /*/ If genesis block hash does not match, then generate new genesis hash.
+        /* If genesis block hash does not match, then generate new genesis hash.
         if (block.GetHash() != hashGenesisBlock)
         {
                 printf("Searching for genesis block...\n");
