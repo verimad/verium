@@ -1863,7 +1863,7 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
 
     // Check coinbase timestamp
     if (GetBlockTime() > FutureDrift((int64_t)vtx[0].nTime))
-        return DoS(50, error("CheckBlock() : coinbase timestamp is too early"));
+        return DoS(50, error("CheckBlock() : coinbase timestamp %d is too early %d ",GetBlockTime(), FutureDrift((int64_t)vtx[0].nTime) ));
 
     // Check transactions
     BOOST_FOREACH(const CTransaction& tx, vtx)

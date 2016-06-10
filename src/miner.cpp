@@ -495,7 +495,6 @@ void static Miner(CWallet *pwallet)
             unsigned int nTransactionsUpdatedLast = nTransactionsUpdated;
             CBlockIndex* pindexPrev = pindexBest;
 
-            int64_t nFees;
             auto_ptr<CBlock> pblock(CreateNewBlock(pwallet));
             if (!pblock.get())
                 return;
