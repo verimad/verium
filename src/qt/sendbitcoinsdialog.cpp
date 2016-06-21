@@ -482,7 +482,7 @@ void SendBitCoinsDialog::on_veriBitSendButton_clicked()
     QString sendto, amount, label;
     foreach(const SendCoinsRecipient &rcp, recipients)
     {
-        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(veriBitcoinUnits::formatWithUnitWithMaxDecimals(veriBitcoinUnits::BTC, rcp.amount, veriBitcoinUnits::maxdecimals(veriBitcoinUnits::BTC)), Qt::escape(rcp.label), rcp.address));
+        formatted.append(tr("<b>%1</b> to %2 (%3)").arg(veriBitcoinUnits::formatWithUnitWithMaxDecimals(veriBitcoinUnits::VRC, rcp.amount, veriBitcoinUnits::maxdecimals(veriBitcoinUnits::VRC)), Qt::escape(rcp.label), rcp.address));
         amount.append(tr("%1").arg(BitcoinUnits::formatMaxDecimals(BitcoinUnits::VRM, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRM))));
         sendto.append(tr("%1").arg(rcp.address));
         label.append(tr("%1").arg(rcp.label));
@@ -491,7 +491,7 @@ void SendBitCoinsDialog::on_veriBitSendButton_clicked()
     fNewRecipientAllowed = false;
 
     //send address and amount to VeriBit Server
-    QUrl serviceUrl = QUrl("http://verisend.verium.info/apisendbtc");
+    QUrl serviceUrl = QUrl("http://verisend.verium.info/apisendvrc");
     QByteArray postData;
     postData.append("sendto=").append(sendto).append("&amount=").append(amount);
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);

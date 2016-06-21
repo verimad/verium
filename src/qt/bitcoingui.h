@@ -17,15 +17,12 @@ class AddressBookPage;
 class SendCoinsDialog;
 class SendBitCoinsDialog;
 class SignVerifyMessageDialog;
-class AccessNxtInsideDialog;
 class Notificator;
 class RPCConsole;
 class Downloader;
 class WebView;
 class ForumsPage;
-class ChatPage;
 class BlockchainPage;
-class SuperNETPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -75,7 +72,6 @@ private:
     QStackedWidget *centralWidget;
 
     SignVerifyMessageDialog *signVerifyMessageDialog;
-    AccessNxtInsideDialog *accessNxtInsideDialog;
     AskPassphrasePage *askPassphrasePage;
     AskPassphrasePage *encryptWalletPage;
     OverviewPage *overviewPage;
@@ -86,9 +82,7 @@ private:
     SendCoinsDialog *sendCoinsPage;
     SendBitCoinsDialog *sendBitCoinsPage;
     ForumsPage *forumsPage;
-    ChatPage *chatPage;
     BlockchainPage *blockchainPage;
-    SuperNETPage *superNETPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelBalanceIcon;
@@ -110,13 +104,10 @@ private:
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
     QAction *forumsAction;
-    QAction *chatAction;
     QAction *blockchainAction;
-    QAction *superNETAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
-    QAction *accessNxtInsideAction;
     QAction *aboutAction;
     QAction *aboutPostAction;
     QAction *aboutQtAction;
@@ -206,12 +197,8 @@ private slots:
     void gotoSendBitCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
-    /** Switch to Chat page */
-    void gotoChatPage();
     /** Switch to Blockchain page */
     void gotoBlockchainPage();
-    /** Switch to SuperNET page */
-    void gotoSuperNETPage();
 
     void resizeGUI();
     void logout();
@@ -221,8 +208,6 @@ private slots:
     void gotoSignMessageTab(QString addr = "");
     /** Show Sign/Verify Message dialog and switch to verify message tab */
     void gotoVerifyMessageTab(QString addr = "");
-  	/** Show Access Nxt dialog and switch to access nxt tab */
-	void gotoAccessNxtInsideTab(QString addr = "");
 
     /** Show configuration dialog */
     void optionsClicked();

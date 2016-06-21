@@ -249,7 +249,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/sendbitcoinsdialog.h \
     src/qt/addressbookpage.h \
     src/qt/signverifymessagedialog.h \
-    src/qt/accessnxtinsidedialog.h \
     src/qt/aboutdialog.h \
     src/qt/editaddressdialog.h \
     src/qt/bitcoinaddressvalidator.h \
@@ -315,9 +314,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/askpassphrasedialog.h \
     src/qt/askpassphrasepage.h \
     src/qt/forumspage.h \
-    src/qt/chatpage.h \
     src/qt/blockchainpage.h \
-    src/qt/supernetpage.h \
     src/protocol.h \
     src/qt/notificator.h \
     src/qt/qtipcserver.h \
@@ -346,7 +343,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/coincontroltreewidget.cpp \
     src/qt/addressbookpage.cpp \
     src/qt/signverifymessagedialog.cpp \
-    src/qt/accessnxtinsidedialog.cpp \
     src/qt/aboutdialog.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
@@ -410,9 +406,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/cookiejar.cpp \
     src/qt/autosaver.cpp \
     src/qt/forumspage.cpp \
-    src/qt/chatpage.cpp \
     src/qt/blockchainpage.cpp \
-    src/qt/supernetpage.cpp \
     src/noui.cpp \
     src/scrypt.cpp \
     src/qt/webview.cpp \
@@ -427,12 +421,9 @@ FORMS += \
     src/qt/forms/sendcoinsdialog.ui \
     src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/forumspage.ui \
-    src/qt/forms/chatpage.ui \
     src/qt/forms/blockchainpage.ui \
-    src/qt/forms/supernetpage.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
-    src/qt/forms/accessnxtinsidedialog.ui \
     src/qt/forms/aboutdialog.ui \
     src/qt/forms/editaddressdialog.ui \
     src/qt/forms/transactiondescdialog.ui \

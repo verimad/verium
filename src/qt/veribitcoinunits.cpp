@@ -11,9 +11,9 @@ veriBitcoinUnits::veriBitcoinUnits(QObject *parent):
 QList<veriBitcoinUnits::Unit> veriBitcoinUnits::availableUnits()
 {
     QList<veriBitcoinUnits::Unit> unitlist;
-    unitlist.append(BTC);
-    unitlist.append(mBTC);
-    unitlist.append(uBTC);
+    unitlist.append(VRC);
+    unitlist.append(mVRC);
+    unitlist.append(uVRC);
     return unitlist;
 }
 
@@ -21,9 +21,9 @@ bool veriBitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case BTC:
-    case mBTC:
-    case uBTC:
+    case VRC:
+    case mVRC:
+    case uVRC:
         return true;
     default:
         return false;
@@ -34,9 +34,9 @@ QString veriBitcoinUnits::name(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("BTC");
-    case mBTC: return QString("mBTC");
-    case uBTC: return QString::fromUtf8("μBTC");
+    case VRC: return QString("VRC");
+    case mVRC: return QString("mVRC");
+    case uVRC: return QString::fromUtf8("μVRC");
     default: return QString("???");
     }
 }
@@ -45,9 +45,9 @@ QString veriBitcoinUnits::description(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("BitCoins");
-    case mBTC: return QString("Milli-BitCoins (1 / 1,000)");
-    case uBTC: return QString("Micro-BitCoins (1 / 1,000,000)");
+    case VRC: return QString("BitCoins");
+    case mVRC: return QString("Milli-BitCoins (1 / 1,000)");
+    case uVRC: return QString("Micro-BitCoins (1 / 1,000,000)");
     default: return QString("???");
     }
 }
@@ -56,9 +56,9 @@ qint64 veriBitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case BTC:  return 100000000;
-    case mBTC: return 100000;
-    case uBTC: return 100;
+    case VRC:  return 100000000;
+    case mVRC: return 100000;
+    case uVRC: return 100;
     default:   return 100000000;
     }
 }
@@ -67,9 +67,9 @@ int veriBitcoinUnits::amountDigits(int unit)
 {
     switch(unit)
     {
-    case BTC: return 8; // 21,000,000 (# digits, without commas)
-    case mBTC: return 11; // 21,000,000,000
-    case uBTC: return 14; // 21,000,000,000,000
+    case VRC: return 8; // 21,000,000 (# digits, without commas)
+    case mVRC: return 11; // 21,000,000,000
+    case uVRC: return 14; // 21,000,000,000,000
     default: return 0;
     }
 }
@@ -78,9 +78,9 @@ int veriBitcoinUnits::maxdecimals(int unit)
 {
     switch(unit)
     {
-    case BTC: return 8;
-    case mBTC: return 5;
-    case uBTC: return 2;
+    case VRC: return 8;
+    case mVRC: return 5;
+    case uVRC: return 2;
     default: return 0;
     }
 }

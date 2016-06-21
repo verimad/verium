@@ -11,7 +11,6 @@
 #include "sendcoinsdialog.h"
 #include "sendbitcoinsdialog.h"
 #include "signverifymessagedialog.h"
-#include "accessnxtinsidedialog.h"
 #include "optionsdialog.h"
 #include "aboutdialog.h"
 #include "postdialog.h"
@@ -36,9 +35,7 @@
 #include "blockchainpage.h"
 #include "supernetpage.h"
 #include "ui_forumspage.h"
-#include "ui_chatpage.h"
 #include "ui_blockchainpage.h"
-#include "ui_supernetpage.h"
 #include "downloader.h"
 #include "updatedialog.h"
 #include "whatsnewdialog.h"
@@ -126,7 +123,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     GUIUtil::setFontPixelSizes();
     qApp->setFont(qFont);
 
-    setWindowTitle(tr("Verium Wallet"));
+    setWindowTitle(tr("Verium"));
     setWindowIcon(QIcon(":icons/bitcoin"));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
 
@@ -192,28 +189,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create Forums Page
     forumsPage = new ForumsPage();
 
-    // Create Chat Page
-    chatPage = new ChatPage();
-
     // Create Blockchain Page
     blockchainPage = new BlockchainPage();
 
-    // Create SuperNET Page
-    if (!fSuperNETInstalled)
-    {
-        superNETPage = new SuperNETPage();
-    }
-    else
-    {
-        // Place holder for SuperNET gateway
-        superNETPage = new SuperNETPage();
-    }
-
     // Create Sign Message Dialog
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
-
-    // Create SuperNET Dialog
-    accessNxtInsideDialog = new AccessNxtInsideDialog(this);
 
     centralWidget = new QStackedWidget(this);
     centralWidget->setFrameShape(QFrame::NoFrame);
@@ -221,14 +201,11 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(encryptWalletPage);
     centralWidget->addWidget(overviewPage);
     centralWidget->addWidget(transactionsPage);
-    //centralWidget->addWidget(addressBookPage);
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(sendBitCoinsPage);
     centralWidget->addWidget(forumsPage);
-    centralWidget->addWidget(chatPage);
     centralWidget->addWidget(blockchainPage);
-    centralWidget->addWidget(superNETPage);
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -345,9 +322,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     connect(addressBookPage, SIGNAL(verifyMessage(QString)), this, SLOT(gotoVerifyMessageTab(QString)));
     // Clicking on "Sign Message" in the receive coins page sends you to the sign message tab
     connect(receiveCoinsPage, SIGNAL(signMessage(QString)), this, SLOT(gotoSignMessageTab(QString)));
-
-    // Clicking on "Access Nxt Inside" in the receive coins page sends you to access Nxt inside tab
-	connect(receiveCoinsPage, SIGNAL(accessNxt(QString)), this, SLOT(gotoAccessNxtInsideTab(QString)));
 }
 
 BitcoinGUI::~BitcoinGUI()
@@ -422,14 +396,6 @@ void BitcoinGUI::createActions()
     sendCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
     tabGroup->addAction(sendCoinsAction);
 
-    /* Removed tab to simplify wallet
-    sendBitCoinsAction = new QAction(QIcon(":/icons/veriBit"), tr("VeriBit"), this);
-    sendBitCoinsAction->setToolTip(tr("Send Bitcoin"));
-    sendBitCoinsAction->setCheckable(true);
-    sendBitCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_2));
-    tabGroup->addAction(sendBitCoinsAction);
-    */
-
     receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("Receive"), this);
     receiveCoinsAction->setToolTip(tr("Receive Addresses"));
     receiveCoinsAction->setCheckable(true);
@@ -448,23 +414,11 @@ void BitcoinGUI::createActions()
     forumsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(forumsAction);
 
-    chatAction = new QAction(QIcon(":/icons/chat"), tr("Chat"), this);
-    chatAction->setToolTip(tr("Join the Verium Chat Room"));
-    chatAction->setCheckable(true);
-    chatAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_8));
-    tabGroup->addAction(chatAction);
-
     blockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
     blockchainAction->setToolTip(tr("Explore the Verium Blockchain"));
     blockchainAction->setCheckable(true);
     blockchainAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
     tabGroup->addAction(blockchainAction);
-
-    superNETAction = new QAction(QIcon(":/icons/supernet_white"), tr("SuperNET"), this);
-    superNETAction->setToolTip(tr("Enter the SuperNET"));
-    superNETAction->setCheckable(true);
-    superNETAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_0));
-    tabGroup->addAction(superNETAction);
 
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
@@ -476,12 +430,8 @@ void BitcoinGUI::createActions()
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(gotoForumsPage()));
-    connect(chatAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(chatAction, SIGNAL(triggered()), this, SLOT(gotoChatPage()));
     connect(blockchainAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(blockchainAction, SIGNAL(triggered()), this, SLOT(gotoBlockchainPage()));
-    connect(superNETAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(superNETAction, SIGNAL(triggered()), this, SLOT(gotoSuperNETPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit Application"));
@@ -549,7 +499,6 @@ void BitcoinGUI::createActions()
     connect(addressBookAction, SIGNAL(triggered()), this, SLOT(gotoAddressBookPage()));
     connect(signMessageAction, SIGNAL(triggered()), this, SLOT(gotoSignMessageTab()));
     connect(verifyMessageAction, SIGNAL(triggered()), this, SLOT(gotoVerifyMessageTab()));
-    //connect(accessNxtInsideAction, SIGNAL(triggered()), this, SLOT(gotoAccessNxtInsideTab()));
     connect(checkForUpdateAction, SIGNAL(triggered()), this, SLOT(menuCheckForUpdate()));
     connect(forumAction, SIGNAL(triggered()), this, SLOT(forumClicked()));
     connect(webAction, SIGNAL(triggered()), this, SLOT(webClicked()));
@@ -580,9 +529,6 @@ void BitcoinGUI::createMenuBar()
     file->addSeparator();
     file->addAction(addressBookAction);
     file->addAction(signMessageAction);
-    //file->addAction(verifyMessageAction);
-    //file->addSeparator();
-    //file->addAction(accessNxtInsideAction);
     file->addSeparator();
     file->addAction(logoutAction);
     file->addAction(quitAction);
@@ -627,9 +573,7 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
     toolbar->addAction(forumsAction);
-    toolbar->addAction(chatAction);
     toolbar->addAction(blockchainAction);
-    toolbar->addAction(superNETAction);
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -693,12 +637,9 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         addressBookPage->setModel(walletModel->getAddressTableModel());
         sendBitCoinsPage->setModel(walletModel);
         forumsPage->setModel(walletModel);
-        chatPage->setModel(walletModel);
         blockchainPage->setModel(walletModel);
-        superNETPage->setModel(walletModel);
 
         signVerifyMessageDialog->setModel(walletModel);
-        //accessNxtInsideDialog->setModel(walletModel);
 
         setEncryptionStatus(walletModel->getEncryptionStatus());
         connect(walletModel, SIGNAL(encryptionStatusChanged(int)), this, SLOT(setEncryptionStatus(int)));
@@ -1154,15 +1095,6 @@ void BitcoinGUI::gotoAddressBookPage()
     AddressBookPage dlg(AddressBookPage::ForEditing, AddressBookPage::AddressBookTab, this);
     dlg.setModel(walletModel->getAddressTableModel());
     dlg.exec();
-
-    /* Removed tab to simplify wallet
-    addressBookAction->setChecked(true);
-    centralWidget->setCurrentWidget(addressBookPage);
-
-    exportAction->setEnabled(true);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-    connect(exportAction, SIGNAL(triggered()), addressBookPage, SLOT(exportClicked()));
-    */
 }
 
 void BitcoinGUI::gotoSendBitCoinsPage()
@@ -1172,14 +1104,6 @@ void BitcoinGUI::gotoSendBitCoinsPage()
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-
-    /* Combined tabs to simplify wallet
-    sendBitCoinsAction->setChecked(true);
-    centralWidget->setCurrentWidget(sendBitCoinsPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-    */
 }
 
 void BitcoinGUI::gotoForumsPage()
@@ -1191,28 +1115,10 @@ void BitcoinGUI::gotoForumsPage()
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
 
-void BitcoinGUI::gotoChatPage()
-{
-    chatAction->setChecked(true);
-    centralWidget->setCurrentWidget(chatPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
 void BitcoinGUI::gotoBlockchainPage()
 {
     blockchainAction->setChecked(true);
     centralWidget->setCurrentWidget(blockchainPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
-void BitcoinGUI::gotoSuperNETPage()
-{
-    superNETAction->setChecked(true);
-    centralWidget->setCurrentWidget(superNETPage);
 
     exportAction->setEnabled(false);
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
@@ -1258,15 +1164,6 @@ void BitcoinGUI::gotoVerifyMessageTab(QString addr)
     if(!addr.isEmpty())
         signVerifyMessageDialog->setAddress_VM(addr);
 
-}
-
-void BitcoinGUI::gotoAccessNxtInsideTab(QString addr)
-{
-    // call show() in showTab_AN()
-    accessNxtInsideDialog->showTab_AN(true);
-
-    if(!addr.isEmpty())
-        accessNxtInsideDialog->setAddress_AN(addr);
 }
 
 void BitcoinGUI::dragEnterEvent(QDragEnterEvent *event)

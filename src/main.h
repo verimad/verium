@@ -1419,12 +1419,6 @@ public:
 };
 
 
-
-
-
-
-
-
 class CTxMemPool
 {
 public:

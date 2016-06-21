@@ -32,7 +32,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Send Verium to Bitcoin (VeriBit)</string>
+        <string>Send Verium to VeriCoin (VeriSwap)</string>
        </property>
       </widget>
      </item>
@@ -569,7 +569,7 @@
         <x>0</x>
         <y>0</y>
         <width>1006</width>
-        <height>516</height>
+        <height>495</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
