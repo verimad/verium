@@ -296,8 +296,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
 
-    syncIconMovie = new QMovie(":/movies/update_spinner", "mng", this);
-
     // Set a timer to check for updates daily
     QTimer *tCheckForUpdate = new QTimer(this);
     connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
@@ -384,7 +382,7 @@ void BitcoinGUI::createActions()
 {
     QActionGroup *tabGroup = new QActionGroup(this);
 
-    overviewAction = new QAction(QIcon(":/icons/overview"), tr("Overview"), this);
+    overviewAction = new QAction(QIcon(":/icons/overview"), tr("Status"), this);
     overviewAction->setToolTip(tr("Wallet Overview"));
     overviewAction->setCheckable(true);
     overviewAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_1));
@@ -408,7 +406,7 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
     tabGroup->addAction(historyAction);
 
-    forumsAction = new QAction(QIcon(":/icons/forums"), tr("Forums"), this);
+    forumsAction = new QAction(QIcon(":/icons/forums"), tr("Community"), this);
     forumsAction->setToolTip(tr("Join the Verium Community\nGet the Latest News"));
     forumsAction->setCheckable(true);
     forumsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));

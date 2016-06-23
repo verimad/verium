@@ -29,7 +29,7 @@
      <item>
       <widget class="QPushButton" name="btnBitcoin">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="text">
         <string>Send Verium to VeriCoin (VeriSwap)</string>
@@ -742,7 +742,7 @@
        </property>
        <property name="icon">
         <iconset resource="../bitcoin.qrc">
-         <normaloff>:/icons/veriBitButton</normaloff>:/icons/veriBitButton</iconset>
+         <normaloff>:/icons/veriSwap</normaloff>:/icons/veriSwap</iconset>
        </property>
        <property name="iconSize">
         <size>

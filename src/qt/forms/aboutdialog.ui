@@ -74,6 +74,12 @@
      </item>
      <item>
       <widget class="QLabel" name="copyrightLabel">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>512</height>
+        </size>
+       </property>
        <property name="cursor">
         <cursorShape>IBeamCursor</cursorShape>
        </property>
@@ -82,9 +88,9 @@
 Copyright © 2011-2012 The PeerCoin developers
 Copyright © 2012-2014 The NovaCoin developers
 Copyright © 2014 The BlackCoin developers
-Copyright © 2014-2015 The Verium developers
+Copyright © 2014-2016 The VeriCoin developers
 
-Artwork by @BrunoPro79 - Copyright © 2015
+Artwork by @BrunoPro79 - Copyright © 2016
 </string>
        </property>
        <property name="textInteractionFlags">

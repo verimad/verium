@@ -60,12 +60,12 @@ int BUTTON_HEIGHT = 27;
 int FRAMEBLOCKS_LABEL_WIDTH = 100;
 int WINDOW_MIN_WIDTH = TOOLBAR_WIDTH + HEADER_WIDTH;
 #ifdef Q_OS_WIN
-int WINDOW_MIN_HEIGHT = 608;
+int WINDOW_MIN_HEIGHT = 508;
 #else
 #ifdef Q_OS_MAC
 int WINDOW_MIN_HEIGHT = 588;
 #else
-int WINDOW_MIN_HEIGHT = 612;
+int WINDOW_MIN_HEIGHT = 512;
 #endif
 #endif
 int STATUSBAR_ICONSIZE = 16;
@@ -133,8 +133,8 @@ void setFontPixelSizes()
 }
 
 // Common Verium stylesheets
-QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; } ");
-QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STR_FONT_COLOR + "; border: 1px; }");
+QString veriCentralWidgetStyleSheet = QString("QStackedWidget { background: white; border: none;} ");
+QString veriTabWidgetStyleSheet = QString("QTabWidget::pane { background: white; color: " + STR_FONT_COLOR + "; border: none; }");
 
 QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STR_COLOR + "; width: %1px; height: %2px; border: none; color: white} \
                             QPushButton:disabled { background: #EBEBEB; color: #666666; } \
