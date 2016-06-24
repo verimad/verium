@@ -119,6 +119,7 @@ private:
     QAction *exportAction;
     QAction *encryptWalletAction;
     QAction *backupWalletAction;
+    QAction *exportPrivKeyAction;
     QAction *changePassphraseAction;
     QAction *lockWalletAction;
     QAction *unlockWalletAction;
@@ -232,6 +233,8 @@ private slots:
     void encryptWallet(bool status=true);
     /** Backup the wallet */
     void backupWallet();
+    /** Export private key */
+    void exportPrivKey();
     /** Change encrypted wallet passphrase */
     void changePassphrase();
     /** Ask for passphrase to lock wallet temporarily */
