@@ -453,8 +453,10 @@ void BitcoinGUI::createActions()
     toggleHideAction = new QAction(QIcon(":/icons/bitcoin"), tr("&Show / Hide"), this);
     backupWalletAction = new QAction(QIcon(":/icons/filesave"), tr("&Backup Wallet"), this);
     backupWalletAction->setToolTip(tr("Backup wallet to another location"));
+    exportPrivKeyAction = new QAction(QIcon(":/icons/key"), tr("&Export Private key"), this);
     exportPrivKeyAction->setToolTip(tr("Export a private key to a file"));
     importPrivKeyAction = new QAction(QIcon(":/icons/key"), tr("&Import Private key"), this);
+    importPrivKeyAction->setToolTip(tr("Import a private key into your wallet"));
     rescanWalletAction = new QAction(QIcon(":/icons/rescan"), tr("Re&scan Wallet"), this);
     rescanWalletAction->setToolTip(tr("Rescan the blockchain for your wallet transactions."));
     reloadBlockchainAction = new QAction(QIcon(":/icons/blockchain-dark"), tr("&Reload Blockchain"), this);
