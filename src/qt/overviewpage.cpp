@@ -152,12 +152,6 @@ OverviewPage::OverviewPage(QWidget *parent) :
     connect(ui->stats->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
     connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
-    CookieJar *valueJar = new CookieJar;
-    ui->value->page()->networkAccessManager()->setCookieJar(valueJar);
-    ui->value->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    connect(ui->value->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
-    connect(ui->value->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
-
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
     ui->listTransactions->setIconSize(QSize(DECORATION_SIZE, DECORATION_SIZE));
@@ -257,7 +251,6 @@ void OverviewPage::setModel(WalletModel *model)
     QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
     QUrl valueUrl(QString(walletUrl).append("wallet/chart.php"));
     ui->stats->load(statsUrl);
-    ui->value->load(valueUrl);
 
     // update the display unit, to not use the default ("VRM")
     updateDisplayUnit();
