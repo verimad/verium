@@ -136,6 +136,7 @@ private:
     QMovie *syncIconMovie;
 
     qint64 currentTotal;
+    bool minerStarted;
 
     /** Create the main UI actions. */
     void createActions();

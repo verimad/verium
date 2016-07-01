@@ -26,6 +26,10 @@ public:
 
     void setModel(WalletModel *model);
     void showOutOfSyncWarning(bool fShow);
+    bool mining;
+    int processors;
+    QString miningColor;
+    QString notminingColor;
 
 public slots:
     void setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 immatureBalance);
@@ -54,6 +58,8 @@ private slots:
     void handleTransactionClicked(const QModelIndex &index);
     void myOpenUrl(QUrl url);
     void sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist);
+    void on_mineButton_clicked();
+    void on_spinBox_valueChanged(int procs);
 };
 
 #endif // OVERVIEWPAGE_H

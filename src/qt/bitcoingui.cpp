@@ -5,6 +5,7 @@
  * The Bitcoin Developers 2011-2012
  */
 #include "init.h"
+#include "miner.h"
 #include "bitcoingui.h"
 #include "transactiontablemodel.h"
 #include "addressbookpage.h"
@@ -1662,5 +1663,3 @@ void BitcoinGUI::checkForUpdate()
         }
     }
 }
-
-

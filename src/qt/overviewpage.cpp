@@ -2,6 +2,8 @@
 #include "ui_overviewpage.h"
 
 #include "util.h"
+#include "miner.h"
+#include "init.h"
 #include "walletmodel.h"
 #include "bitcoinunits.h"
 #include "cookiejar.h"
@@ -108,7 +110,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     currentUnconfirmedBalance(-1),
     currentImmatureBalance(-1),
     txdelegate(new TxViewDelegate()),
-    filter(0)
+    filter(0),
+    mining(GetBoolArg("-gen",false)),
+    processors(boost::thread::hardware_concurrency()),
+    miningColor(QString("QPushButton { background: " + STR_COLOR_TTBG + ";}")),
+    notminingColor(QString("QPushButton { background: white;}"))
 {
     // Setup header and styles
     if (fNoHeaders)
@@ -171,6 +177,26 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
+
+    // set initial state of mining button
+    if (mining)
+    {
+        ui->mineButton->setStyleSheet(miningColor);
+    }
+    else{
+        ui->mineButton->setStyleSheet(notminingColor);
+    }
+
+    // set initial state of processor spin box
+    ui->spinBox->setRange(1,processors);
+    int nThreads = GetArg("-genproclimit", -1);
+    if (nThreads < 0)
+    {
+        ui->spinBox->setValue(processors);
+    }
+    else{
+        ui->spinBox->setValue(nThreads);
+    }
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
@@ -249,7 +275,6 @@ void OverviewPage::setModel(WalletModel *model)
         connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
     }
     QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
-    QUrl valueUrl(QString(walletUrl).append("wallet/chart.php"));
     ui->stats->load(statsUrl);
 
     // update the display unit, to not use the default ("VRM")
@@ -296,4 +321,31 @@ void OverviewPage::myOpenUrl(QUrl url)
 void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & errlist)
 {
     qnr->ignoreSslErrors();
+}
+
+void OverviewPage::on_mineButton_clicked()
+{
+    ui->mineButton->clearFocus();
+    bool onOrOff;
+    if (!mining)
+    {
+        onOrOff = true;
+        GenerateVerium(onOrOff, pwalletMain);
+        mining = true;
+        ui->mineButton->setStyleSheet(miningColor);
+    }
+    else
+    {
+        onOrOff = false;
+        GenerateVerium(onOrOff, pwalletMain);
+        mining = false;
+        ui->mineButton->setStyleSheet(notminingColor);
+    }
+}
+
+void OverviewPage::on_spinBox_valueChanged(int procs)
+{
+    QString qSprocs = QString::number(procs);
+    std::string Sprocs = qSprocs.toStdString();
+    SetArg("-genproclimit", Sprocs);
 }
