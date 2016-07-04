@@ -342,12 +342,9 @@ CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
 
         nLastBlockTx = nBlockTx;
         nLastBlockSize = nBlockSize;
-
+        pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees);
         if (fDebug && GetBoolArg("-printpriority"))
             printf("CreateNewBlock(): total size %"PRIu64"\n", nBlockSize);
-
-            pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees);
-
         if (pFees)
             *pFees = nFees;
 
@@ -495,7 +492,8 @@ void static Miner(CWallet *pwallet)
             unsigned int nTransactionsUpdatedLast = nTransactionsUpdated;
             CBlockIndex* pindexPrev = pindexBest;
 
-            auto_ptr<CBlock> pblock(CreateNewBlock(pwallet));
+            int64_t nFees;
+            auto_ptr<CBlock> pblock(CreateNewBlock(pwallet, &nFees));
             if (!pblock.get())
                 return;
             IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
