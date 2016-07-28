@@ -34,8 +34,8 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 12);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 12);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 13);
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 13);
 
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed vericoin
 
