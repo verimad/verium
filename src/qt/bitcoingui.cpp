@@ -88,7 +88,6 @@
 using namespace GUIUtil;
 
 extern CWallet* pwalletMain;
-extern unsigned int nTargetSpacing;
 double GetPoSKernelPS();
 bool blocksIcon = true;
 bool resizeGUICalled = false;

@@ -32,7 +32,7 @@ Value getsubsidy(const Array& params, bool fHelp)
         nBits = GetNextTargetRequired(pindexBest);
     }
 
-    return (uint64_t)GetProofOfWorkReward(0);
+    return (uint64_t)GetProofOfWorkReward(0,pindexBest->pprev);
 }
 
 // Key used by getwork/getblocktemplate miners.
@@ -107,11 +107,9 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("blocks",        (int)nBestHeight));
     obj.push_back(Pair("currentblocksize",(uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
-
-    diff.push_back(Pair("proof-of-work",        GetDifficulty()));
-    obj.push_back(Pair("difficulty",    diff));
-
-    obj.push_back(Pair("blockvalue",    (uint64_t)GetProofOfWorkReward(0)));
+    obj.push_back(Pair("difficulty",    GetDifficulty()));
+    obj.push_back(Pair("blocktime (sec)",    (int)calculateBlocktime(pindexBest->pprev)));
+    obj.push_back(Pair("blockreward",    (uint64_t)GetProofOfWorkReward(0,pindexBest->pprev)));
     obj.push_back(Pair("netmhashps",     GetPoWMHashPS()));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));

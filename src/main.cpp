@@ -37,7 +37,6 @@ map<uint256, CBlockIndex*> mapBlockIndex;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 12);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 12);
 
-unsigned int nTargetSpacing = 1 * 60; // 1 minute
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed vericoin
 
 int nCoinbaseMaturity = 10;
@@ -927,19 +926,36 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
     return pblockOrphan->hashPrevBlock;
 }
 
-// miner's coin base reward
-int64_t GetProofOfWorkReward(int64_t nFees)
+unsigned int calculateBlocktime(const CBlockIndex* pindex)
 {
-    int64_t nSubsidy;
-    if (fTestNet)
+    unsigned int nBlockTime;
+    double diff = GetDifficulty(pindex);
+    double dBlockTime = -13.03*log(diff)+180;
+    if (dBlockTime < 5)
     {
-        nSubsidy = 100000 * COIN;
+        nBlockTime = 5;
     }
     else
     {
-        nSubsidy = 2500 * COIN;
+        nBlockTime = dBlockTime;
     }
+    return nBlockTime;
+}
 
+int64_t calculateMinerReward(const CBlockIndex* pindex)
+{
+    int64_t nReward;
+    unsigned int nBlockTime = calculateBlocktime(pindex);
+    double dReward = 0.375*exp(0.0116*nBlockTime);
+    nReward = dReward * COIN;
+    return nReward;
+}
+
+// miner's coin base reward
+int64_t GetProofOfWorkReward(int64_t nFees,const CBlockIndex* pindex)
+{
+    int64_t nSubsidy;
+    nSubsidy = calculateMinerReward(pindex);
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfWorkReward() : create=%s nSubsidy=%"PRId64"\n", FormatMoney(nSubsidy).c_str(), nSubsidy);
 
@@ -1015,7 +1031,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev);
     if (pindexPrevPrev->pprev == NULL)
         return bnTargetLimit.GetCompact(); // second block
-
+    unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
     if (nActualSpacing < 0)
         nActualSpacing = nTargetSpacing;
@@ -1505,7 +1521,7 @@ bool CBlock::ConnectBlock(CTxDB& txdb, CBlockIndex* pindex, bool fJustCheck)
         mapQueuedChanges[hashTx] = CTxIndex(posThisTx, tx.vout.size());
     }
 
-    int64_t nReward = GetProofOfWorkReward(nFees);
+    int64_t nReward = GetProofOfWorkReward(nFees, pindex->pprev);
     // Check coinbase reward
     if (vtx[0].GetValueOut() > nReward)
         return DoS(50, error("ConnectBlock() : coinbase reward exceeded (actual=%"PRId64" vs calculated=%"PRId64")",

@@ -104,7 +104,9 @@ bool LoadExternalBlockFile(FILE* fileIn);
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits);
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast);
-int64_t GetProofOfWorkReward(int64_t nFees);
+unsigned int calculateBlocktime(const CBlockIndex *pindex);
+int64_t calculateMinerReward(const CBlockIndex *pindex);
+int64_t GetProofOfWorkReward(int64_t nFees, const CBlockIndex *pindex);
 int GetBlockRatePerHour();
 unsigned int ComputeMinWork(unsigned int nBase, int64_t nTime);
 int GetNumBlocksOfPeers();
