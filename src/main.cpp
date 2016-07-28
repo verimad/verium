@@ -34,8 +34,8 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 13);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 13);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 17);
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 17);
 
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed vericoin
 
@@ -2256,7 +2256,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1399690945;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 4116 : 4116;
+        block.nNonce   = !fTestNet ? 67179 : 67179;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
