@@ -2256,7 +2256,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1399690945;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 3990 : 3990;
+        block.nNonce   = !fTestNet ? 4116 : 4116;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
