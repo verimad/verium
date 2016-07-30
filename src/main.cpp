@@ -34,8 +34,8 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 17);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 17);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 16);
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 
 unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed vericoin
 
@@ -2252,7 +2252,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1399690945;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 67179 : 67179;
+        block.nNonce   = !fTestNet ? 168197 : 168197;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
@@ -2262,7 +2262,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.print();
 	
         // If genesis block hash does not match, then generate new genesis hash.
-        /*if (block.GetHash() != hashGenesisBlock)
+        if (block.GetHash() != hashGenesisBlock)
         {
                 printf("Searching for genesis block...\n");
                 // This will figure out a valid hash and Nonce if you're
@@ -2290,7 +2290,7 @@ bool LoadBlockIndex(bool fAllowNew)
                 printf("block.nTime = %u \n", block.nTime);
                 printf("block.nNonce = %u \n", block.nNonce);
                 printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());
-        }*/
+        }
 
         assert(block.GetHash() == (!fTestNet ? hashGenesisBlock : hashGenesisBlockTestNet));
         assert(block.CheckBlock());
