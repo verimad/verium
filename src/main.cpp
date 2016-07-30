@@ -976,11 +976,7 @@ int GetBlockRatePerHour()
     return nRate;
 }
 
-#ifdef fTestNet
-static const int64_t nTargetTimespan = 3 * 60;  // 3 mins
-#else
-static const int64_t nTargetTimespan = 16 * 60;  // 16 mins
-#endif
+static const int64_t nTargetTimespan = 4 * 60 * 60;  // 4 hours
 
 //
 // maximum nBits value could possible be required nTime after
