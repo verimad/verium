@@ -37,8 +37,6 @@ map<uint256, CBlockIndex*> mapBlockIndex;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 16);
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 
-unsigned int nModifierInterval = 10 * 60; // time to elapse before new modifier is computed vericoin
-
 int nCoinbaseMaturity = 10;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
@@ -2240,7 +2238,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
         const char* pszTimestamp = "9 May 2014 US politicians can accept bitcoin donations";
         CTransaction txNew;
-        txNew.nTime = 1399690945;
+        txNew.nTime = 1470076953;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 0 << CBigNum(999) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -2250,15 +2248,15 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1399690945;
+        block.nTime    = 1470076953;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 168197 : 168197;
+        block.nNonce   = !fTestNet ? 176023 : 176023;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0xde7bd69122e7d381ed4e53cf3436d26fdae982287b49b1f884872ec81153ee29"));
+        assert(block.hashMerkleRoot == uint256("0x7eb35ada4448aa2783f2f8b9f261cda1841a32d99eefd42ec90bfdb3cdb1dfce"));
         block.print();
 	
         // If genesis block hash does not match, then generate new genesis hash.
