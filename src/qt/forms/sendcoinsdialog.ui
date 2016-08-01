@@ -32,7 +32,7 @@
      <item>
       <widget class="QPushButton" name="btnBitcoin">
        <property name="text">
-        <string>Send Verium to Bitcoin (VeriBit)</string>
+        <string>Send Verium to VeriCoin (VeriSwap)</string>
        </property>
       </widget>
      </item>

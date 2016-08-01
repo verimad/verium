@@ -40,14 +40,14 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget *parent) :
             setWindowTitle(tr("Encrypt Wallet"));
             break;
         case Lock: // Ask passphrase
-            ui->warningLabel->setText(tr("Click OK to turn off staking."));
+            ui->warningLabel->setText(tr("Click OK to lock wallet."));
             ui->passLabel1->hide();
             ui->passEdit1->hide();
             ui->passLabel2->hide();
             ui->passEdit2->hide();
             ui->passLabel3->hide();
             ui->passEdit3->hide();
-            setWindowTitle(tr("Staking off"));
+            setWindowTitle(tr("Lock wallet"));
             break;
         case Unlock: // Ask passphrase
             ui->warningLabel->setText(tr("Enter your wallet password."));

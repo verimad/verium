@@ -77,7 +77,8 @@
         <file alias="veriSend">res/icons/veriSend.png</file>
         <file alias="veriSwap">res/icons/veriSwap.png</file>
         <file alias="overview">res/icons/overview.png</file>
-        <file alias="mine">res/icons/verium.png</file>
+        <file alias="miningoff">res/icons/miningoff.png</file>
+        <file alias="miningon">res/icons/miningon.png</file>
     </qresource>
     <qresource prefix="/images">
         <file alias="askPassphraseBackground">res/images/askpassphrasepage-background.png</file>

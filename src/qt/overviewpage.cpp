@@ -112,9 +112,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     txdelegate(new TxViewDelegate()),
     filter(0),
     mining(GetBoolArg("-gen",false)),
-    processors(boost::thread::hardware_concurrency()),
-    miningColor(QString("QPushButton { background: " + STR_COLOR_TTBG + ";}")),
-    notminingColor(QString("QPushButton { background: white;}"))
+    processors(boost::thread::hardware_concurrency())
 {
     // Setup header and styles
     if (fNoHeaders)
@@ -142,6 +140,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     ui->labelSpendableText->setFont(qFont);
     ui->labelSpendable->setFont(qFont);
+    ui->labelImmatureText->setFont(qFont);
+    ui->labelImmature->setFont(qFont);
     ui->labelUnconfirmedText->setFont(qFont);
     ui->labelUnconfirmed->setFont(qFont);
     ui->labelTotalText->setFont(qFont);
@@ -149,14 +149,9 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // Add icons to the Balance section
     ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
+    ui->labelImmatureText->setText("<html><img src=':icons/miningoff' width=16 height=16 border=0 align='bottom'> Immature:</html>");
     ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
     ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");
-
-    CookieJar *statsJar = new CookieJar;
-    ui->stats->page()->networkAccessManager()->setCookieJar(statsJar);
-    ui->stats->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
-    connect(ui->stats->page(), SIGNAL(linkClicked(QUrl)), this, SLOT(myOpenUrl(QUrl)));
-    connect(ui->stats->page()->networkAccessManager(), SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError> & )), this, SLOT(sslErrorHandler(QNetworkReply*, const QList<QSslError> & )));
 
     // Recent transactionsBalances
     ui->listTransactions->setItemDelegate(txdelegate);
@@ -181,10 +176,10 @@ OverviewPage::OverviewPage(QWidget *parent) :
     // set initial state of mining button
     if (mining)
     {
-        ui->mineButton->setStyleSheet(miningColor);
+        ui->mineButton->setIcon(QIcon(":/icons/miningon"));
     }
     else{
-        ui->mineButton->setStyleSheet(notminingColor);
+        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
     }
 
     // set initial state of processor spin box
@@ -233,8 +228,6 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
     ui->labelUnconfirmed->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, unconfirmedBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
     ui->labelImmature->setText(bcu->formatWithUnit(unit, immatureBalance, false, hideAmounts));
     ui->labelImmature->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, immatureBalance, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
-    ui->labelImmature->setVisible(true);
-    ui->labelImmatureText->setVisible(true);
     ui->labelTotal->setText(bcu->formatWithUnit(unit, total, false, hideAmounts));
     ui->labelTotal->setToolTip(tr("%1%2").arg(bcu->formatWithUnitWithMaxDecimals(unit, total, bcu->maxdecimals(unit), true, false)).arg(maxDecimalsTooltipText));
 
@@ -332,14 +325,14 @@ void OverviewPage::on_mineButton_clicked()
         onOrOff = true;
         GenerateVerium(onOrOff, pwalletMain);
         mining = true;
-        ui->mineButton->setStyleSheet(miningColor);
+        ui->mineButton->setIcon(QIcon(":/icons/miningon"));
     }
     else
     {
         onOrOff = false;
         GenerateVerium(onOrOff, pwalletMain);
         mining = false;
-        ui->mineButton->setStyleSheet(notminingColor);
+        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
     }
 }
 

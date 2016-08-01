@@ -56,6 +56,6 @@ void ForumsPage::setModel(WalletModel *model)
 {
     this->walletModel = model;
 
-    QUrl url(QString(walletUrl).append("wallet/forums.php"));
+    QUrl url(QString(walletUrl).append("wallet/forums2.php"));
     ui->webView->myOpenUrl(url);
 }

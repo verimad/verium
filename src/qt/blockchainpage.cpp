@@ -56,6 +56,6 @@ void BlockchainPage::setModel(WalletModel *model)
 {
     this->walletModel = model;
 
-    QUrl url(QString(walletUrl).append("wallet/blockchain.php"));
+    QUrl url(QString(walletUrl).append("wallet/blockchainVRM.php"));
     ui->webView->myOpenUrl(url);
 }

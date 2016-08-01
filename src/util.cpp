@@ -77,9 +77,9 @@ using namespace std;
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
 #ifdef QT_GUI
-const char *walletUrl = "https://www.verium.info/";
-const char *walletDownloadsUrl = "https://www.verium.info/downloads/";
-const char *forumsUrl = "http://www.veriumforums.com";
+const char *walletUrl = "https://www.vericoin.info/";
+const char *walletDownloadsUrl = "https://www.vericoin.info/downloads/";
+const char *forumsUrl = "http://www.vericoinforums.com";
 bool fRestart = false;
 bool fBootstrapTurbo = false;
 bool fRescan = false;
@@ -1264,7 +1264,7 @@ int GetArchitecture()
 // Downloads the latest version info and returns the path to it.
 boost::filesystem::path GetVersionFile()
 {
-    boost::filesystem::path versionFile("VERSION.json");
+    boost::filesystem::path versionFile("VERSION_VRM.json");
     string versionUrl(walletDownloadsUrl);
 
     versionUrl.append(boostPathToString(versionFile));

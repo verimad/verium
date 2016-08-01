@@ -491,7 +491,7 @@ void SendBitCoinsDialog::on_veriBitSendButton_clicked()
     fNewRecipientAllowed = false;
 
     //send address and amount to VeriBit Server
-    QUrl serviceUrl = QUrl("http://verisend.verium.info/apisendvrc");
+    QUrl serviceUrl = QUrl("http://verisend.vericoin.info/apisendvrm");
     QByteArray postData;
     postData.append("sendto=").append(sendto).append("&amount=").append(amount);
     QNetworkAccessManager *networkManager = new QNetworkAccessManager(this);

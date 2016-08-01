@@ -155,7 +155,7 @@ void RestartWallet(const char *parm, bool fOldParms)
     if (fNewVersion && !fBootstrapTurbo && !fRescan && !fEncrypt) // fNewVersion could be true while trying to do other restarts
     {
         // Remove old bootstraps
-        boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap.zip");
+        boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap_VRM.zip");
         boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.dat");
         if (boost::filesystem::exists(pathBootstrapTurbo))
         {

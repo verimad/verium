@@ -115,6 +115,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
         GUIUtil::refactorGUI(screenSize);
     }
     setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
+    setMaximumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT);
     resizeGUI();
     setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, size(), screenSize));
 
@@ -436,7 +437,7 @@ void BitcoinGUI::createActions()
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     logoutAction = new QAction(QIcon(":/icons/logout"), tr("&Logout"), this);
-    logoutAction->setToolTip(tr("Logout and Stop Staking"));
+    logoutAction->setToolTip(tr("Logout and Lock wallet"));
     logoutAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_L));
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About Verium"), this);
     aboutAction->setToolTip(tr("Show information about Verium"));
@@ -463,12 +464,12 @@ void BitcoinGUI::createActions()
     reloadBlockchainAction->setToolTip(tr("Reload the blockchain from bootstrap."));
     changePassphraseAction = new QAction(QIcon(":/icons/key"), tr("&Change Password"), this);
     changePassphraseAction->setToolTip(tr("Change the passphrase used for wallet encryption"));
-    lockWalletAction = new QAction(QIcon(":/icons/lock"), tr("&Lock wallet"), this);
+    lockWalletAction = new QAction(QIcon(":/icons/veriSend"), tr("&Lock wallet"), this);
     lockWalletAction->setToolTip(tr("Lock wallet"));
-    unlockWalletAction = new QAction(QIcon(":/icons/lock"), tr("&Unlock wallet"), this);
+    unlockWalletAction = new QAction(QIcon(":/icons/veriSend"), tr("&Unlock wallet"), this);
     unlockWalletAction->setToolTip(tr("Unlock wallet"));
     encryptWalletAction = new QAction(QIcon(":/icons/lock_open"), tr("En&crypt Wallet"), this);
-    encryptWalletAction->setToolTip(tr("Encrypt the wallet for staking"));
+    encryptWalletAction->setToolTip(tr("Encrypt the wallet"));
     addressBookAction = new QAction(QIcon(":/icons/address-book-menu"), tr("&Address Book"), this);
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign and Verify &Message"), this);
     verifyMessageAction = new QAction(QIcon(":/icons/verify"), tr("&Verify Message"), this);
@@ -476,7 +477,7 @@ void BitcoinGUI::createActions()
     checkForUpdateAction->setToolTip(tr("Check for a new version of the wallet and update."));
     forumAction = new QAction(QIcon(":/icons/bitcoin"), tr("Verium &Forums"), this);
     forumAction->setToolTip(tr("Go to the Verium forums."));
-    webAction = new QAction(QIcon(":/icons/site"), tr("www.verium.info"), this);
+    webAction = new QAction(QIcon(":/icons/site"), tr("www.veriumreserve.com"), this);
     webAction->setToolTip(tr("Go to Verium website."));
 
     exportAction = new QAction(QIcon(":/icons/export"), tr("&Export Data"), this);
@@ -1517,8 +1518,8 @@ void BitcoinGUI::reloadBlockchainActionEnabled(bool enabled)
 
 void BitcoinGUI::reloadBlockchain(bool autoReload)
 {
-    boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap.zip");
-    QUrl url(QString(walletDownloadsUrl).append("bootstrap.zip"));
+    boost::filesystem::path pathBootstrap(GetDataDir() / "bootstrap_VRM.zip");
+    QUrl url(QString(walletDownloadsUrl).append("bootstrap_VRM.zip"));
 
     // Don't auto-bootstrap if the file has already been downloaded, unless the wallet is being encrypted.
     if (boost::filesystem::exists(pathBootstrap) && autoReload && !fEncrypt)
