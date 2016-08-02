@@ -1027,8 +1027,6 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
         return bnTargetLimit.GetCompact(); // second block
     unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-    if (nActualSpacing < 0)
-        nActualSpacing = nTargetSpacing;
 
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
@@ -1038,9 +1036,10 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * nTargetSpacing);
 
-    if (bnNew <= 0 || bnNew > bnTargetLimit)
+    if (bnNew > bnTargetLimit)
+    {
         bnNew = bnTargetLimit;
-
+    }
     return bnNew.GetCompact();
 }
 
