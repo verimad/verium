@@ -28,4 +28,8 @@ void GenerateVerium(bool fGenerate, CWallet* pwallet);
 
 void static Miner(CWallet *pwallet);
 
+void updateHashrate(double nHashrate);
+
+double getHashrate();
+
 #endif // VERIUM_MINER_H

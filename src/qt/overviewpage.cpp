@@ -13,6 +13,7 @@
 #include "guiutil.h"
 #include "guiconstants.h"
 #include "bitcoingui.h"
+#include "bitcoinrpc.h"
 #include "webview.h"
 
 #include <QAbstractItemDelegate>
@@ -147,6 +148,20 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->labelTotalText->setFont(qFont);
     ui->labelTotal->setFont(qFont);
 
+    //statistics section
+    ui->difficultyText->setFont(qFont);
+    ui->difficulty->setFont(qFont);
+    ui->blocktimeText->setFont(qFont);
+    ui->blocktime->setFont(qFont);
+    ui->blockrewardText->setFont(qFont);
+    ui->blockreward->setFont(qFont);
+    ui->nethashrateText->setFont(qFont);
+    ui->nethashrate->setFont(qFont);
+    ui->hashrateText->setFont(qFont);
+    ui->hashrate->setFont(qFont);
+    ui->blocknumberText->setFont(qFont);
+    ui->blocknumber->setFont(qFont);
+
     // Add icons to the Balance section
     ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
     ui->labelImmatureText->setText("<html><img src=':icons/miningoff' width=16 height=16 border=0 align='bottom'> Immature:</html>");
@@ -234,9 +249,14 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
     delete bcu;
 }
 
-void OverviewPage::setNumTransactions(int count)
+void OverviewPage::setStatistics()
 {
-    //ui->labelNumTransactions->setText(QLocale::system().toString(count));
+    ui->difficulty->setText(QString::number(GetDifficulty()));
+    ui->blocktime->setText(QString::number((double)calculateBlocktime(pindexBest)/60));
+    ui->blocknumber->setText(QString::number(pindexBest->nHeight));
+    ui->nethashrate->setText(QString::number(GetPoWMHashPS()));
+    ui->hashrate->setText(QString::number(getHashrate()));
+    ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest)/COIN));
 }
 
 void OverviewPage::setModel(WalletModel *model)
@@ -257,18 +277,13 @@ void OverviewPage::setModel(WalletModel *model)
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
         // Keep up to date with wallet
+        setStatistics();
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64)));
-
-        setNumTransactions(model->getNumTransactions());
-        connect(model, SIGNAL(numTransactionsChanged(int)), this, SLOT(setNumTransactions(int)));
-
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(decimalPointsChanged(int)), this, SLOT(updateDecimalPoints()));
         connect(model->getOptionsModel(), SIGNAL(hideAmountsChanged(bool)), this, SLOT(updateHideAmounts()));
     }
-    QUrl statsUrl(QString(walletUrl).append("wallet/stats.php"));
-    ui->stats->load(statsUrl);
 
     // update the display unit, to not use the default ("VRM")
     updateDisplayUnit();

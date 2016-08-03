@@ -156,6 +156,7 @@ extern bool fNewVersion;
 extern bool fMenuCheckForUpdate;
 extern bool fTimerCheckForUpdate;
 extern bool fSuperNETInstalled;
+extern double hashrate;
 #endif
 extern bool fFirstRun;
 extern bool fDebug;

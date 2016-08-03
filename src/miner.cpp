@@ -6,6 +6,7 @@
 
 #include "txdb.h"
 #include "miner.h"
+#include "util.h"
 
 using namespace std;
 
@@ -565,6 +566,7 @@ void static Miner(CWallet *pwallet)
                             nHPSTimerStart = GetTimeMillis();
                             nHashCounter = 0;
                             static int64_t nLogTime;
+                            updateHashrate(dHashesPerSec);
                             if (GetTime() - nLogTime > 30 * 60)
                             {
                                 nLogTime = GetTime();
@@ -625,4 +627,14 @@ void GenerateVerium(bool fGenerate, CWallet* pwallet)
     minerThreads = new boost::thread_group();
     for (int i = 0; i < nThreads; i++)
         minerThreads->create_thread(boost::bind(&Miner, pwallet));
+}
+
+void updateHashrate(double nHashrate)
+{
+    hashrate = nHashrate;
+}
+
+double getHashrate()
+{
+    return hashrate;
 }
