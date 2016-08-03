@@ -581,8 +581,6 @@ void static Miner(CWallet *pwallet)
                 boost::this_thread::interruption_point();
                 if (fShutdown)
                     return;
-                if (!fGenerate)
-                    return;
                 if (vNodes.empty())
                     break;
                 if (pblock->nNonce >= 0xffff0000)
