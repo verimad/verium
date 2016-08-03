@@ -48,8 +48,8 @@ static const int fHaveUPnP = false;
 static const uint256 hashGenesisBlock("0x000099b4a769251ddb4ed6b982938ef8bcfc9dc5ee226f7b7c99ea0b00042024");
 static const uint256 hashGenesisBlockTestNet("0x000099b4a769251ddb4ed6b982938ef8bcfc9dc5ee226f7b7c99ea0b00042024");
 
-inline int64_t PastDrift(int64_t nTime)   { return nTime - 60 * 60; } // up to 60 minutes from the past
-inline int64_t FutureDrift(int64_t nTime) { return nTime + 60 * 60; } // up to 60 minutes from the future
+inline int64_t PastDrift(int64_t nTime)   { return nTime - 10 * 60; } // up to 60 minutes from the past
+inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 60 minutes from the future
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
@@ -1181,12 +1181,6 @@ public:
      */
     static bool IsSuperMajority(int minVersion, const CBlockIndex* pstart,
                                 unsigned int nRequired, unsigned int nToCheck);
-
-
-    bool IsProofOfWork() const
-    {
-        return !(nFlags);
-    }
 
     std::string ToString() const
     {

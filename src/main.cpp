@@ -31,11 +31,10 @@ CCriticalSection cs_main;
 CTxMemPool mempool;
 unsigned int nTransactionsUpdated = 0;
 
-
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 16);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 10);
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 10);
 
 int nCoinbaseMaturity = 10;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -974,7 +973,7 @@ int GetBlockRatePerHour()
     return nRate;
 }
 
-static const int64_t nTargetTimespan = 4 * 60 * 60;  // 4 hours
+static const int64_t nTargetTimespan = 16 * 60;  // 4 hours
 
 //
 // maximum nBits value could possible be required nTime after
@@ -1930,7 +1929,7 @@ bool CBlock::AcceptBlock()
 
     // Check proof-of-work
     if (nBits != GetNextTargetRequired(pindexPrev))
-        return DoS(100, error("AcceptBlock() : incorrect %s proof-of-work"));
+        return DoS(100, error("AcceptBlock() : incorrect proof-of-work"));
 
     // Check timestamp against prev
     if (GetBlockTime() <= pindexPrev->GetMedianTimePast() || FutureDrift(GetBlockTime()) < pindexPrev->GetBlockTime())
@@ -2025,7 +2024,7 @@ bool ProcessBlock(CNode* pfrom, CBlock* pblock)
         {
             if (pfrom)
                 pfrom->Misbehaving(100);
-            return error("ProcessBlock() : block with too little %s proof-of-work");
+            return error("ProcessBlock() : block with too little proof-of-work");
         }
     }
 
