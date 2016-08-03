@@ -514,9 +514,6 @@ void static Miner(CWallet *pwallet)
             FormatHashBuffers(pblock.get(), pmidstate, pdata, phash1);
 
             unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
-            unsigned int& nBlockBits = *(unsigned int*)(pdata + 64 + 8);
-            //unsigned int& nBlockNonce = *(unsigned int*)(pdata + 64 + 12);
-
 
             //
             // Search
