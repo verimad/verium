@@ -1034,7 +1034,7 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     int64_t nInterval = nTargetTimespan / nTargetSpacing;
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * nTargetSpacing);
-
+    cout << bnNew << endl;
     if (bnNew > bnTargetLimit)
     {
         bnNew = bnTargetLimit;

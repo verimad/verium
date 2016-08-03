@@ -579,6 +579,10 @@ void static Miner(CWallet *pwallet)
 
                 // Check for stop or if block needs to be rebuilt
                 boost::this_thread::interruption_point();
+                if (fShutdown)
+                    return;
+                if (!fGenerate)
+                    return;
                 if (vNodes.empty())
                     break;
                 if (pblock->nNonce >= 0xffff0000)
@@ -589,14 +593,8 @@ void static Miner(CWallet *pwallet)
                     break;
 
                 // Update nTime every few seconds
-                pblock->nTime = max(pindexPrev->GetMedianTimePast()+1, GetAdjustedTime());
+                pblock->UpdateTime(pindexPrev);
                 nBlockTime = ByteReverse(pblock->nTime);
-                if (fTestNet)
-                {
-                    // Changing pblock->nTime can change work required on testnet:
-                    nBlockBits = ByteReverse(pblock->nBits);
-                    hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
-                }
             }
         }
     }
