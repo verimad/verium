@@ -88,7 +88,6 @@ bool fNewVersion = false;
 bool fMenuCheckForUpdate = false;
 bool fTimerCheckForUpdate = false;
 bool fSuperNETInstalled = false;
-double hashrate = 0;
 #endif
 bool fFirstRun = true;
 bool fDebug = false;

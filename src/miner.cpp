@@ -16,6 +16,7 @@ using namespace std;
 //
 
 extern unsigned int nMinerSleep;
+double hashrate = 0;
 
 int static FormatHashBlocks(void* pbuffer, unsigned int len)
 {
@@ -632,9 +633,4 @@ void GenerateVerium(bool fGenerate, CWallet* pwallet)
 void updateHashrate(double nHashrate)
 {
     hashrate = nHashrate;
-}
-
-double getHashrate()
-{
-    return hashrate;
 }

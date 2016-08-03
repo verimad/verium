@@ -30,6 +30,6 @@ void static Miner(CWallet *pwallet);
 
 void updateHashrate(double nHashrate);
 
-double getHashrate();
+extern double hashrate;
 
 #endif // VERIUM_MINER_H
