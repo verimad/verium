@@ -1014,16 +1014,18 @@ const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex)
 unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
 {
     CBigNum bnTargetLimit = bnProofOfWorkLimit;
-
-    if (pindexLast == NULL)
+    printf("test2\n");
+    if (pindexLast->nHeight == 0)
         return bnTargetLimit.GetCompact(); // genesis block
-
+    printf("test3\n");
     const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast);
-    if (pindexPrev->pprev == NULL)
+    if (pindexPrev->pprev->nHeight == 1)
         return bnTargetLimit.GetCompact(); // first block
+    printf("test4\n");
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev);
-    if (pindexPrevPrev->pprev == NULL)
+    if (pindexPrevPrev->pprev->nHeight == 2)
         return bnTargetLimit.GetCompact(); // second block
+    printf("test4.5\n");
     unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
 
@@ -1034,11 +1036,13 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     int64_t nInterval = nTargetTimespan / nTargetSpacing;
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * nTargetSpacing);
-    cout << bnNew << endl;
     if (bnNew > bnTargetLimit)
     {
         bnNew = bnTargetLimit;
     }
+    printf("difficulty: nTargetSpacing=%d nActualSpacing=%d height=%d nBits=%s bnNew=%s\n",
+      nTargetSpacing, nActualSpacing, pindexPrev->nHeight,CBigNum(pindexPrev->nBits).ToString().c_str(),
+      CBigNum(bnNew).ToString().c_str());
     return bnNew.GetCompact();
 }
 

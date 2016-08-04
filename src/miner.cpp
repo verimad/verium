@@ -145,7 +145,6 @@ CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
     // until there are no more or the block reaches this size:
     unsigned int nBlockMinSize = GetArg("-blockminsize", 0);
     nBlockMinSize = std::min(nBlockMaxSize, nBlockMinSize);
-
     // Fee-per-kilobyte amount considered the same as "free"
     // Be careful setting this: if you set it to zero then
     // a transaction spammer can cheaply fill blocks using
@@ -154,9 +153,9 @@ CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
     int64_t nMinTxFee = MIN_TX_FEE;
     if (mapArgs.count("-mintxfee"))
         ParseMoney(mapArgs["-mintxfee"], nMinTxFee);
-
+    printf("test1 ");
     pblock->nBits = GetNextTargetRequired(pindexPrev);
-
+    printf("test5\n");
     // Collect memory pool transactions into the block
     int64_t nFees = 0;
     {
