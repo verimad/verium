@@ -34,7 +34,6 @@ static const unsigned int MAX_INV_SZ = 50000;
 static const int64_t MIN_TX_FEE = 100000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
-static const double PI = 3.1415926535;
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
@@ -48,8 +47,8 @@ static const int fHaveUPnP = false;
 static const uint256 hashGenesisBlock("0x000c9add19adbd81127a0e09ce14641e34cc336bde0bcac7f764c96675a237f4");
 static const uint256 hashGenesisBlockTestNet("0x000c9add19adbd81127a0e09ce14641e34cc336bde0bcac7f764c96675a237f4");
 
-inline int64_t PastDrift(int64_t nTime)   { return nTime - 10 * 60; } // up to 60 minutes from the past
-inline int64_t FutureDrift(int64_t nTime) { return nTime + 10 * 60; } // up to 60 minutes from the future
+inline int64_t PastDrift(int64_t nTime)   { return nTime - 30 * 60; } // up to 30 minutes from the past
+inline int64_t FutureDrift(int64_t nTime) { return nTime + 30 * 60; } // up to 30 minutes from the future
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
@@ -1064,8 +1063,6 @@ public:
     int64_t nMint;
     int64_t nMoneySupply;
 
-    unsigned int nFlags;  // ppcoin: block index flags
-
     // block header
     int nVersion;
     uint256 hashMerkleRoot;
@@ -1084,7 +1081,6 @@ public:
         nChainTrust = 0;
         nMint = 0;
         nMoneySupply = 0;
-        nFlags = 0;
         nVersion       = 0;
         hashMerkleRoot = 0;
         nTime          = 0;
@@ -1103,7 +1099,6 @@ public:
         nChainTrust = 0;
         nMint = 0;
         nMoneySupply = 0;
-        nFlags = 0;
 
         nVersion       = block.nVersion;
         hashMerkleRoot = block.hashMerkleRoot;
@@ -1184,7 +1179,7 @@ public:
 
     std::string ToString() const
     {
-        return strprintf("CBlockIndex(nprev=%p, pnext=%p, nFile=%u, nBlockPos=%-6d nHeight=%d, nMint=%s, nMoneySupply=%s, nFlags=(%s)(%d)(%s), merkle=%s, hashBlock=%s)",
+        return strprintf("CBlockIndex(nprev=%p, pnext=%p, nFile=%u, nBlockPos=%-6d nHeight=%d, nMint=%s, nMoneySupply=%s, merkle=%s, hashBlock=%s)",
             pprev, pnext, nFile, nBlockPos, nHeight,
             FormatMoney(nMint).c_str(), FormatMoney(nMoneySupply).c_str(),
             hashMerkleRoot.ToString().c_str(),
@@ -1233,7 +1228,6 @@ public:
         READWRITE(nHeight);
         READWRITE(nMint);
         READWRITE(nMoneySupply);
-        READWRITE(nFlags);
 
         // block header
         READWRITE(this->nVersion);

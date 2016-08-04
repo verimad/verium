@@ -33,8 +33,8 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 10);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 10);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 13);
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 13);
 
 int nCoinbaseMaturity = 10;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -973,7 +973,7 @@ int GetBlockRatePerHour()
     return nRate;
 }
 
-static const int64_t nTargetTimespan = 16 * 60;  // 4 hours
+static const int64_t nTargetTimespan = 2 * 60 * 60;  // 2 hours
 
 //
 // maximum nBits value could possible be required nTime after
@@ -1015,19 +1015,16 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
 {
     CBigNum bnTargetLimit = bnProofOfWorkLimit;
     printf("test2\n");
-    if (pindexLast->nHeight == 0)
+    if (pindexLast->nHeight <= 2)
         return bnTargetLimit.GetCompact(); // genesis block
     printf("test3\n");
     const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast);
-    if (pindexPrev->pprev->nHeight == 1)
-        return bnTargetLimit.GetCompact(); // first block
-    printf("test4\n");
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev);
-    if (pindexPrevPrev->pprev->nHeight == 2)
-        return bnTargetLimit.GetCompact(); // second block
-    printf("test4.5\n");
+    printf("test4\n");
     unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
+    printf("test4.5\n");
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
+     printf("test4.6\n");
 
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
