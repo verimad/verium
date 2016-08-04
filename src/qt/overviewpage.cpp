@@ -256,7 +256,7 @@ void OverviewPage::setStatistics()
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
     ui->nethashrate->setText(QString::number(GetPoWMHashPS()));
     ui->hashrate->setText(QString::number(hashrate));
-    ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest)/COIN));
+    ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
 }
 
 void OverviewPage::setModel(WalletModel *model)

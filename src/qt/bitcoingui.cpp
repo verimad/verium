@@ -297,6 +297,10 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     statusBar()->addWidget(progressBar);
     statusBar()->addPermanentWidget(frameBlocks);
 
+    QTimer *timerNumBlocks = new QTimer(this);
+    connect(timerNumBlocks, SIGNAL(timeout()), this, SLOT(setNumBlocks(int,int)));
+    timerNumBlocks->start(30 * 1000);
+
     // Set a timer to check for updates daily
     QTimer *tCheckForUpdate = new QTimer(this);
     connect(tCheckForUpdate, SIGNAL(timeout()), this, SLOT(timerCheckForUpdate()));
@@ -851,6 +855,9 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         progressBar->setVisible(true);
 
     }
+
+    // update miner statistics on status page
+    overviewPage->setStatistics();
 
     // Show Alert message always.
     if (GetBoolArg("-vAlert") && GetArg("-vAlertMsg","").c_str() != "")

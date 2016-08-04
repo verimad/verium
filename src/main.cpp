@@ -1032,9 +1032,6 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     {
         bnNew = bnTargetLimit;
     }
-    printf("difficulty: nTargetSpacing=%d nActualSpacing=%d height=%d nBits=%s bnNew=%s\n",
-        nTargetSpacing, nActualSpacing, pindexPrev->nHeight,CBigNum(pindexPrev->nBits).ToString().c_str(),
-        CBigNum(bnNew).ToString().c_str());
     return bnNew.GetCompact();
 }
 
