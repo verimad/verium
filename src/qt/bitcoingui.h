@@ -251,6 +251,7 @@ private slots:
     void menuCheckForUpdate();
     /** Check for wallet update from timer */
     void timerCheckForUpdate();
+    void timerCheckForBlocks();
 
     /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
     void showNormalIfMinimized(bool fToggleHidden = false);
