@@ -153,9 +153,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
     int64_t nMinTxFee = MIN_TX_FEE;
     if (mapArgs.count("-mintxfee"))
         ParseMoney(mapArgs["-mintxfee"], nMinTxFee);
-    printf("test1 ");
     pblock->nBits = GetNextTargetRequired(pindexPrev);
-    printf("test5\n");
     // Collect memory pool transactions into the block
     int64_t nFees = 0;
     {
