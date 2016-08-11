@@ -409,6 +409,7 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/blockchainpage.cpp \
     src/noui.cpp \
     src/scrypt.cpp \
+    src/scrypt-sse2.cpp \
     src/qt/webview.cpp \
     src/qt/postdialog.cpp \
     src/qt/whatsnewdialog.cpp \
