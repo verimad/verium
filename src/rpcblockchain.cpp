@@ -8,21 +8,21 @@
 
 using namespace json_spirit;
 using namespace std;
+double dminDifficulty = 0.00000763; //standard scrypt-hard difficulty minimum
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, json_spirit::Object& entry);
 
 double GetDifficulty(const CBlockIndex* blockindex)
 {
     // Floating point number that is a multiple of the minimum difficulty,
-    // minimum difficulty = 1.0.
     if (blockindex == NULL)
     {
         if (pindexBest == NULL)
-            return 1.0;
+            return dminDifficulty;
         else if (pindexBest->pprev == NULL)
-            return 1.0;
+            return dminDifficulty;
         else if (pindexBest->pprev->pprev == NULL)
-            return 1.0;
+            return dminDifficulty;
         else
             blockindex = pindexBest->pprev;
     }

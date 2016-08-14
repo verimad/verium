@@ -33,7 +33,7 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);  // standard scrypt-hard minimum difficulty (0.00000763)
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 15);
 
 int nCoinbaseMaturity = 250;
