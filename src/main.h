@@ -876,7 +876,7 @@ public:
     uint256 GetHash() const
     {
         uint256 thash;
-        scrypt_N_1_1_256(CVOIDBEGIN(nVersion), BEGIN(thash));
+        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
         return thash;
     }
 
