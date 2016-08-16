@@ -5,7 +5,7 @@
 
 static const int SCRYPT_SCRATCHPAD_SIZE = 131072 + 63;
 
-void scrypt_N_1_1_256(const char *input, char *output, unsigned char NHardness=14);
+void scrypt_N_1_1_256(const char *input, char *output, unsigned char NHardness=13);
 void scrypt_N_1_1_256_sp_generic(const char *input, char *output, char *scratchpad, unsigned char Nfactor);
 
 #if defined(USE_SSE2)
