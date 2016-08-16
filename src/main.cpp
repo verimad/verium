@@ -33,10 +33,10 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 13);
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 13);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 15);  // standard scrypt-hard minimum difficulty (0.00000763)
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 15);
 
-int nCoinbaseMaturity = 10;
+int nCoinbaseMaturity = 250;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 
@@ -797,7 +797,7 @@ int CMerkleTx::GetBlocksToMaturity() const
 {
     if (!IsCoinBase())
         return 0;
-    return max(0, (nCoinbaseMaturity + 10) - GetDepthInMainChain());
+    return max(0, nCoinbaseMaturity - GetDepthInMainChain());
 }
 
 bool CWalletTx::AcceptWalletTransaction(CTxDB& txdb, bool fCheckInputs)
@@ -2227,7 +2227,7 @@ bool LoadBlockIndex(bool fAllowNew)
         // vMerkleTree: 60424046d3
 
 
-        const char* pszTimestamp = "9 May 2014 US politicians can accept bitcoin donations";
+        const char* pszTimestamp = "9 May 2014 US politicians can accept bitcoin donations";  //vericoin merkle for test-only mainnet
         CTransaction txNew;
         txNew.nTime = 1470076953;
         txNew.vin.resize(1);
@@ -2241,7 +2241,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1470076953;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 177279 : 177279;
+        block.nNonce   = !fTestNet ? 211447 : 211447;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());

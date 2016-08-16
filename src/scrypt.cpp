@@ -244,7 +244,7 @@ static inline void xor_salsa8(uint32_t B[16], const uint32_t Bx[16])
 	B[15] += x15;
 }
 
-void scrypt_N_1_1_256_sp_generic(const char *input, char *output, char *scratchpad, unsigned char Nfactor)
+void scrypt_N_1_1_256_sp_generic(const void *input, char *output, char *scratchpad, unsigned char Nfactor)
 {
 	uint8_t B[128];
 	uint32_t X[32];
@@ -289,7 +289,7 @@ void scrypt_detect_sse2(unsigned int cpuid_edx)
 }
 #else
 /* Detect SSE2 */
-void (*scrypt_N_1_1_256_sp)(const char *input, char *output, char *scratchpad, unsigned char Nfactor);
+void (*scrypt_N_1_1_256_sp)(const void *input, char *output, char *scratchpad, unsigned char Nfactor);
 
 void scrypt_detect_sse2(unsigned int cpuid_edx)
 {
@@ -307,7 +307,7 @@ void scrypt_detect_sse2(unsigned int cpuid_edx)
 #endif
 #endif
 
-void scrypt_N_1_1_256(const char *input, char *output)
+void scrypt_N_1_1_256(const void *input, char *output)
 {
     char scratchpad[((1 << (NHardness + 1)) * 128 ) + 63];
 #if defined(USE_SSE2)

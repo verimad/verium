@@ -40,6 +40,18 @@ unsigned int nDerivationMethodIndex;
 unsigned int nMinerSleep;
 bool fUseFastIndex;
 
+#if defined(USE_SSE2)
+#if !defined(MAC_OSX) && (defined(_M_IX86) || defined(__i386__) || defined(__i386))
+#ifdef _MSC_VER
+// MSVC 64bit is unable to use inline asm
+#include <intrin.h>
+#else
+// GCC Linux or i686-w64-mingw32
+#include <cpuid.h>
+#endif
+#endif
+#endif
+
 //////////////////////////////////////////////////////////////////////////////
 //
 // Shutdown
@@ -486,6 +498,23 @@ bool AppInit2()
     sigaction(SIGHUP, &sa_hup, NULL);
 #endif
 
+#if defined(USE_SSE2)
+    unsigned int cpuid_edx=0;
+#if !defined(MAC_OSX) && (defined(_M_IX86) || defined(__i386__) || defined(__i386))
+    // 32bit x86 Linux or Windows, detect cpuid features
+#if defined(_MSC_VER)
+    // MSVC
+    int x86cpuid[4];
+    __cpuid(x86cpuid, 1);
+    cpuid_edx = (unsigned int)buffer[3];
+#else
+    // Linux or i686-w64-mingw32 (gcc-4.6.3)
+    unsigned int eax, ebx, ecx;
+    __get_cpuid(1, &eax, &ebx, &ecx, &cpuid_edx);
+#endif
+#endif
+#endif
+
     // ********************************************************* Step 2: parameter interactions
 
     nNodeLifespan = GetArg("-addrlifespan", 7);
@@ -647,6 +676,10 @@ bool AppInit2()
         fprintf(stdout, "Verium server starting\n");
 
     int64_t nStart;
+
+#if defined(USE_SSE2)
+    scrypt_detect_sse2(cpuid_edx);
+#endif
 
     // ********************************************************* Step 5: verify database integrity
 
