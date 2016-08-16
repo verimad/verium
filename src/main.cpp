@@ -2261,7 +2261,7 @@ bool LoadBlockIndex(bool fAllowNew)
 		
                 while (true)
                 {
-                    scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash), NHardness);
+                    scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash));
     
                     if (thash <= hashTarget)
                         break;

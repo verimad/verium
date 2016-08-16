@@ -38,7 +38,6 @@
 
 static const int64_t COIN = 100000000;
 static const int64_t CENT = 1000000;
-const unsigned char NHardness = 14;
 
 #define BEGIN(a)            ((char*)&(a))
 #define END(a)              ((char*)&((&(a))[1]))
