@@ -47,7 +47,6 @@ const unsigned char NHardness = 14;
 #define ARRAYLEN(array)     (sizeof(array)/sizeof((array)[0]))
 
 #define UVOIDBEGIN(a)        ((void*)&(a))
-#define CVOIDBEGIN(a)        ((const void*)&(a))
 #define UINTBEGIN(a)        ((uint32_t*)&(a))
 #define CUINTBEGIN(a)        ((const uint32_t*)&(a))
 

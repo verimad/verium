@@ -524,7 +524,7 @@ void Miner(CWallet *pwallet)
                 while (true)
                 {
                     // scrypt-hard
-                    scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash));
+                    scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash), GetNfactor(pblock->nTime));
 
                     if (thash <= hashTarget)
                     {

@@ -65,6 +65,7 @@ const string strMessageMagic = "Verium Signed Message:\n";
 int64_t nTransactionFee = MIN_TX_FEE;
 int64_t nReserveBalance = 0;
 int64_t nMinimumInputValue = 0;
+int64_t nChainStartTime = 1471353540;
 
 //////////////////////////////////////////////////////////////////////////////
 //
@@ -921,6 +922,37 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan)
     while (mapOrphanBlocks.count(pblockOrphan->hashPrevBlock))
         pblockOrphan = mapOrphanBlocks[pblockOrphan->hashPrevBlock];
     return pblockOrphan->hashPrevBlock;
+}
+
+// yacoin: increasing Nfactor gradually
+const unsigned char minNfactor = 10;
+const unsigned char maxNfactor = 30;
+
+unsigned char GetNfactor(int64_t nTimestamp) {
+    int l = 0;
+
+    if (nTimestamp <= nChainStartTime)
+        return minNfactor;
+
+    int64_t s = nTimestamp - nChainStartTime;
+    while ((s >> 1) > 3) {
+      l += 1;
+      s >>= 1;
+    }
+
+    s &= 3;
+
+    int n = (l * 158 + s * 28 - 2670) / 100;
+
+    if (n < 0) n = 0;
+
+    if (n > 255)
+        printf( "GetNfactor(%lld) - something wrong(n == %d)\n", nTimestamp, n );
+
+    unsigned char N = (unsigned char) n;
+    //printf("GetNfactor: %d -> %d %d : %d / %d\n", nTimestamp - nChainStartTime, l, s, n, min(max(N, minNfactor), maxNfactor));
+
+    return min(max(N, minNfactor), maxNfactor);
 }
 
 unsigned int calculateBlocktime(const CBlockIndex* pindex)
@@ -2261,7 +2293,7 @@ bool LoadBlockIndex(bool fAllowNew)
 		
                 while (true)
                 {
-                    scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash));
+                    scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash), GetNfactor(block.nTime));
     
                     if (thash <= hashTarget)
                         break;
