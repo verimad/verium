@@ -464,7 +464,7 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 ////////////////////////// Verium Miner /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
-void static Miner(CWallet *pwallet)
+void Miner(CWallet *pwallet)
 {
     printf("Miner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);

@@ -44,11 +44,11 @@ static const int fHaveUPnP = true;
 static const int fHaveUPnP = false;
 #endif
 
-static const uint256 hashGenesisBlock("0x000081a156bfd7801c5ac2353e107f0293f7d3173bae66fea7cc4fd6e3136b56");
-static const uint256 hashGenesisBlockTestNet("0x000081a156bfd7801c5ac2353e107f0293f7d3173bae66fea7cc4fd6e3136b56");
+static const uint256 hashGenesisBlock("0x000080470f1abfaebb0857d7ce89fb0c3861699cedb0f179aa08a045a438dfa2");
+static const uint256 hashGenesisBlockTestNet("0x000080470f1abfaebb0857d7ce89fb0c3861699cedb0f179aa08a045a438dfa2");
 
-inline int64_t PastDrift(int64_t nTime)   { return nTime - 60 * 60; } // up to 60 minutes from the past
-inline int64_t FutureDrift(int64_t nTime) { return nTime + 60 * 60; } // up to 60 minutes from the future
+inline int64_t PastDrift(int64_t nTime)   { return nTime - 2 * 60 * 60; } // up to 2 hours from the past
+inline int64_t FutureDrift(int64_t nTime) { return nTime + 2 * 60 * 60; } // up to 2 hours from the future
 
 extern CScript COINBASE_FLAGS;
 extern CCriticalSection cs_main;
@@ -876,7 +876,7 @@ public:
     uint256 GetHash() const
     {
         uint256 thash;
-        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        scrypt_N_1_1_256(CVOIDBEGIN(nVersion), BEGIN(thash));
         return thash;
     }
 

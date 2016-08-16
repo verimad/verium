@@ -2,6 +2,7 @@ TEMPLATE = app
 TARGET = verium-qt
 VERSION = 1.0
 USE_QRCODE = 1
+USE_SSE2 = 1
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
 CONFIG += no_include_pwd
@@ -120,6 +121,15 @@ contains(USE_QRCODE, 1) {
     message(Building with QRCode support)
     DEFINES += USE_QRCODE
     LIBS += -lqrencode
+}
+
+contains(USE_SSE2, 1) {
+DEFINES += USE_SSE2
+gccsse2.input  = SOURCES_SSE2
+gccsse2.output = $$PWD/build/${QMAKE_FILE_BASE}.o
+gccsse2.commands = $(CXX) -c $(CXXFLAGS) $(INCPATH) -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME} -msse2 -mstackrealign
+QMAKE_EXTRA_COMPILERS += gccsse2
+SOURCES_SSE2 += src/scrypt-sse2.cpp
 }
 
 # use: qmake "USE_UPNP=1" ( enabled by default; default)
