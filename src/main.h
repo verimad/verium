@@ -116,7 +116,6 @@ uint256 WantedByOrphan(const CBlock* pblockOrphan);
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex);
 void ResendWalletTransactions();
 bool GetWalletFile(CWallet* pwallet, std::string &strWalletFileOut);
-unsigned char GetNfactor(int64_t nTimestamp);
 
 /** Position on disk for a particular transaction. */
 class CDiskTxPos
@@ -877,7 +876,7 @@ public:
     uint256 GetHash() const
     {
         uint256 thash;
-        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash), GetNfactor(nTime));
+        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash), NHardness);
         return thash;
     }
 
