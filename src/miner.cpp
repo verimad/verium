@@ -473,8 +473,8 @@ void Miner(CWallet *pwallet)
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
-    double dHashesPerSec;
-    int64_t nHPSTimerStart;
+    double dHashesPerSec = 0;
+    int64_t nHPSTimerStart = 0;
 
     try
     {
@@ -592,6 +592,7 @@ void Miner(CWallet *pwallet)
     }
     catch (boost::thread_interrupted)
     {
+        hashrate = 0;
         printf("Miner terminated\n");
         throw;
     }

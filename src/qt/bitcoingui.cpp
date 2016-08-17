@@ -761,7 +761,7 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 unconfirmed, qint64 imma
         balanceLabel->setFixedWidth(labelWidth + 20);
         if (total > currentTotal)
         {
-            balanceLabel->setStyleSheet("QLabel { color: #84B4DD; }");
+            balanceLabel->setStyleSheet("QLabel { color: white; }");
         }
         else if (total < currentTotal)
         {

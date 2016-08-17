@@ -141,11 +141,11 @@ QString veriPushButtonStyleSheet = QString("QPushButton { background: " + STR_CO
                             QPushButton:hover { background: " + STR_COLOR_LT + "; } \
                             QPushButton:pressed { background: " + STR_COLOR_LT + "; } ").arg(BUTTON_WIDTH).arg(BUTTON_HEIGHT);
 
-QString veriToolBarStyleSheet = QString("QToolBar { background: " + STR_COLOR + "; color: white; border: none; } \
-                            QToolButton { background: " + STR_COLOR + "; color: white; border: none; font-family: Lato; font-style: normal; font-weight: normal; font-size: 12px; } \
-                            QToolButton:hover { background: " + STR_COLOR_HOVER + "; color: white; border: none; } \
-                            QToolButton:pressed { background: " + STR_COLOR_LT + "; color: white; border: none; } \
-                            QToolButton:checked { background: " + STR_COLOR_LT + "; color: white; border: none; } ");
+QString veriToolBarStyleSheet = QString("QToolBar { background: " + STR_COLOR + "; color: white; border: 0px; } \
+                            QToolButton { background: " + STR_COLOR + "; color: white; border: 0px; font-family: Lato; font-style: normal; font-weight: normal; font-size: 12px; } \
+                            QToolButton:hover { background: " + STR_COLOR_HOVER + "; color: white; border: 0px; } \
+                            QToolButton:pressed { background: " + STR_COLOR_LT + "; color: white; border: 0px; } \
+                            QToolButton:checked { background: " + STR_COLOR_LT + "; color: white; border: 0px; } ");
 
 QString veriToolTipStyleSheet = QString("QToolTip { background-color: " + STR_COLOR_TTBG + "; color: white; border: 1px solid #EBEBEB; border-radius: 3px; margin: 0; padding: 4px; white-space: nowrap; } ");
 
