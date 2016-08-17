@@ -124,13 +124,12 @@ contains(USE_QRCODE, 1) {
 }
 
 contains(USE_SSE2, 1) {
-DEFINES += USE_SSE2
+DEFINES += USE_SSE2}
 gccsse2.input  = SOURCES_SSE2
 gccsse2.output = $$PWD/build/${QMAKE_FILE_BASE}.o
 gccsse2.commands = $(CXX) -c $(CXXFLAGS) $(INCPATH) -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME} -msse2 -mstackrealign
 QMAKE_EXTRA_COMPILERS += gccsse2
 SOURCES_SSE2 += src/scrypt-sse2.cpp
-}
 
 # use: qmake "USE_UPNP=1" ( enabled by default; default)
 #  or: qmake "USE_UPNP=0" (disabled by default)
