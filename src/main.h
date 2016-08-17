@@ -876,7 +876,13 @@ public:
     uint256 GetHash() const
     {
         uint256 thash;
-        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        if (nBestHeight > 1)
+        {
+            unsigned char NHardness = 14;
+            scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash), NHardness);
+        }
+        else
+            scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
         return thash;
     }
 
