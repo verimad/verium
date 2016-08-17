@@ -92,7 +92,7 @@ static inline void xor_salsa8_sse2(__m128i B[4], const __m128i Bx[4])
 	B[3] = _mm_add_epi32(B[3], X3);
 }
 
-void scrypt_N_1_1_256_sp_sse2(const char *input, char *output, char *scratchpad, unsigned char Nfactor)
+void scrypt_N_1_1_256_sp_sse2(const void *input, char *output, char *scratchpad, unsigned char Nfactor)
 {
 	uint8_t B[128];
 	union {
