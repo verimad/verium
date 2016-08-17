@@ -12,13 +12,13 @@
 #define ProgramName "Verium"
 
 ; Enter the Version Number of your binaries
-#define VersionNumber "1.6.4"
+#define VersionNumber "1.0.0"
 
 ; Enter the Name of the Folder created in \Appdata\Roaming where your binaries will place the user files, including wallet, conf file, blockchain info etc.
 #define RoamingName "Verium"
 
 ; Enter the Name of the main QT-File
-#define QTexe "vericoin-qt.exe"
+#define QTexe "verium-qt.exe"
 
 ; Subfolder with additional files such as an extra folder for daemon
 ; Do not include \ symbol it will be added later
@@ -26,7 +26,7 @@
 #define SubDir ""
 
 ; Enter the Name of the config file you wish to include                 
-#define configfile "vericoin.conf"
+#define configfile "verium.conf"
 
 ; Enter the Name of the bootstrap file you wish to include                 
 #define bootstrapfile "bootstrap.dat"
