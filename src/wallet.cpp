@@ -107,7 +107,7 @@ bool CWallet::AddCScript(const CScript& redeemScript)
 
 // optional setting to unlock wallet for staking only
 #ifdef QT_GUI
-bool fWalletUnlockStakingOnly = false;
+bool fWalletUnlockStakingOnly = true;
 #else
 bool fWalletUnlockStakingOnly = false;
 #endif
@@ -1536,7 +1536,7 @@ string CWallet::SendMoney(CScript scriptPubKey, int64_t nValue, CWalletTx& wtxNe
     }
     if (fWalletUnlockStakingOnly)
     {
-        string strError = _("Error: Wallet unlocked for block minting only, unable to create transaction.");
+        string strError = _("Error: Wallet locked, unable to create transaction.");
         printf("SendMoney() : %s", strError.c_str());
         return strError;
     }

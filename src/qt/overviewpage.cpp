@@ -163,7 +163,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->blocknumber->setFont(qFont);
 
     // Add icons to the Balance section
-    ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Spendable:</html>");
+    ui->labelSpendableText->setText("<html><img src=':icons/spendable' width=16 height=16 border=0 align='bottom'> Sendable:</html>");
     ui->labelImmatureText->setText("<html><img src=':icons/miningoff' width=16 height=16 border=0 align='bottom'> Immature:</html>");
     ui->labelUnconfirmedText->setText("<html><img src=':icons/unconfirmed' width=16 height=16 border=0 align='bottom'> Unconfirmed:</html>");
     ui->labelTotalText->setText("<html><img src=':icons/total' width=16 height=16 border=0 align='bottom'> Total:</html>");

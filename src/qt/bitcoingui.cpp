@@ -32,9 +32,7 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "forumspage.h"
-#include "chatpage.h"
 #include "blockchainpage.h"
-#include "supernetpage.h"
 #include "ui_forumspage.h"
 #include "ui_blockchainpage.h"
 #include "downloader.h"
@@ -124,7 +122,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     GUIUtil::setFontPixelSizes();
     qApp->setFont(qFont);
 
-    setWindowTitle(tr("Verium"));
+    setWindowTitle(tr("Verium Vault"));
     setWindowIcon(QIcon(":icons/bitcoin"));
     qApp->setWindowIcon(QIcon(":icons/bitcoin"));
 
@@ -446,8 +444,8 @@ void BitcoinGUI::createActions()
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About Verium"), this);
     aboutAction->setToolTip(tr("Show information about Verium"));
     aboutAction->setMenuRole(QAction::AboutRole);
-    aboutPostAction = new QAction(QIcon(":/icons/PoSTicon"), tr("&About PoST"), this);
-    aboutPostAction->setToolTip(tr("Show information about PoST protocol"));
+    aboutPostAction = new QAction(QIcon(":/icons/PoSTicon"), tr("&About PoWT"), this);
+    aboutPostAction->setToolTip(tr("Show information about PoWT protocol"));
     aboutPostAction->setMenuRole(QAction::AboutRole);
     aboutQtAction = new QAction(QIcon(":icons/about-qt"), tr("About &Qt"), this);
     aboutQtAction->setToolTip(tr("Show information about Qt"));
@@ -596,7 +594,7 @@ void BitcoinGUI::setClientModel(ClientModel *clientModel)
         // Replace some strings and icons, when using the testnet
         if(clientModel->isTestNet())
         {
-            setWindowTitle(windowTitle() + QString(" ") + tr("[PoST testnet]"));
+            setWindowTitle(windowTitle() + QString(" ") + tr("[testnet]"));
 #ifndef Q_OS_MAC
             qApp->setWindowIcon(QIcon(":icons/bitcoin_testnet"));
             setWindowIcon(QIcon(":icons/bitcoin_testnet"));
@@ -757,13 +755,13 @@ void BitcoinGUI::setBalanceLabel(qint64 balance, qint64 unconfirmed, qint64 imma
         QString unconfirmedStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), unconfirmed, false, walletModel->getOptionsModel()->getHideAmounts());
         QString immatureStr = BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(), immature, false, walletModel->getOptionsModel()->getHideAmounts());
         balanceLabel->setText(BitcoinUnits::formatWithUnitWithMaxDecimals(walletModel->getOptionsModel()->getDisplayUnit(), total, walletModel->getOptionsModel()->getDecimalPoints(), false, walletModel->getOptionsModel()->getHideAmounts()));
-        labelBalanceIcon->setToolTip(tr("Spendable: %1\nUnconfirmed: %2\nImmature: %3").arg(balanceStr).arg(unconfirmedStr).arg(immatureStr));
+        labelBalanceIcon->setToolTip(tr("Sendable: %1\nUnconfirmed: %2\nImmature: %3").arg(balanceStr).arg(unconfirmedStr).arg(immatureStr));
         QFontMetrics fm(balanceLabel->font());
         int labelWidth = fm.width(balanceLabel->text());
         balanceLabel->setFixedWidth(labelWidth + 20);
         if (total > currentTotal)
         {
-            balanceLabel->setStyleSheet("QLabel { color: #009966; }");
+            balanceLabel->setStyleSheet("QLabel { color: #84B4DD; }");
         }
         else if (total < currentTotal)
         {
@@ -1246,8 +1244,8 @@ void BitcoinGUI::setEncryptionStatus(int status)
     case WalletModel::Unlocked:
         changePassphraseAction->setEnabled(true);
         logoutAction->setEnabled(true);
-        lockWalletAction->setEnabled(true);
-        lockWalletAction->setVisible(true);
+        lockWalletAction->setEnabled(false);
+        lockWalletAction->setVisible(false);
         unlockWalletAction->setVisible(false);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         encryptWalletAction->setVisible(false);
@@ -1256,8 +1254,8 @@ void BitcoinGUI::setEncryptionStatus(int status)
         changePassphraseAction->setEnabled(true);
         logoutAction->setEnabled(true);
         lockWalletAction->setVisible(false);
-        unlockWalletAction->setEnabled(true);
-        unlockWalletAction->setVisible(true);
+        unlockWalletAction->setEnabled(false);
+        unlockWalletAction->setVisible(false);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
         encryptWalletAction->setVisible(false);
         break;

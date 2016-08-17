@@ -208,7 +208,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string>Spendable:</string>
+             <string>Sendable:</string>
             </property>
            </widget>
           </item>

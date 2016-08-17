@@ -220,7 +220,7 @@ private slots:
     void webClicked();
     /** Show about dialog */
     void aboutClicked();
-    /** Show about PoST dialog */
+    /** Show about PoWT dialog */
     void aboutPostClicked();
 #ifndef Q_OS_MAC
     /** Handle tray icon clicked */
