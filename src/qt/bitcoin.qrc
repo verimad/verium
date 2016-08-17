@@ -54,7 +54,6 @@
         <file alias="qrcode">res/icons/qrcode.png</file>
         <file alias="debugwindow">res/icons/debugwindow.png</file>
         <file alias="staking_off">res/icons/staking_off.png</file>
-        <file alias="staking_on">res/icons/staking_on.png</file>
         <file alias="notsynced">res/icons/notsynced.png</file>
         <file alias="forums">res/icons/forums.png</file>
         <file alias="chat">res/icons/chat.png</file>
