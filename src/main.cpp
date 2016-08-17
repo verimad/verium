@@ -2216,7 +2216,7 @@ bool LoadBlockIndex(bool fAllowNew)
         //  Coinbase CTransaction(hash=7eb35ada44, nTime=1470076953, ver=1, vin.size=1, vout.size=1, nLockTime=0)
         //    CTxIn(COutPoint(0000000000, 4294967295), coinbase 0002e7033639204d6179203230313420555320706f6c6974696369616e732063616e2061636365707420626974636f696e20646f6e6174696f6e73)
         //    CTxOut(empty)
-        //  vMerkleTree: 7eb35ada44         //CBlock(hash=9f5a84b1c2d09f4eeac718b4950afc7a943e7a47639694796e105398d0d8bfc9, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=7eb35ada4448aa2783f2f8b9f261cda1841a32d99eefd42ec90bfdb3cdb1dfce, nTime=1470076953, nBits=1f01ffff, nNonce=211447, vtx=1, vchBlockSig=)
+        //  vMerkleTree: 7eb35ada44
 
 
         // TestNet:
