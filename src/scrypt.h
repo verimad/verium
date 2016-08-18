@@ -3,15 +3,16 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-static const int SCRYPT_SCRATCHPAD_SIZE = 131072 + 63;
+static const int SCRYPT_SCRATCHPAD_SIZE = 2097663; //63 + (128 * r * p) + (256 * r + 64) + (128 * r * Nsize) r=1 p=1
+static const int Nsize = 16384;
 
-void scrypt_N_1_1_256(const void *input, char *output, unsigned char NHardness=12);
-void scrypt_N_1_1_256_sp_generic(const void *input, char *output, char *scratchpad, unsigned char Nfactor);
+void scrypt_N_1_1_256(const void *input, char *output);
+void scrypt_N_1_1_256_sp_generic(const void *input, char *output, void *scratchpad);
 
 #if defined(USE_SSE2)
 extern void scrypt_detect_sse2(unsigned int cpuid_edx);
-void scrypt_N_1_1_256_sp_sse2(const void *input, char *output, char *scratchpad, unsigned char Nfactor);
-extern void (*scrypt_N_1_1_256_sp)(const void *input, char *output, char *scratchpad, unsigned char Nfactor);
+void scrypt_N_1_1_256_sp_sse2(const void *input, char *output, void *scratchpad);
+extern void (*scrypt_N_1_1_256_sp)(const void *input, char *output, void *scratchpad);
 #endif
 
 void

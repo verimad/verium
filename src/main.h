@@ -44,8 +44,8 @@ static const int fHaveUPnP = true;
 static const int fHaveUPnP = false;
 #endif
 
-static const uint256 hashGenesisBlock("0x0001c9d68ef3e58377bb75a1c4ee39ca0f82d31de30f86fb523336bac1b1ee1c");
-static const uint256 hashGenesisBlockTestNet("0x0001066f9981f7eb834dad41b4b01355fc631b5514f9208afd9f81c309a2dadb");
+static const uint256 hashGenesisBlock("0x0005064bf3e13c7b8c5f63d3bb557cc27b9d2a71e23c5b3dc86867a5fc8eea5f");
+static const uint256 hashGenesisBlockTestNet("0x0005064bf3e13c7b8c5f63d3bb557cc27b9d2a71e23c5b3dc86867a5fc8eea5f");
 
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 2 * 60 * 60; } // up to 2 hours from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 2 * 60 * 60; } // up to 2 hours from the future
@@ -876,13 +876,7 @@ public:
     uint256 GetHash() const
     {
         uint256 thash;
-        if (nBestHeight > 1)
-        {
-            unsigned char NHardness = 14;
-            scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash), NHardness);
-        }
-        else
-            scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
         return thash;
     }
 
