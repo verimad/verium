@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-static const int SCRYPT_SCRATCHPAD_SIZE = 16777727; //63 + (128 * r * p) + (256 * r + 64) + (128 * r * Nsize) r=1 p=1
-static const int Nsize = 131072;
+static const int SCRYPT_SCRATCHPAD_SIZE = 268435967; //63 + (128 * r * p) + (256 * r + 64) + (128 * r * Nsize) r=1 p=1
+static const int Nsize = 2097152;
 
 void scrypt_N_1_1_256(const void *input, char *output);
 void scrypt_N_1_1_256_sp_generic(const void *input, char *output, void *scratchpad);
