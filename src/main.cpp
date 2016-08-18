@@ -33,7 +33,7 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 12);  // standard scrypt-hard minimum difficulty (0.00000763)
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 12);  // standard scrypt-hard minimum difficulty (0.00000095)
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 12);
 
 int nCoinbaseMaturity = 250;
@@ -2241,7 +2241,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1470076953;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 226677 : 211447;
+        block.nNonce   = !fTestNet ? 227074 : 211447;
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());

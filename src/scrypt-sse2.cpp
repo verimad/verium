@@ -35,6 +35,8 @@
 
 #include <emmintrin.h>
 
+static const int NSize = 32768;
+
 static inline void xor_salsa8_sse2(__m128i B[4], const __m128i Bx[4])
 {
 	__m128i X0, X1, X2, X3;
@@ -112,7 +114,7 @@ void scrypt_N_1_1_256_sp_sse2(const void *input, char *output, void *scratchpad)
 		}
 	}
 
-        N = Nsize;
+        N = NSize;
         
 	for (i = 0; i < N; i++) {
 		for (k = 0; k < 8; k++)
