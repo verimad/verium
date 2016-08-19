@@ -44,8 +44,8 @@ static const int fHaveUPnP = true;
 static const int fHaveUPnP = false;
 #endif
 
-static const uint256 hashGenesisBlock("0x00ae58984addbd28fbd37f48acc309744f089d6789aba6b6a69ea043bcbd4e02");
-static const uint256 hashGenesisBlockTestNet("0x00ae58984addbd28fbd37f48acc309744f089d6789aba6b6a69ea043bcbd4e02");
+static const uint256 hashGenesisBlock("0x9f837c16450cd2e8921ba206dc4bbf339394527d408f14251a3d7feda25a4d4e");
+static const uint256 hashGenesisBlockTestNet("0x9f837c16450cd2e8921ba206dc4bbf339394527d408f14251a3d7feda25a4d4e");
 
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 2 * 60 * 60; } // up to 2 hours from the past
 inline int64_t FutureDrift(int64_t nTime) { return nTime + 2 * 60 * 60; } // up to 2 hours from the future
@@ -875,6 +875,11 @@ public:
 
     uint256 GetHash() const
     {
+        return Hash(BEGIN(nVersion), END(nNonce));
+    }
+
+    uint256 GetWorkHash() const
+    {
         uint256 thash;
         scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
         return thash;
@@ -993,7 +998,7 @@ public:
         }
 
         // Check the header
-        if (fReadTransactions && !CheckProofOfWork(GetHash(), nBits))
+        if (fReadTransactions && !CheckProofOfWork(GetWorkHash(), nBits))
             return error("CBlock::ReadFromDisk() : errors in block header");
 
         return true;

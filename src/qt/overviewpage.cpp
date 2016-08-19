@@ -254,7 +254,7 @@ void OverviewPage::setStatistics()
     ui->difficulty->setText(QString::number(GetDifficulty()));
     ui->blocktime->setText(QString::number((double)calculateBlocktime(pindexBest)/60));
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->nethashrate->setText(QString::number(GetPoWMHashPS()));
+    ui->nethashrate->setText(QString::number(GetPoWKHashPS()));
     ui->hashrate->setText(QString::number(hashrate));
     ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
 }

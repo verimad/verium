@@ -900,7 +900,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Network hashrate (MHPS):</string>
+          <string>Network hashrate (KHPS):</string>
          </property>
         </widget>
        </item>
