@@ -552,12 +552,12 @@ void Miner(CWallet *pwallet)
                 }
                 else
                     nHashCounter += nHashesDone;
-                if (GetTimeMillis() - nHPSTimerStart > 60000)
+                if (GetTimeMillis() - nHPSTimerStart > 30000)
                 {
                     static CCriticalSection cs;
                     {
                         LOCK(cs);
-                        if (GetTimeMillis() - nHPSTimerStart > 60000)
+                        if (GetTimeMillis() - nHPSTimerStart > 30000)
                         {
                             dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
                             nHPSTimerStart = GetTimeMillis();
