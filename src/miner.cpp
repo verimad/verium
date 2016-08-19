@@ -484,7 +484,7 @@ void Miner(CWallet *pwallet)
         {
             while (vNodes.empty() || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
-                MilliSleep(2000);
+                MilliSleep(60000);
             }
 
             //
