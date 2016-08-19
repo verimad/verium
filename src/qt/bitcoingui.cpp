@@ -297,7 +297,7 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     QTimer *timerNumBlocks = new QTimer(this);
     connect(timerNumBlocks, SIGNAL(timeout()), this, SLOT(timerCheckForBlocks()));
-    timerNumBlocks->start(30 * 1000);
+    timerNumBlocks->start(60 * 1000);
 
     // Set a timer to check for updates daily
     QTimer *tCheckForUpdate = new QTimer(this);

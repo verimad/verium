@@ -464,6 +464,8 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 ////////////////////////// Verium Miner /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 
+static bool fGenerateVerium = false;
+
 void Miner(CWallet *pwallet)
 {
     printf("Miner started\n");
@@ -473,12 +475,12 @@ void Miner(CWallet *pwallet)
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
-    double dHashesPerSec = 0;
+    double dHashesPerMin = 0;
     int64_t nHPSTimerStart = 0;
 
     try
     {
-        while (true)
+        while (fGenerateVerium)
         {
             while (vNodes.empty() || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
@@ -517,11 +519,11 @@ void Miner(CWallet *pwallet)
             //
             int64_t nStart = GetTime();
             uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
-            while (true)
+            while (fGenerateVerium)
             {
                 unsigned int nHashesDone = 0;
                 uint256 thash;
-                while (true)
+                while (fGenerateVerium)
                 {
                     // scrypt-hard
                     scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash));
@@ -557,15 +559,15 @@ void Miner(CWallet *pwallet)
                         LOCK(cs);
                         if (GetTimeMillis() - nHPSTimerStart > 60000)
                         {
-                            dHashesPerSec = 1000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
+                            dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
                             nHPSTimerStart = GetTimeMillis();
                             nHashCounter = 0;
                             static int64_t nLogTime;
-                            updateHashrate(dHashesPerSec);
+                            updateHashrate(dHashesPerMin);
                             if (GetTime() - nLogTime > 30 * 60)
                             {
                                 nLogTime = GetTime();
-                                printf("hashmeter %6.0f hash/s\n", dHashesPerSec);
+                                printf("hashmeter %6.0f hash/min\n", dHashesPerMin);
                             }
                         }
                     }
@@ -573,6 +575,8 @@ void Miner(CWallet *pwallet)
 
                 // Check for stop or if block needs to be rebuilt
                 boost::this_thread::interruption_point();
+                if (!fGenerateVerium)
+                    break;
                 if (fShutdown)
                     return;
                 if (vNodes.empty())
@@ -600,6 +604,7 @@ void Miner(CWallet *pwallet)
 
 void GenerateVerium(bool fGenerate, CWallet* pwallet)
 {
+    fGenerateVerium = fGenerate;
     static boost::thread_group* minerThreads = NULL;
 
     int nThreads = GetArg("-genproclimit", -1);

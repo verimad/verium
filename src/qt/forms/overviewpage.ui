@@ -634,7 +634,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Hashrate (HPS):</string>
+          <string>Hashrate (HPM):</string>
          </property>
         </widget>
        </item>
