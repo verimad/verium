@@ -26,7 +26,7 @@ void SHA256Transform(void* pstate, void* pinput, const void* pinit);
 
 void GenerateVerium(bool fGenerate, CWallet* pwallet);
 
-void Miner(CWallet *pwallet, bool fGenerate);
+void Miner(CWallet *pwallet);
 
 void updateHashrate(double nHashrate);
 
