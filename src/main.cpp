@@ -36,7 +36,7 @@ map<uint256, CBlockIndex*> mapBlockIndex;
 CBigNum bnProofOfWorkLimit(~uint256(0) >> 8);  // standard scrypt-hard minimum difficulty (0.00000006)
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
 
-int nCoinbaseMaturity = 250;
+int nCoinbaseMaturity = 100;
 CBlockIndex* pindexGenesisBlock = NULL;
 int nBestHeight = -1;
 

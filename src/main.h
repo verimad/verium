@@ -996,11 +996,6 @@ public:
         catch (std::exception &e) {
             return error("%s() : deserialize or I/O error", __PRETTY_FUNCTION__);
         }
-
-        // Check the header
-        if (fReadTransactions && !CheckProofOfWork(GetWorkHash(), nBits))
-            return error("CBlock::ReadFromDisk() : errors in block header");
-
         return true;
     }
 

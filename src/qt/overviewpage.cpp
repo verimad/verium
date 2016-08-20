@@ -5,6 +5,7 @@
 #include "miner.h"
 #include "init.h"
 #include "walletmodel.h"
+#include "clientmodel.h"
 #include "bitcoinunits.h"
 #include "cookiejar.h"
 #include "optionsmodel.h"
@@ -192,9 +193,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     if (mining)
     {
         ui->mineButton->setIcon(QIcon(":/icons/miningon"));
+        ui->miningLabel->setText("");
     }
     else{
         ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
+        ui->miningLabel->setText("Click to mine:");
     }
 
     // set initial state of processor spin box
@@ -251,11 +254,12 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
 
 void OverviewPage::setStatistics()
 {
+    int nThreads = GetArg("-genproclimit", 0);
     ui->difficulty->setText(QString::number(GetDifficulty()));
     ui->blocktime->setText(QString::number((double)calculateBlocktime(pindexBest)/60));
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
     ui->nethashrate->setText(QString::number(GetPoWKHashPS()));
-    ui->hashrate->setText(QString::number(hashrate));
+    ui->hashrate->setText(QString::number(hashrate*nThreads));
     ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
 }
 
@@ -277,7 +281,6 @@ void OverviewPage::setModel(WalletModel *model)
         ui->listTransactions->setModelColumn(TransactionTableModel::ToAddress);
 
         // Keep up to date with wallet
-        setStatistics();
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance());
         connect(model, SIGNAL(balanceChanged(qint64, qint64, qint64)), this, SLOT(setBalance(qint64, qint64, qint64)));
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
@@ -333,26 +336,47 @@ void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & 
 
 void OverviewPage::on_mineButton_clicked()
 {
+    QDateTime lastBlockDate = clientmodel->getLastBlockDate();
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int count = clientmodel->getNumBlocks();
+    int nTotalBlocks = clientmodel->getNumBlocksOfPeers();
     ui->mineButton->clearFocus();
+    if(secs > 90*60 && count < nTotalBlocks && !mining)
+    {
+        QMessageBox::warning(this, tr("Mining"),
+            tr("Please wait until fully in sync with network to mine."),
+            QMessageBox::Ok, QMessageBox::Ok);
+        return;
+    }
     bool onOrOff;
     if (!mining)
     {
         onOrOff = true;
         GenerateVerium(onOrOff, pwalletMain);
-        mining = true;
+        mining = onOrOff;
+        ui->miningLabel->setText("");
         ui->mineButton->setIcon(QIcon(":/icons/miningon"));
     }
     else
     {
         onOrOff = false;
         GenerateVerium(onOrOff, pwalletMain);
-        mining = false;
+        mining = onOrOff;
+        ui->miningLabel->setText("Click to mine:");
         ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
     }
 }
 
 void OverviewPage::on_spinBox_valueChanged(int procs)
 {
+    if (mining)
+    {
+        bool onOrOff = false;
+        GenerateVerium(onOrOff, pwalletMain);
+        mining = onOrOff;
+        ui->miningLabel->setText("Click to mine:");
+        ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
+    }
     QString qSprocs = QString::number(procs);
     std::string Sprocs = qSprocs.toStdString();
     SetArg("-genproclimit", Sprocs);

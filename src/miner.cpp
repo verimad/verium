@@ -484,7 +484,7 @@ void Miner(CWallet *pwallet)
         {
             while (vNodes.empty() || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
-                MilliSleep(60000);
+                MilliSleep(30000);
             }
 
             //
@@ -522,6 +522,10 @@ void Miner(CWallet *pwallet)
             while (fGenerateVerium)
             {
                 unsigned int nHashesDone = 0;
+                if (nHPSTimerStart == 0)
+                {
+                    nHPSTimerStart = GetTimeMillis();
+                }
                 uint256 thash;
                 while (fGenerateVerium)
                 {
@@ -539,38 +543,28 @@ void Miner(CWallet *pwallet)
                     }
                     pblock->nNonce += 1;
                     nHashesDone += 1;
-                    if ((pblock->nNonce & 0xFF) == 0)
-                        break;
-                }
-
-                // Meter hashes/sec
-                static int64_t nHashCounter;
-                if (nHPSTimerStart == 0)
-                {
-                    nHPSTimerStart = GetTimeMillis();
-                    nHashCounter = 0;
-                }
-                else
-                    nHashCounter += nHashesDone;
-                if (GetTimeMillis() - nHPSTimerStart > 30000)
-                {
-                    static CCriticalSection cs;
+                    if (GetTimeMillis() - nHPSTimerStart > 30000)
                     {
-                        LOCK(cs);
-                        if (GetTimeMillis() - nHPSTimerStart > 30000)
+                        static CCriticalSection cs;
                         {
-                            dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
-                            nHPSTimerStart = GetTimeMillis();
-                            nHashCounter = 0;
-                            static int64_t nLogTime;
-                            updateHashrate(dHashesPerMin);
-                            if (GetTime() - nLogTime > 30 * 60)
+                            LOCK(cs);
+                            if (GetTimeMillis() - nHPSTimerStart > 30000)
                             {
-                                nLogTime = GetTime();
-                                printf("hashmeter %6.0f hash/min\n", dHashesPerMin);
+                                dHashesPerMin = 60000.0 * nHashesDone / (GetTimeMillis() - nHPSTimerStart);
+                                nHPSTimerStart = GetTimeMillis();
+                                nHashesDone = 0;
+                                static int64_t nLogTime;
+                                updateHashrate(dHashesPerMin);
+                                if (GetTime() - nLogTime > 30 * 60)
+                                {
+                                    nLogTime = GetTime();
+                                    printf("hashmeter %6.0f hash/min/thread\n", dHashesPerMin);
+                                }
                             }
                         }
                     }
+                    if ((pblock->nNonce & 0xFF) == 0)
+                        break;                   
                 }
 
                 // Check for stop or if block needs to be rebuilt

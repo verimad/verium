@@ -820,11 +820,13 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
         return;
     }
-
+    QDateTime lastBlockDate = clientModel->getLastBlockDate();
+    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    QString text;
     QString strStatusBarWarnings = clientModel->getStatusBarWarnings();
     QString tooltip;
 
-    if(count < nTotalBlocks)
+    if(secs > 90*60 && count < nTotalBlocks)
     {
         int nRemainingBlocks = nTotalBlocks - count;
         float nPercentageDone = count / (nTotalBlocks * 0.01f);
@@ -854,9 +856,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
 
     }
 
-    // update miner statistics on status page
-    overviewPage->setStatistics();
-
     // Show Alert message always.
     if (GetBoolArg("-vAlert") && GetArg("-vAlertMsg","").c_str() != "")
     {
@@ -868,10 +867,6 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
         progressBar->setValue(0);
         progressBar->setVisible(true);
     }
-
-    QDateTime lastBlockDate = clientModel->getLastBlockDate();
-    int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
-    QString text;
 
     // Represent time from last generated block in human readable text
     if(secs <= 0)
@@ -899,6 +894,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     if(secs < 90*60 && count >= nTotalBlocks)
     {
         tooltip = tr("Up to date") + QString(".\n") + tooltip;
+        overviewPage->setStatistics();
         labelBlocksIcon->setPixmap(QIcon(":/icons/staking_off").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         overviewPage->showOutOfSyncWarning(false);
     }

@@ -12,6 +12,7 @@ namespace Ui {
     class OverviewPage;
 }
 class WalletModel;
+class ClientModel;
 class TxViewDelegate;
 class TransactionFilterProxy;
 
@@ -44,6 +45,7 @@ signals:
 private:
     Ui::OverviewPage *ui;
     WalletModel *model;
+    ClientModel *clientmodel;
     qint64 currentBalance;
     qint64 currentUnconfirmedBalance;
     qint64 currentImmatureBalance;
