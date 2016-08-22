@@ -114,7 +114,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     txdelegate(new TxViewDelegate()),
     filter(0),
     mining(GetBoolArg("-gen",false)),
-    processors((boost::thread::hardware_concurrency())-1)
+    processors(boost::thread::hardware_concurrency())
 {
     // Setup header and styles
     if (fNoHeaders)
@@ -202,14 +202,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
 
     // set initial state of processor spin box
     ui->spinBox->setRange(1,processors);
-    int nThreads = GetArg("-genproclimit", -1);
-    if (nThreads < 0)
-    {
-        ui->spinBox->setValue(processors);
-    }
-    else{
-        ui->spinBox->setValue(nThreads);
-    }
+    int procDefault = (processors-1);
+    ui->spinBox->setValue(procDefault);
 }
 
 void OverviewPage::handleTransactionClicked(const QModelIndex &index)
@@ -336,26 +330,39 @@ void OverviewPage::sslErrorHandler(QNetworkReply* qnr, const QList<QSslError> & 
 
 void OverviewPage::on_mineButton_clicked()
 {
+    // check client is in sync
     QDateTime lastBlockDate = clientmodel->getLastBlockDate();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
     int count = clientmodel->getNumBlocks();
     int nTotalBlocks = clientmodel->getNumBlocksOfPeers();
+    int peers = clientmodel->getNumConnections();
     ui->mineButton->clearFocus();
-    if(secs > 90*60 && count < nTotalBlocks && !mining)
+    if((secs > 90*60 && count < nTotalBlocks && !mining) || (peers < 1 && !mining))
     {
         QMessageBox::warning(this, tr("Mining"),
             tr("Please wait until fully in sync with network to mine."),
             QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
+
+    // check for recommended processor usage and warn
+    if (ui->spinBox->value() == processors && !mining)
+    {
+        QMessageBox::warning(this, tr("Mining"),
+            tr("For optimal performace and stability, it is recommended to keep one processor free for the operating system. Please reduce processor by one."),
+            QMessageBox::Ok, QMessageBox::Ok);
+    }
+
+    // toggle mining
     bool onOrOff;
     if (!mining)
     {
         onOrOff = true;
-        GenerateVerium(onOrOff, pwalletMain);
         mining = onOrOff;
         ui->miningLabel->setText("");
         ui->mineButton->setIcon(QIcon(":/icons/miningon"));
+        MilliSleep(100);
+        GenerateVerium(onOrOff, pwalletMain);
     }
     else
     {
