@@ -44,7 +44,7 @@ double GetDifficulty(const CBlockIndex* blockindex)
     return dDiff;
 }
 
-double GetPoWKHashPS()
+double GetPoWKHashPM()
 {
     int nPoWInterval = 72;
     int64_t nTargetSpacingWorkMin = 30, nTargetSpacingWork = 30;
@@ -61,7 +61,7 @@ double GetPoWKHashPS()
         pindex = pindex->pnext;
     }
 
-    return (GetDifficulty() * 4294.967296 / nTargetSpacingWork) * 1000;
+    return (GetDifficulty() * 4294.967296 / nTargetSpacingWork) * 1000 * 60;
 }
 
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPrintTransactionDetail)

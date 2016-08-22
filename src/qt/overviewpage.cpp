@@ -149,6 +149,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->labelTotalText->setFont(qFont);
     ui->labelTotal->setFont(qFont);
 
+    // minersection
+    ui->miningLabel->setFont(qFont);
+    ui->proclabel->setFont(qFont);
+    ui->spinBox->setFont(qFont);
+
     //statistics section
     ui->difficultyText->setFont(qFont);
     ui->difficulty->setFont(qFont);
@@ -160,6 +165,8 @@ OverviewPage::OverviewPage(QWidget *parent) :
     ui->nethashrate->setFont(qFont);
     ui->hashrateText->setFont(qFont);
     ui->hashrate->setFont(qFont);
+    ui->mineRateText->setFont(qFont);
+    ui->mineRate->setFont(qFont);
     ui->blocknumberText->setFont(qFont);
     ui->blocknumber->setFont(qFont);
 
@@ -248,12 +255,16 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
 
 void OverviewPage::setStatistics()
 {
+    double nethashrate = GetPoWKHashPM();
+    double blocktime = (double)calculateBlocktime(pindexBest)/60;
+    double minerate = ((100/((hashrate/(nethashrate*1000))*100))*blocktime)/60;
     int nThreads = GetArg("-genproclimit", 0);
     ui->difficulty->setText(QString::number(GetDifficulty()));
-    ui->blocktime->setText(QString::number((double)calculateBlocktime(pindexBest)/60));
+    ui->blocktime->setText(QString::number(blocktime));
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->nethashrate->setText(QString::number(GetPoWKHashPS()));
+    ui->nethashrate->setText(QString::number((double)nethashrate));
     ui->hashrate->setText(QString::number(hashrate*nThreads));
+    ui->mineRate->setText(QString::number((unsigned int)minerate));
     ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
 }
 
