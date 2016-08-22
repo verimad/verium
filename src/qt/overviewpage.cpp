@@ -255,16 +255,28 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
 
 void OverviewPage::setStatistics()
 {
+    // calculate stats
+    double minerate;
+    int nThreads = GetArg("-genproclimit", 0);
     double nethashrate = GetPoWKHashPM();
     double blocktime = (double)calculateBlocktime(pindexBest)/60;
-    double minerate = ((100/((hashrate/(nethashrate*1000))*100))*blocktime)/60;
-    int nThreads = GetArg("-genproclimit", 0);
+    double totalhashrate = hashrate*nThreads;
+    if (totalhashrate == 0.0)
+    {
+        minerate = 0.0;
+    }
+    else
+    {
+        minerate = ((100/((totalhashrate/(nethashrate*1000))*100))*blocktime)/60;
+    }
+
+    // display stats
     ui->difficulty->setText(QString::number(GetDifficulty()));
     ui->blocktime->setText(QString::number(blocktime));
     ui->blocknumber->setText(QString::number(pindexBest->nHeight));
-    ui->nethashrate->setText(QString::number((double)nethashrate));
-    ui->hashrate->setText(QString::number(hashrate*nThreads));
-    ui->mineRate->setText(QString::number((unsigned int)minerate));
+    ui->nethashrate->setText(QString::number(nethashrate));
+    ui->hashrate->setText(QString::number(totalhashrate));
+    ui->mineRate->setText(QString::number(minerate));
     ui->blockreward->setText(QString::number((double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
 }
 
