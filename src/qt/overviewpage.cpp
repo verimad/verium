@@ -267,7 +267,7 @@ void OverviewPage::setStatistics()
     }
     else
     {
-        minerate = ((100/((totalhashrate/(nethashrate*1000))*100))*blocktime)/60;
+        minerate = 16.666667*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60
     }
 
     // display stats
