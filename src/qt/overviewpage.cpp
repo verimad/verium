@@ -114,7 +114,7 @@ OverviewPage::OverviewPage(QWidget *parent) :
     txdelegate(new TxViewDelegate()),
     filter(0),
     mining(GetBoolArg("-gen",false)),
-    processors(boost::thread::hardware_concurrency())
+    processors((boost::thread::hardware_concurrency())-1)
 {
     // Setup header and styles
     if (fNoHeaders)
