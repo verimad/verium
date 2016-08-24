@@ -35,7 +35,7 @@
 
 #include <emmintrin.h>
 
-static const int NSize = 2097152;
+static const int NSize = 1048576;
 
 static inline void xor_salsa8_sse2(__m128i B[4], const __m128i Bx[4])
 {

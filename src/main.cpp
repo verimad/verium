@@ -33,8 +33,8 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 8);  // standard scrypt-hard minimum difficulty (0.00000006)
-CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 8);
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 10);  // standard scrypt-hard minimum difficulty (0.00000006)
+CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 10);
 
 int nCoinbaseMaturity = 100;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -942,9 +942,21 @@ unsigned int calculateBlocktime(const CBlockIndex* pindex)
 int64_t calculateMinerReward(const CBlockIndex* pindex)
 {
     int64_t nReward;
-    unsigned int nBlockTime = calculateBlocktime(pindex);
-    double dReward = 0.375*exp(0.0116*nBlockTime);
-    nReward = dReward * COIN;
+    int height = pindex->nHeight+1;
+    if (height == 1)
+    {
+        nReward = 567910 * COIN; // Verium purchased in presale ICO
+    }
+    else if (height > 1 && height < 300)
+    {
+        nReward = 0;  // No rewards while setting up network and sending out presale funds
+    }
+    else
+    {
+        unsigned int nBlockTime = calculateBlocktime(pindex);
+        double dReward = 0.375*exp(0.0116*nBlockTime);
+        nReward = dReward * COIN;
+    }
     return nReward;
 }
 
@@ -2241,7 +2253,7 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1470076953;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 228934 : 228934;
+        block.nNonce   = !fTestNet ? 229127 : 228934;
 
 
         //// debug print

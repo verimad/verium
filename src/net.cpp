@@ -1136,7 +1136,7 @@ void MapPort()
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
 static const char *strDNSSeed[][2] = {
-    //{"dnsseed-pcmerc3", "seed.kryptochaos.com"},
+    {"dnsseed-vrmdns", "vrmdns.vericoin.info"},
 };
 
 void ThreadDNSAddressSeed(void* parg)
@@ -1196,7 +1196,7 @@ void ThreadDNSAddressSeed2(void* parg)
 
 unsigned int pnSeed[] =
 {
-    //0xD28CAA6B
+    0x8A443EED, 0x6883BF06
 };
 
 void DumpAddresses()
