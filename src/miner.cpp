@@ -482,7 +482,7 @@ void Miner(CWallet *pwallet)
     {
         while (fGenerateVerium)
         {
-            while (vNodes.empty() || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
+            while (vNodes.size() < 1 || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
                 MilliSleep(30000);
             }
