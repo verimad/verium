@@ -61,7 +61,7 @@ double GetPoWKHashPM()
         pindex = pindex->pnext;
     }
 
-    return (GetDifficulty() * 4294.967296 / nTargetSpacingWork) * 1000 * 60;
+    return (GetDifficulty() * 4294.967296 / nTargetSpacingWork) * 100000 * 60;
 }
 
 Object blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool fPrintTransactionDetail)
