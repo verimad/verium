@@ -947,7 +947,7 @@ int64_t calculateMinerReward(const CBlockIndex* pindex)
     {
         nReward = 567910 * COIN; // Verium purchased in presale ICO
     }
-    else if (height > 1 && height < 300)
+    else if (height > 1 && height < 30)
     {
         nReward = 0;  // No rewards while setting up network and sending out presale funds
     }
