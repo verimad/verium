@@ -608,13 +608,13 @@
         <number>0</number>
        </property>
        <property name="topMargin">
-        <number>9</number>
+        <number>10</number>
        </property>
        <property name="rightMargin">
         <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>9</number>
+        <number>10</number>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="hashrateText">
@@ -623,9 +623,6 @@
            <width>130</width>
            <height>0</height>
           </size>
-         </property>
-         <property name="toolTip">
-          <string>Your current spendable balance</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -648,13 +645,13 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -701,9 +698,6 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
-         </property>
          <property name="styleSheet">
           <string notr="true">QLabel {color: #444748}</string>
          </property>
@@ -716,13 +710,13 @@
         <widget class="QLabel" name="blockreward">
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -769,9 +763,6 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
-         </property>
          <property name="styleSheet">
           <string notr="true">QLabel {color: #444748}</string>
          </property>
@@ -784,13 +775,13 @@
         <widget class="QLabel" name="difficulty">
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -825,9 +816,6 @@
            <height>0</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Your current total balance</string>
-         </property>
          <property name="styleSheet">
           <string notr="true">QLabel {color: #444748}</string>
          </property>
@@ -840,13 +828,13 @@
         <widget class="QLabel" name="blocknumber">
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -893,9 +881,6 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
-         </property>
          <property name="styleSheet">
           <string notr="true">QLabel {color: #444748}</string>
          </property>
@@ -908,13 +893,13 @@
         <widget class="QLabel" name="nethashrate">
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -961,9 +946,6 @@
            <height>16777215</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Total of transactions that have yet to be confirmed, and do not yet count toward the current balance</string>
-         </property>
          <property name="styleSheet">
           <string notr="true">QLabel {color: #444748}</string>
          </property>
@@ -976,13 +958,13 @@
         <widget class="QLabel" name="blocktime">
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
@@ -1017,9 +999,6 @@
            <height>0</height>
           </size>
          </property>
-         <property name="toolTip">
-          <string>Your current spendable balance</string>
-         </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
@@ -1027,7 +1006,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Estimated block rate: (hrs)</string>
+          <string>Estimated block hit within (hrs):</string>
          </property>
         </widget>
        </item>
@@ -1035,13 +1014,13 @@
         <widget class="QLabel" name="mineRate">
          <property name="minimumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>0</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>125</width>
+           <width>100</width>
            <height>16777215</height>
           </size>
          </property>
