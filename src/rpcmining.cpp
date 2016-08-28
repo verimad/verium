@@ -111,8 +111,8 @@ Value getmininginfo(const Array& params, bool fHelp)
     obj.push_back(Pair("blocktime (sec)",    (int)calculateBlocktime(pindexBest->pprev)));
     obj.push_back(Pair("blockreward",    (double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
     obj.push_back(Pair("netkhashpm",     GetPoWKHashPM()));
-    obj.push_back(Pair("hashrate (hashes/min)",     (double)hashrate);
-    obj.push_back(Pair("est. block rate (hrs)",     (double)minerrate);
+    obj.push_back(Pair("hashrate per core (hashes/min)",     (double)hashrate));
+    obj.push_back(Pair("est. block rate (hrs)",     (double)minerrate));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
     obj.push_back(Pair("blocksperhour", GetBlockRatePerHour()));
