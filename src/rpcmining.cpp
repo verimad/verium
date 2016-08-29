@@ -103,16 +103,29 @@ Value getmininginfo(const Array& params, bool fHelp)
             "getmininginfo\n"
             "Returns an object containing mining-related information.");
 
-    Object obj, diff, weight;
+    double minerate;
+    int nThreads = GetArg("-genproclimit", 0);
+    double nethashrate = GetPoWKHashPM();
+    double blocktime = (double)calculateBlocktime(pindexBest)/60;
+    double totalhashrate = hashrate*nThreads;
+    if (totalhashrate == 0.0)
+    {
+        minerate = 0.0;
+    }
+    else
+    {
+        minerate = 16.666667*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60
+    }
+    Object obj;
     obj.push_back(Pair("blocks",        (int)nBestHeight));
     obj.push_back(Pair("currentblocksize",(uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx",(uint64_t)nLastBlockTx));
     obj.push_back(Pair("difficulty",    GetDifficulty()));
-    obj.push_back(Pair("blocktime (sec)",    (int)calculateBlocktime(pindexBest->pprev)));
-    obj.push_back(Pair("blockreward",    (double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
-    obj.push_back(Pair("netkhashpm",     GetPoWKHashPM()));
-    obj.push_back(Pair("hashrate per core (hashes/min)",     (double)hashrate));
-//    obj.push_back(Pair("est. block rate (hrs)",     (double)minerrate));
+    obj.push_back(Pair("blocktime (min)",    (double)blocktime));
+    obj.push_back(Pair("blockreward (VRM)",    (double)GetProofOfWorkReward(0,pindexBest->pprev)/COIN));
+    obj.push_back(Pair("nethashrate (kH/m)",     nethashrate));
+    obj.push_back(Pair("hashrate (H/m)",     (double)totalhashrate));
+    obj.push_back(Pair("est. block rate (hrs)",     (double)minerate));
     obj.push_back(Pair("errors",        GetWarnings("statusbar")));
     obj.push_back(Pair("pooledtx",      (uint64_t)mempool.size()));
     obj.push_back(Pair("blocksperhour", GetBlockRatePerHour()));

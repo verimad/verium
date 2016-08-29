@@ -928,9 +928,9 @@ unsigned int calculateBlocktime(const CBlockIndex* pindex)
     unsigned int nBlockTime;
     double diff = GetDifficulty(pindex);
     double dBlockTime = -13.03*log(diff)+180;
-    if (dBlockTime < 5)
+    if (dBlockTime < 15)
     {
-        nBlockTime = 5;
+        nBlockTime = 15;
     }
     else
     {
@@ -954,7 +954,7 @@ int64_t calculateMinerReward(const CBlockIndex* pindex)
     else
     {
         unsigned int nBlockTime = calculateBlocktime(pindex);
-        double dReward = 0.375*exp(0.0116*nBlockTime);
+        double dReward = 0.375*exp(0.0116*nBlockTime); //0.25*exp(0.0116*nBlockTime);  0.04*exp(0.0116*nBlockTime) supply = moneysupply mainnet
         nReward = dReward * COIN;
     }
     return nReward;
