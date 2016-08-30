@@ -8,7 +8,7 @@
 
 using namespace json_spirit;
 using namespace std;
-double dminDifficulty = 0.00000006; //standard scrypt-hard difficulty minimum
+double dminDifficulty = 0.00000048; //standard scrypt-hard difficulty minimum
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, json_spirit::Object& entry);
 
