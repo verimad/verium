@@ -31,7 +31,7 @@ static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2;
 static const unsigned int MAX_BLOCK_SIGOPS = MAX_BLOCK_SIZE/50;
 static const unsigned int MAX_ORPHAN_TRANSACTIONS = MAX_BLOCK_SIZE/100;
 static const unsigned int MAX_INV_SZ = 50000;
-static const int64_t MIN_TX_FEE = 100000; //20000000 mainnet
+static const int64_t MIN_TX_FEE = 20000000;
 static const int64_t MIN_RELAY_TX_FEE = MIN_TX_FEE;
 static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
@@ -44,7 +44,7 @@ static const int fHaveUPnP = true;
 static const int fHaveUPnP = false;
 #endif
 
-static const uint256 hashGenesisBlock("0x0de69a97f26689a701bdd5b87677c231b2f1ea1d738142384beb591efd9a454f");
+static const uint256 hashGenesisBlock("0xeba81b77773fd4a4df83b17bd49306688bf80adacdc71fb532df0b8ebc49d208");
 static const uint256 hashGenesisBlockTestNet("0x9f837c16450cd2e8921ba206dc4bbf339394527d408f14251a3d7feda25a4d4e");
 
 inline int64_t PastDrift(int64_t nTime)   { return nTime - 2 * 60 * 60; } // up to 2 hours from the past
