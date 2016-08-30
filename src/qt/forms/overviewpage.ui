@@ -139,7 +139,7 @@
              <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Verium network after a connection is established, but this process has not completed yet.</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel { color: #F96910; }</string>
+             <string notr="true">QLabel { color: #418BCA; }</string>
             </property>
             <property name="text">
              <string notr="true">(out of sync)</string>
@@ -1162,7 +1162,7 @@
              <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Verium network after a connection is established, but this process has not completed yet.</string>
             </property>
             <property name="styleSheet">
-             <string notr="true">QLabel { color: #F96910; }</string>
+             <string notr="true">QLabel { color: #418BCA; }</string>
             </property>
             <property name="text">
              <string notr="true">(out of sync)</string>
@@ -1327,7 +1327,7 @@
              <string notr="true">QLabel {color: #444748}</string>
             </property>
             <property name="text">
-             <string>Start Mining:</string>
+             <string>Mining</string>
             </property>
            </widget>
           </item>
@@ -1395,7 +1395,7 @@
          </rect>
         </property>
         <property name="toolTip">
-         <string>Click to start/stop mining!</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to start/stop mining&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
          <string notr="true">QPushButton { background: white;}</string>
@@ -1454,7 +1454,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Click to mine:</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to start:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

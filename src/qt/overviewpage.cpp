@@ -200,11 +200,11 @@ OverviewPage::OverviewPage(QWidget *parent) :
     if (mining)
     {
         ui->mineButton->setIcon(QIcon(":/icons/miningon"));
-        ui->miningLabel->setText("");
+        ui->miningLabel->setText("Click to stop:");
     }
     else{
         ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
-        ui->miningLabel->setText("Click to mine:");
+        ui->miningLabel->setText("Click to start:");
     }
 
     // set initial state of processor spin box
@@ -382,7 +382,7 @@ void OverviewPage::on_mineButton_clicked()
     {
         onOrOff = true;
         mining = onOrOff;
-        ui->miningLabel->setText("");
+        ui->miningLabel->setText("Click to stop:");
         ui->mineButton->setIcon(QIcon(":/icons/miningon"));
         MilliSleep(100);
         GenerateVerium(onOrOff, pwalletMain);
@@ -392,7 +392,7 @@ void OverviewPage::on_mineButton_clicked()
         onOrOff = false;
         GenerateVerium(onOrOff, pwalletMain);
         mining = onOrOff;
-        ui->miningLabel->setText("Click to mine:");
+        ui->miningLabel->setText("Click to start:");
         ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
     }
 }
@@ -404,7 +404,7 @@ void OverviewPage::on_spinBox_valueChanged(int procs)
         bool onOrOff = false;
         GenerateVerium(onOrOff, pwalletMain);
         mining = onOrOff;
-        ui->miningLabel->setText("Click to mine:");
+        ui->miningLabel->setText("Click to start:");
         ui->mineButton->setIcon(QIcon(":/icons/miningoff"));
     }
     QString qSprocs = QString::number(procs);
