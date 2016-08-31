@@ -33,7 +33,7 @@ unsigned int nTransactionsUpdated = 0;
 
 map<uint256, CBlockIndex*> mapBlockIndex;
 
-CBigNum bnProofOfWorkLimit(~uint256(0) >> 11);  // standard scrypt-hard minimum difficulty (0.00000048)
+CBigNum bnProofOfWorkLimit(~uint256(0) >> 11);  // standard scrypt^2 minimum difficulty (0.00000048)
 CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 11);
 
 int nCoinbaseMaturity = 100;
@@ -946,16 +946,16 @@ int64_t calculateMinerReward(const CBlockIndex* pindex)
     int height = pindex->nHeight+1;
     if (height == 1)
     {
-        nReward = 567910 * COIN; // Verium purchased in presale ICO
+        nReward = 564705 * COIN; // Verium purchased in presale ICO
     }
     else if ((pindex->nMoneySupply/COIN) > 2899999)
     {
-        double dReward = 0.04*exp(0.0116*nBlockTime);
+        double dReward = 0.04*exp(0.0116*nBlockTime); // Reward schedule after 10x VRC supply parity
         nReward = dReward * COIN;
     }
     else
     {
-        double dReward = 0.25*exp(0.0116*nBlockTime);
+        double dReward = 0.25*exp(0.0116*nBlockTime); // Reward schedule up to 10x VRC supply parity
         nReward = dReward * COIN;
     }
     return nReward;
@@ -2232,17 +2232,9 @@ bool LoadBlockIndex(bool fAllowNew)
         //  vMerkleTree: 7eb35ada44
 
 
-        // TestNet:
-        //CBlock(hash=4247afa995120a09a5a22391f63031714169bc988eb0e6116a8100b298f88361, ver=1, hashPrevBlock=0000000000000000000000000000000000000000000000000000000000000000, hashMerkleRoot=60424046d38de827de0ed1a20a351aa7f3557e3e1d3df6bfb34a94bc6161ec68, nTime=1399690945, nBits=1f00ffff, nNonce=612416, vtx=1, vchBlockSig=)
-        //Coinbase(hash=60424046d3, nTime=1399690945, ver=1, vin.size=1, vout.size=1, nLockTime=0)
-        //  CTxIn(COutPoint(0000000000, 4294967295), coinbase 00012a3639204d6179203230313420555320706f6c6974696369616e732063616e2061636365707420626974636f696e20646f6e6174696f6e73)
-        //  CTxOut(empty)
-        // vMerkleTree: 60424046d3
-
-
-        const char* pszTimestamp = "9 May 2014 US politicians can accept bitcoin donations";  //vericoin merkle for test-only mainnet
+        const char* pszTimestamp = "VeriCoin block 1340292";
         CTransaction txNew;
-        txNew.nTime = 1470076953;
+        txNew.nTime = 1472669240;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 0 << CBigNum(999) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -2252,16 +2244,16 @@ bool LoadBlockIndex(bool fAllowNew)
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1470076953;
+        block.nTime    = 1472669240;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-        block.nNonce   = !fTestNet ? 231341 : 228934;
+        block.nNonce   = !fTestNet ? 233180 : 228934;
 
 
         //// debug print
         printf("%s\n", block.GetHash().ToString().c_str());
         printf("%s\n", hashGenesisBlock.ToString().c_str());
         printf("%s\n", block.hashMerkleRoot.ToString().c_str());
-        assert(block.hashMerkleRoot == uint256("0x7eb35ada4448aa2783f2f8b9f261cda1841a32d99eefd42ec90bfdb3cdb1dfce"));
+        assert(block.hashMerkleRoot == uint256("0x925e430072a1f39b530fc79db162e29433ab0ea266a99c8cab4f03001dc9faa9"));
         block.print();
 	
         // If genesis block hash does not match, then generate new genesis hash.
