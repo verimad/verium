@@ -443,9 +443,9 @@ void SendBitCoinsDialog::on_veriBitSendButton_clicked()
     int peerBlock = currentModel->getNumBlocksOfPeers();
     if(secs >= 90*60 && currentBlock < peerBlock)
     {
-        QMessageBox::warning(this, tr("VeriBit"),
+        QMessageBox::warning(this, tr("VeriSwap"),
             tr("Error: %1").
-            arg("Please wait until the wallet is in sync to use VeriBit."),
+            arg("Please wait until the wallet is in sync to use VeriSwap."),
             QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
@@ -528,7 +528,7 @@ void SendBitCoinsDialog::passResponse( QNetworkReply *finished )
     if (strcmp (errorTest,errorTested) == 0)
     {
         QString emessage(dataSplit[3].constData());
-        QMessageBox::warning(this, tr("VeriBit Send"),
+        QMessageBox::warning(this, tr("VeriSwap Send"),
             tr("Error: %1").
             arg(emessage),
             QMessageBox::Ok, QMessageBox::Ok);
@@ -555,8 +555,8 @@ void SendBitCoinsDialog::passResponse( QNetworkReply *finished )
         formatted.append(tr("<b>%1</b>").arg(BitcoinUnits::formatWithUnitWithMaxDecimals(BitcoinUnits::VRM, rcp.amount, BitcoinUnits::maxdecimals(BitcoinUnits::VRM)), Qt::escape(rcp.label), rcp.address));
     }
 
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm VeriBit send of your Veriums"),
-                          tr("Are you sure you want to use VeriBit to send BitCoin? VeriBit will require %1.").arg(formatted.join(tr(" and "))),
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm VeriSwap send of your Verium"),
+                          tr("Are you sure you want to use VeriSwap to get VeriCoin? VeriSwap will require %1.").arg(formatted.join(tr(" and "))),
           QMessageBox::Yes|QMessageBox::Cancel,
           QMessageBox::Cancel);
 
