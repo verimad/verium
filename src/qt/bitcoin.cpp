@@ -268,7 +268,7 @@ int main(int argc, char *argv[])
                 // 1. Bootstrap wallet and restart
                 // 2. Encrypt wallet and restart (happens in BitcoinGUI:setModel())
                 // 3. Update wallet and restart
-                if (GetBoolArg("-vBootstrap")) //(fFirstRun || GetBoolArg("-vBootstrap")) // Force boostraping in auto mode
+                if (fFirstRun || GetBoolArg("-vBootstrap")) // Force boostraping in auto mode
                 {
                     if (GetBoolArg("-testnet"))
                     {

@@ -321,7 +321,7 @@ void Downloader::downloaderFinished()
     }
 
     // when partial
-    if (processBlockchain && file && file->size() < 1000000)
+    if (processBlockchain && file && file->size() < 1000)
     {
         if (file)
         {

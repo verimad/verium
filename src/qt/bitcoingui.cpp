@@ -1524,7 +1524,7 @@ void BitcoinGUI::reloadBlockchain(bool autoReload)
 
     printf("Downloading blockchain data...\n");
     Downloader *bs = new Downloader(this, walletModel);
-    bs->setWindowTitle("Blockchain Reload");
+    bs->setWindowTitle("Blockchain Load");
     bs->setUrl(url);
     bs->setDest(boostPathToQString(pathBootstrap));
     bs->processBlockchain = true;
