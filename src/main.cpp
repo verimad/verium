@@ -977,7 +977,7 @@ int GetBlockRatePerHour()
 {
     int nRate = 0;
     CBlockIndex* pindex = pindexBest;
-    int64_t nTargetTime = pindexBest->nTime - 3600;
+    int64_t nTargetTime = GetAdjustedTime() - 3600;
 
     while (pindex && pindex->pprev && pindex->nTime > nTargetTime) {
         nRate += 1;
@@ -1033,12 +1033,20 @@ unsigned int GetNextTargetRequired(const CBlockIndex* pindexLast)
     const CBlockIndex* pindexPrevPrev = pindexPrev->pprev;
     unsigned int nTargetSpacing = calculateBlocktime(pindexPrev);
     int64_t nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
-
+    int64_t targetTimespan;
+    if (pindexLast->nHeight+1 > 2394)
+    {
+        targetTimespan = nTargetTimespan * 24;
+    }
+    else
+    {
+        targetTimespan = nTargetTimespan;
+    }
     // ppcoin: target change every block
     // ppcoin: retarget with exponential moving toward target spacing
     CBigNum bnNew;
     bnNew.SetCompact(pindexPrev->nBits);
-    int64_t nInterval = nTargetTimespan / nTargetSpacing;
+    int64_t nInterval = targetTimespan / nTargetSpacing;
     bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
     bnNew /= ((nInterval + 1) * nTargetSpacing);
     if (bnNew > bnTargetLimit)
@@ -1879,8 +1887,16 @@ bool CBlock::CheckBlock(bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig) c
             return DoS(100, error("CheckBlock() : more than one coinbase"));
 
     // Check coinbase timestamp
-    if (GetBlockTime() > FutureDrift((int64_t)vtx[0].nTime))
-        return DoS(50, error("CheckBlock() : coinbase timestamp %d is too early %d ",GetBlockTime(), FutureDrift((int64_t)vtx[0].nTime) ));
+    if (pindexBest->nHeight > 2393 && pindexBest->nHeight < 2398)
+    {
+        if (GetBlockTime() > (FutureDrift((int64_t)vtx[0].nTime) + 24 * 60 * 60))
+            return DoS(50, error("CheckBlock() : coinbase timestamp %d is too early %d ",GetBlockTime(), FutureDrift((int64_t)vtx[0].nTime) ));
+    }
+    else
+    {
+        if (GetBlockTime() > FutureDrift((int64_t)vtx[0].nTime))
+            return DoS(50, error("CheckBlock() : coinbase timestamp %d is too early %d ",GetBlockTime(), FutureDrift((int64_t)vtx[0].nTime) ));
+    }
 
     // Check transactions
     BOOST_FOREACH(const CTransaction& tx, vtx)
