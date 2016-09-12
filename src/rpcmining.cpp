@@ -104,10 +104,9 @@ Value getmininginfo(const Array& params, bool fHelp)
             "Returns an object containing mining-related information.");
 
     double minerate;
-    int nThreads = GetArg("-genproclimit", 0);
     double nethashrate = GetPoWKHashPM();
     double blocktime = (double)calculateBlocktime(pindexBest)/60;
-    double totalhashrate = hashrate*nThreads;
+    double totalhashrate = hashrate;
     if (totalhashrate == 0.0)
     {
         minerate = 0.0;
