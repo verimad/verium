@@ -581,7 +581,7 @@ void Miner(CWallet *pwallet)
                     break;
                 if (fShutdown)
                     return;
-                if (vNodes.size() < 2)
+                if (!fTestNet && vNodes.size() < 2)
                     break;
                 if (pblock->nNonce >= 0xffff0000)
                     break;
