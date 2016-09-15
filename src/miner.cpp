@@ -478,6 +478,7 @@ void Miner(CWallet *pwallet)
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
+    void *scratchpad = malloc(SCRYPT_SCRATCHPAD_SIZE);
 
     try
     {
@@ -527,8 +528,8 @@ void Miner(CWallet *pwallet)
                 uint256 thash;
                 while (fGenerateVerium)
                 {
-                    // scrypt-hard
-                    scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash));
+                    // scrypt^2
+                    scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash), scratchpad);
 
                     if (thash <= hashTarget)
                     {
@@ -598,6 +599,7 @@ void Miner(CWallet *pwallet)
     }
     catch (boost::thread_interrupted)
     {
+        free(scratchpad);
         hashrate = 0;
         printf("Miner terminated\n");
         throw;

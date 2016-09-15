@@ -3,10 +3,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-static const int SCRYPT_SCRATCHPAD_SIZE = 134218239; //63 + (128 * r * p) + (256 * r + 64) + (128 * r * Nsize) r=1 p=1
 static const int Nsize = 1048576;
 
-void scrypt_N_1_1_256(const void *input, char *output);
+void scrypt_N_1_1_256(const void *input, char *output, void *scratchpad);
 void scrypt_N_1_1_256_sp_generic(const void *input, char *output, void *scratchpad);
 
 #if defined(USE_SSE2)

@@ -37,6 +37,7 @@ static const int64_t MAX_MONEY = std::numeric_limits<int64_t>::max();
 inline bool MoneyRange(int64_t nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
 // Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp.
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
+static const int SCRYPT_SCRATCHPAD_SIZE = 134218239;
 
 #ifdef USE_UPNP
 static const int fHaveUPnP = true;
@@ -881,7 +882,9 @@ public:
     uint256 GetWorkHash() const
     {
         uint256 thash;
-        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash));
+        void *scratchpad = malloc(SCRYPT_SCRATCHPAD_SIZE);
+        scrypt_N_1_1_256(BEGIN(nVersion), BEGIN(thash), scratchpad);
+        free(scratchpad);
         return thash;
     }
 
