@@ -2272,11 +2272,10 @@ bool LoadBlockIndex(bool fAllowNew)
                 // creating a different genesis block:
                 uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
                 uint256 thash;
-                void *scratchpad = malloc(SCRYPT_SCRATCHPAD_SIZE);
 
                 while (true)
                 {
-                    scrypt_N_1_1_256(BEGIN(block.nVersion), BEGIN(thash), scratchpad);
+                    scryptSquaredHash(BEGIN(block.nVersion), BEGIN(thash));
     
                     if (thash <= hashTarget)
                         break;
@@ -2291,7 +2290,6 @@ bool LoadBlockIndex(bool fAllowNew)
                         ++block.nTime;
                     }
                 }
-                free(scratchpad);
                 printf("block.nTime = %u \n", block.nTime);
                 printf("block.nNonce = %u \n", block.nNonce);
                 printf("block.GetHash = %s\n", block.GetHash().ToString().c_str());

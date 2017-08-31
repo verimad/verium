@@ -465,9 +465,10 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 ////////////////////////////////////////////////////////////////////////////
 
 static bool fGenerateVerium = false;
-static int64_t timeElapsed = 45000;
+static int64_t timeElapsed = 30000;
 double dHashesPerMin = 0.0;
 int64_t nHPSTimerStart = 0;
+unsigned int nExtraNonce = 0;
 
 void Miner(CWallet *pwallet)
 {
@@ -475,10 +476,9 @@ void Miner(CWallet *pwallet)
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("verium-miner");
 
-    // Each thread has its own key and counter
+    // Each thread has it's own nonce
     CReserveKey reservekey(pwallet);
-    unsigned int nExtraNonce = 0;
-    void *scratchpad = malloc(SCRYPT_SCRATCHPAD_SIZE);
+    nExtraNonce += 1;
 
     try
     {
@@ -486,7 +486,7 @@ void Miner(CWallet *pwallet)
         {
             while ((!fTestNet && vNodes.size() < 2) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
-                MilliSleep(30000);
+                MilliSleep(5000);
             }
 
             //
@@ -529,7 +529,7 @@ void Miner(CWallet *pwallet)
                 while (fGenerateVerium)
                 {
                     // scrypt^2
-                    scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash), scratchpad);
+                    scryptSquaredHash(BEGIN(pblock->nVersion), BEGIN(thash));
 
                     if (thash <= hashTarget)
                     {
@@ -599,8 +599,8 @@ void Miner(CWallet *pwallet)
     }
     catch (boost::thread_interrupted)
     {
-        free(scratchpad);
         hashrate = 0;
+        nExtraNonce = 0;
         printf("Miner terminated\n");
         throw;
     }

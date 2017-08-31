@@ -1,10 +1,9 @@
 TEMPLATE = app
 TARGET = verium-qt
-VERSION = 1.0.4
+VERSION = 1.1
 USE_QRCODE = 1
-USE_SSE2 = 1
 INCLUDEPATH += src src/json src/qt
-DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
+DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE __STDC_FORMAT_MACROS __STDC_LIMIT_MACROS
 CONFIG += no_include_pwd
 CONFIG += thread
 CONFIG += release
@@ -122,14 +121,6 @@ contains(USE_QRCODE, 1) {
     LIBS += -lqrencode
 }
 
-contains(USE_SSE2, 1) {
-DEFINES += USE_SSE2}
-gccsse2.input  = SOURCES_SSE2
-gccsse2.output = $$PWD/build/${QMAKE_FILE_BASE}.o
-gccsse2.commands = $(CXX) -c $(CXXFLAGS) $(INCPATH) -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME} -msse2 -mstackrealign
-QMAKE_EXTRA_COMPILERS += gccsse2
-SOURCES_SSE2 += src/scrypt-sse2.cpp
-
 # use: qmake "USE_UPNP=1" ( enabled by default; default)
 #  or: qmake "USE_UPNP=0" (disabled by default)
 #  or: qmake "USE_UPNP=-" (not supported)
@@ -244,7 +235,6 @@ contains(USE_O3, 1) {
 }
 
 QMAKE_CXXFLAGS_WARN_ON = -fdiagnostics-show-option -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter -Wstack-protector
-
 # Input
 DEPENDPATH += src src/json src/qt
 HEADERS += src/qt/bitcoingui.h \
@@ -417,10 +407,16 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/forumspage.cpp \
     src/qt/blockchainpage.cpp \
     src/noui.cpp \
-    src/scrypt.cpp \
     src/qt/webview.cpp \
     src/qt/postdialog.cpp \
     src/qt/whatsnewdialog.cpp \
+	src/scrypt.cpp \
+	src/scrypt-x64.S \
+	src/scrypt-x86.S \
+	src/scrypt-arm.S \
+	src/sha2-x64.S \
+	src/sha2-x86.S \
+	src/sha2-arm.S \
 
 RESOURCES += \
     src/qt/bitcoin.qrc
