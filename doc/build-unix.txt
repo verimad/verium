@@ -13,7 +13,7 @@ UNIX BUILD NOTES
 Dependency Build Instructions: Ubuntu & Debian
 ----------------------------------------------
 
-sudo apt-get install build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev freeglut3-dev git
+sudo apt-get install build-essential libboost-dev libboost-system-dev libboost-filesystem-dev libboost-program-options-dev libboost-thread-dev libssl-dev libdb++-dev libminiupnpc-dev libboost-all-dev libqrencode-dev freeglut3-dev git libcurl4-gnutls-dev libminizip-dev
 
 If using Boost 1.37, append -mt to the boost libraries in the makefile.
 
@@ -35,6 +35,8 @@ Dependencies
  libboost    Boost             C++ Library
  miniupnpc   UPnP Support      Optional firewall-jumping support
  libqrencode QRCode generation Optional QRCode generation
+ libcurl     File download     Bootstrap zip download
+ libminizip  Unzip             Unzip bootstrap zip
 
 Note that libexecinfo should be installed, if you building under *BSD systems. 
 This library provides backtrace facility.
@@ -72,7 +74,7 @@ Note: If you just want to install veriumd on Gentoo, you can add the Verium
       overlay and use your package manager:
           layman -a verium && emerge veriumd
 
-emerge -av1 --noreplace boost glib openssl sys-libs/db
+USE="minizip" emerge -av1 --noreplace boost glib openssl sys-libs/db net-misc/curl sys-libs/zlib
 
 Take the following steps to build (no UPnP support):
  cd ${VERICOIN_DIR}/src
@@ -134,6 +136,25 @@ png_CFLAGS="-I../libpng-1.6.12"
 png_LIBS="-L../libpng-1.6.12/.libs"
 configure --prefix=/usr --enable-static --disable-shared --without-tools
 make
+
+
+libminizip
+----------
+cd minizip-1.1
+autoreconf -i
+configure --prefix=/usr --disable-shared --enable-static
+make
+sudo su
+make install
+
+
+libcurl
+-------
+cd curl-7.55.1
+configure --prefix=/usr --disable-shared --enable-static
+make
+sudo su
+make install
 
 
 Security
