@@ -9,10 +9,10 @@
 static const int SCRYPT_SCRATCHPAD_SIZE = 134218239;
 static const int N = 1048576;
 
+int scrypt_best_throughput();
 void scryptSquaredHash(const void *input, char *output);
 extern unsigned char *scrypt_buffer_alloc();
 extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
-int scrypt_best_throughput();
 extern "C" void sha256_transform(uint32_t *state, const uint32_t *block, int swap);
 
 /*#if defined(__x86_64__)
@@ -43,7 +43,7 @@ extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
 #define scrypt_best_throughput() 1
 #endif
 #endif
-/*#if defined(__ARM_NEON__) || defined(__ALTIVEC__) || defined(__i386__) || defined(__x86_64__)
+#if defined(__ARM_NEON__) || defined(__ALTIVEC__) || defined(__i386__) || defined(__x86_64__)
 #define HAVE_SHA256_4WAY 1
 extern "C" int sha256_use_4way();
 extern "C" void sha256_init_4way(uint32_t *state);

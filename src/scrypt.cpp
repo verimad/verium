@@ -422,10 +422,10 @@ static inline void PBKDF2_SHA256_128_32_8way(uint32_t *tstate,
 
 unsigned char *scrypt_buffer_alloc()
 {
-    return (unsigned char*)malloc((size_t)1048576 * SCRYPT_MAX_WAYS * 128 + 63);
+    return (unsigned char*)malloc((size_t)N * SCRYPT_MAX_WAYS * 128 + 63);
 }
 
-static void scrypt_1024_1_1_256(const uint32_t *input, uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
+static void scrypt_N_1_1_256(const uint32_t *input, uint32_t *output, uint32_t *midstate, unsigned char *scratchpad)
 {
 	uint32_t tstate[8], ostate[8];
 	uint32_t X[32] __attribute__((aligned(128)));
@@ -608,9 +608,8 @@ static void scrypt_1024_1_1_256_24way(const uint32_t *input,
 }
 #endif /* HAVE_SCRYPT_6WAY */
 
-void scrypt_1048576_1_1_256(const uint32_t *pdata, uint32_t *hash, unsigned char *scratchbuf)
+void scrypt_N_1_1_256_multi(const uint32_t *pdata, uint32_t *hash, unsigned char *scratchbuf)
 {
-    int N=1048576;
     uint32_t data[SCRYPT_MAX_WAYS * 20];
     uint32_t dhash[SCRYPT_MAX_WAYS * 8];
     hash = dhash;
@@ -653,14 +652,14 @@ void scrypt_1048576_1_1_256(const uint32_t *pdata, uint32_t *hash, unsigned char
 			scrypt_1024_1_1_256_3way(data, hash, midstate, scratchbuf, N);
 		else
 #endif
-		scrypt_1024_1_1_256(data, hash, midstate, scratchbuf, N);
+        scrypt_N_1_1_256(data, hash, midstate, scratchbuf);
 }
 
 void scryptSquaredHash(const void *input, char *output)
 {
     uint32_t midstate[8];
     uint32_t data[20];
-    unsigned char *scratchbuf = (unsigned char*)malloc((size_t)SCRYPT_SCRATCHPAD_SIZE);
+    unsigned char *scratchbuf = scrypt_buffer_alloc();
 
     memset(output, 0, 32);
     if (!scratchbuf)
@@ -672,7 +671,7 @@ void scryptSquaredHash(const void *input, char *output)
     sha256_init(midstate);
     sha256_transform(midstate, data, 0);
 
-    scrypt_1024_1_1_256(data, (uint32_t*)output, midstate, scratchbuf, N);
+    scrypt_N_1_1_256(data, (uint32_t*)output, midstate, scratchbuf);
 
     free(scratchbuf);
 }
