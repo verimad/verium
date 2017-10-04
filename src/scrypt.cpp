@@ -427,30 +427,19 @@ unsigned char *scrypt_buffer_alloc()
 
 static void scrypt_1024_1_1_256(const uint32_t *input, uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
-    uint32_t B[128];
 	uint32_t tstate[8], ostate[8];
 	uint32_t X[32] __attribute__((aligned(128)));
-    uint32_t *V, k;
+	uint32_t *V;
 	
 	V = (uint32_t *)(((uintptr_t)(scratchpad) + 63) & ~ (uintptr_t)(63));
 
 	memcpy(tstate, midstate, 32);
 	HMAC_SHA256_80_init(input, tstate, ostate);
-    PBKDF2_SHA256_80_128(tstate, ostate, input, B);
-
-    for (k = 0; k < 32; k++)
-    {
-        X[k] = le32dec(&B[4 * k]);
-    }
+	PBKDF2_SHA256_80_128(tstate, ostate, input, X);
 
 	scrypt_core(X, V, N);
 
-    for (k = 0; k < 32; k++)
-    {
-        le32enc(&B[4 * k], X[k]);
-    }
-
-    PBKDF2_SHA256_128_32(tstate, ostate, B, output);
+	PBKDF2_SHA256_128_32(tstate, ostate, X, output);
 }
 
 #ifdef HAVE_SHA256_4WAY
@@ -677,7 +666,7 @@ void scryptSquaredHash(const void *input, char *output)
     if (!scratchbuf)
         return;
 
-    for (int i = 0; i < 19; i++)
+    for (int i = 0; i < 20; i++)
         data[i] = be32dec(&((const uint32_t *)input)[i]);
 
     sha256_init(midstate);
