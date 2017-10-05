@@ -5,17 +5,22 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <inttypes.h>
+#include "util.h"
+
 
 static const int SCRYPT_SCRATCHPAD_SIZE = 134218239;
 static const int N = 1048576;
 
 int scrypt_best_throughput();
+
+bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone);
+
 void scryptSquaredHash(const void *input, char *output);
 extern unsigned char *scrypt_buffer_alloc();
 extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
 extern "C" void sha256_transform(uint32_t *state, const uint32_t *block, int swap);
 
-/*#if defined(__x86_64__)
+#if defined(__x86_64__)
 #define SCRYPT_MAX_WAYS 12
 #define HAVE_SCRYPT_3WAY 1
 #define scrypt_best_throughput() 3;
@@ -55,7 +60,7 @@ extern "C" void sha256_transform_4way(uint32_t *state, const uint32_t *block, in
 extern "C" int sha256_use_8way();
 extern "C" void sha256_init_8way(uint32_t *state);
 extern "C" void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
-#endif*/
+#endif
 
 
 #define bswap_32(x) ((((x) << 24) & 0xff000000u) | (((x) << 8) & 0x00ff0000u) \
