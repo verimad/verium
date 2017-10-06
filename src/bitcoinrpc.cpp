@@ -25,6 +25,10 @@
 #include <boost/shared_ptr.hpp>
 #include <list>
 
+#ifndef QT_GUI
+#include <curl/curl.h>
+#endif
+
 #define printf OutputDebugStringF
 
 using namespace std;
@@ -238,6 +242,9 @@ static const CRPCCommand vRPCCommands[] =
   //  ------------------------  -----------------------  ------  --------
     { "help",                   &help,                   true,   true },
     { "stop",                   &stop,                   true,   true },
+#ifndef QT_GUI
+    { "bootstrap",              &bootstrap,              true,   false },
+#endif
     { "getbestblockhash",       &getbestblockhash,       true,   false },
     { "getblockcount",          &getblockcount,          true,   false },
     { "getconnectioncount",     &getconnectioncount,     true,   false },
@@ -831,6 +838,10 @@ void ThreadRPCServer2(void* parg)
     ip::tcp::endpoint endpoint(bindAddress, GetArg("-rpcport", GetDefaultRPCPort()));
     boost::system::error_code v6_only_error;
     boost::shared_ptr<ip::tcp::acceptor> acceptor(new ip::tcp::acceptor(io_service));
+
+#ifndef QT_GUI
+    curl_global_init(CURL_GLOBAL_ALL); // needed for bootstrap RPC command
+#endif
 
     boost::signals2::signal<void ()> StopRequests;
 
