@@ -846,7 +846,11 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
+    QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
+    int lastBlock = clientModel->getNumBlocksOfPeers();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int totalDays = GenBlockDate.daysTo(QDateTime::currentDateTime());
+    int currentDay = totalDays - (secs/(60*60*24));
     // Represent time from last generated block in human readable text
     if(secs <= 0)
     {
@@ -870,7 +874,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
 
     // Set icon state: spinning if catching up, tick otherwise
-    if(secs < 90*60 && count >= nTotalBlocks)
+    if(secs < 20*60 && count >= lastBlock)
     {
         tooltip = tr("Up to date") + QString(".\n") + tr("Downloaded %1 blocks of transaction history.").arg(count);
         overviewPage->setStatistics();
@@ -880,18 +884,17 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
     else
     {
-        int nRemainingBlocks = nTotalBlocks - count;
-        float nPercentageDone = count / (nTotalBlocks * 0.01f);
+        float nPercentageDone = currentDay / (totalDays * 0.01f);
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("Synchronizing with Network: ~%1 Block%2 Remaining").arg(nRemainingBlocks).arg(nRemainingBlocks == 1 ? "" : "s"));
-            progressBar->setMaximum(nTotalBlocks);
-            progressBar->setValue(count);
+            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 1));
+            progressBar->setMaximum(totalDays);
+            progressBar->setValue(currentDay);
             progressBar->setVisible(true);
         }
         labelBlocksIcon->show();
-        tooltip = tr("Syncing") + QString(".\n") + tr("Downloaded %1 of %2 blocks of transaction history (%3% done).").arg(count).arg(nTotalBlocks).arg(nPercentageDone, 0, 'f', 2);
+        tooltip = tr("Syncing") + QString(".\n") + tr("Downloaded %1 of %2 blocks of transaction history (%3% done).").arg(count).arg(lastBlock).arg(nPercentageDone, 0, 'f', 1);
         labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
 
         overviewPage->showOutOfSyncWarning(true);
