@@ -244,7 +244,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/coincontroldialog.h \
     src/qt/coincontroltreewidget.h \
     src/qt/sendcoinsdialog.h \
-    src/qt/sendbitcoinsdialog.h \
     src/qt/addressbookpage.h \
     src/qt/signverifymessagedialog.h \
     src/qt/aboutdialog.h \
@@ -305,10 +304,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/csvmodelwriter.h \
     src/crypter.h \
     src/qt/sendcoinsentry.h \
-    src/qt/sendbitcoinsentry.h \
     src/qt/qvalidatedlineedit.h \
     src/qt/bitcoinunits.h \
-    src/qt/veribitcoinunits.h \
     src/qt/qvaluecombobox.h \
     src/qt/askpassphrasedialog.h \
     src/qt/askpassphrasepage.h \
@@ -337,7 +334,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/addresstablemodel.cpp \
     src/qt/optionsdialog.cpp \
     src/qt/sendcoinsdialog.cpp \
-    src/qt/sendbitcoinsdialog.cpp \
     src/qt/coincontroldialog.cpp \
     src/qt/coincontroltreewidget.cpp \
     src/qt/addressbookpage.cpp \
@@ -370,7 +366,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiondescdialog.cpp \
     src/qt/bitcoinstrings.cpp \
     src/qt/bitcoinamountfield.cpp \
-    src/qt/veribitcoinamountfield.cpp \
     src/wallet.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
@@ -388,10 +383,8 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/csvmodelwriter.cpp \
     src/crypter.cpp \
     src/qt/sendcoinsentry.cpp \
-    src/qt/sendbitcoinsentry.cpp \
     src/qt/qvalidatedlineedit.cpp \
     src/qt/bitcoinunits.cpp \
-    src/qt/veribitcoinunits.cpp \
     src/qt/qvaluecombobox.cpp \
     src/qt/askpassphrasedialog.cpp \
     src/qt/askpassphrasepage.cpp \
@@ -424,7 +417,6 @@ RESOURCES += \
 FORMS += \
     src/qt/forms/coincontroldialog.ui \
     src/qt/forms/sendcoinsdialog.ui \
-    src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/forumspage.ui \
     src/qt/forms/blockchainpage.ui \
     src/qt/forms/addressbookpage.ui \
@@ -434,7 +426,6 @@ FORMS += \
     src/qt/forms/transactiondescdialog.ui \
     src/qt/forms/overviewpage.ui \
     src/qt/forms/sendcoinsentry.ui \
-    src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \
     src/qt/forms/askpassphrasepage.ui \
     src/qt/forms/rpcconsole.ui \

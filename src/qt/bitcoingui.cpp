@@ -10,7 +10,6 @@
 #include "transactiontablemodel.h"
 #include "addressbookpage.h"
 #include "sendcoinsdialog.h"
-#include "sendbitcoinsdialog.h"
 #include "signverifymessagedialog.h"
 #include "optionsdialog.h"
 #include "aboutdialog.h"
@@ -182,9 +181,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create Address Page
     addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::AddressBookTab);
 
-    // Create VeriBit Page
-    sendBitCoinsPage = new SendBitCoinsDialog(this);
-
     // Create Forums Page
     forumsPage = new ForumsPage();
 
@@ -202,7 +198,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
-    centralWidget->addWidget(sendBitCoinsPage);
     centralWidget->addWidget(forumsPage);
     centralWidget->addWidget(blockchainPage);
     setCentralWidget(centralWidget);
@@ -306,8 +301,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     connect(askPassphrasePage, SIGNAL(lockWalletFeatures(bool)), this, SLOT(lockWalletFeatures(bool)));
     connect(encryptWalletPage, SIGNAL(lockWalletFeatures(bool)), this, SLOT(lockWalletFeatures(bool)));
-    connect(sendCoinsPage, SIGNAL(gotoSendBitCoins()), this, SLOT(gotoSendBitCoinsPage()));
-    connect(sendBitCoinsPage, SIGNAL(gotoSendCoins()), this, SLOT(gotoSendCoinsPage()));
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -645,7 +638,6 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         receiveCoinsPage->setModel(walletModel->getAddressTableModel());
         transactionView->setModel(walletModel);
         addressBookPage->setModel(walletModel->getAddressTableModel());
-        sendBitCoinsPage->setModel(walletModel);
         forumsPage->setModel(walletModel);
         blockchainPage->setModel(walletModel);
 
@@ -1098,15 +1090,6 @@ void BitcoinGUI::gotoAddressBookPage()
     dlg.exec();
 }
 
-void BitcoinGUI::gotoSendBitCoinsPage()
-{
-    sendCoinsAction->setChecked(true);
-    centralWidget->setCurrentWidget(sendBitCoinsPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
 void BitcoinGUI::gotoForumsPage()
 {
     forumsAction->setChecked(true);
@@ -1185,15 +1168,11 @@ void BitcoinGUI::dropEvent(QDropEvent *event)
         {
             if (sendCoinsPage->handleURI(uri.toString()))
                 nValidUrisFound++;
-            else if (sendBitCoinsPage->handleURI(uri.toString()))
-                nValidUrisFoundBit++;
         }
 
         // if valid URIs were found
         if (nValidUrisFound)
             gotoSendCoinsPage();
-        else if (nValidUrisFoundBit)
-            gotoSendBitCoinsPage();
         else
             notificator->notify(Notificator::Warning, tr("URI handling"), tr("URI can not be parsed! This can be caused by an invalid Verium address or malformed URI parameters."));
     }
@@ -1208,11 +1187,6 @@ void BitcoinGUI::handleURI(QString strURI)
     {
         showNormalIfMinimized();
         gotoSendCoinsPage();
-    }
-    else if (sendBitCoinsPage->handleURI(strURI))
-    {
-        showNormalIfMinimized();
-        gotoSendBitCoinsPage();
     }
     else
         notificator->notify(Notificator::Warning, tr("URI handling"), tr("URI can not be parsed! This can be caused by an invalid Verium address or malformed URI parameters."));

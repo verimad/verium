@@ -80,7 +80,6 @@ private:
     AddressBookPage *addressBookPage;
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
-    SendBitCoinsDialog *sendBitCoinsPage;
     ForumsPage *forumsPage;
     BlockchainPage *blockchainPage;
 
@@ -196,8 +195,6 @@ private slots:
     void gotoReceiveCoinsPage();
     /** Switch to send coins page */
     void gotoSendCoinsPage();
-    /** Switch to send coins page */
-    void gotoSendBitCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
     /** Switch to Blockchain page */

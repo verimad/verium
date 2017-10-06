@@ -47,8 +47,6 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
     this->layout()->setContentsMargins(10, 10 + HEADER_HEIGHT, 10, 10);
 
     ui->labelCoinControlFeatures->setFont(qFontBold);
-    ui->btnBitcoin->setEnabled(true);
-    ui->btnVerium->setEnabled(false);
 
 #if QT_VERSION >= 0x040700
     /* Do not move this to the XML file, Qt before 4.7 will choke on it */
@@ -56,8 +54,6 @@ SendCoinsDialog::SendCoinsDialog(QWidget *parent) :
 #endif
 
     addEntry();
-
-    connect(ui->btnBitcoin, SIGNAL(clicked()), this, SLOT(gotoSendBitCoinsPage()));
     connect(ui->addButton, SIGNAL(clicked()), this, SLOT(addEntry()));
     connect(ui->clearButton, SIGNAL(clicked()), this, SLOT(clear()));
 
