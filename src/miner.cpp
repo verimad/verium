@@ -428,12 +428,13 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 {
     uint256 hashBlock = pblock->GetWorkHash();
     uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
+    
+    printf("CheckWork() : new proof-of-work block found  \n  hash: %s  \ntarget: %s\n", hashBlock.GetHex().c_str(), hashTarget.GetHex().c_str());
 
     if (hashBlock > hashTarget)
         return error("CheckWork() : proof-of-work not meeting target");
 
     //// debug print
-    printf("CheckWork() : new proof-of-work block found  \n  hash: %s  \ntarget: %s\n", hashBlock.GetHex().c_str(), hashTarget.GetHex().c_str());
     pblock->print();
     printf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue).c_str());
 
@@ -525,25 +526,20 @@ void Miner(CWallet *pwallet)
             while (fGenerateVerium)
             {
                 unsigned int nHashesDone = 0;
-                uint256 thash;
-                while (fGenerateVerium)
+                if (fGenerateVerium)
                 {
                     // scrypt^2
-                    scryptSquaredHash(BEGIN(pblock->nVersion), BEGIN(thash));
-
-                    if (thash <= hashTarget)
+                    int nHashes = 0;
+                    if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes))
                     {
                         // Found a solution
-                        printf("Miner found a solution");
+                        printf("Miner found a solution\n");
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
                         CheckWork(pblock.get(), *pwallet, reservekey);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
-                        break;
                     }
-                    pblock->nNonce += 1;
-                    nHashesDone += 1;
-                    if ((pblock->nNonce & 0xF) == 0)
-                        break;                   
+                    nHashesDone += nHashes;
+                    pblock->nNonce += nHashes;
                 }
 
                 // Hash meter
