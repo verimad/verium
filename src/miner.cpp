@@ -544,25 +544,28 @@ void Miner(CWallet *pwallet)
 
                 // Hash meter
                 static int64_t nHashCounter;
-                if (nHPSTimerStart == 0)
-                {
-                    nHPSTimerStart = GetTimeMillis();
-                    nHashCounter = 0;
-                }
-                else
-                    nHashCounter += nHashesDone;
-                if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
                 {
                     static CCriticalSection cs;
                     {
                         LOCK(cs);
-                        if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
+                        if (nHPSTimerStart == 0)
                         {
-                            dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
                             nHPSTimerStart = GetTimeMillis();
                             nHashCounter = 0;
-                            updateHashrate(dHashesPerMin);
-                            printf("Total local hashrate %6.0f hashes/min\n", hashrate);
+                        }
+                        else
+                            nHashCounter += nHashesDone;
+
+                        if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
+                        {
+                            if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
+                            {
+                                dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
+                                nHPSTimerStart = GetTimeMillis();
+                                nHashCounter = 0;
+                                updateHashrate(dHashesPerMin);
+                                printf("Total local hashrate %6.0f hashes/min\n", hashrate);
+                            }
                         }
                     }
                 }
