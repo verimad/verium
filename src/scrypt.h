@@ -10,7 +10,6 @@
 
 static const int SCRYPT_SCRATCHPAD_SIZE = 134218239;
 static const int N = 1048576;
-#define USE_AVX2 = 1;
 
 int scrypt_best_throughput();
 
@@ -35,11 +34,15 @@ extern "C" void scrypt_core_3way(uint32_t *X, uint32_t *V, int N);
 #if defined(__x86_64__) && defined(USE_AVX2)
 #define SCRYPT_MAX_WAYS 24
 #define HAVE_SCRYPT_6WAY 1
+#define HAVE_SHA256_4WAY 1
 #define HAVE_SHA256_8WAY 1
 #define scrypt_best_throughput() 6;
 extern "C" int sha256_use_8way();
 extern "C" void sha256_init_8way(uint32_t *state);
 extern "C" void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
+extern "C" int sha256_use_4way();
+extern "C" void sha256_init_4way(uint32_t *state);
+extern "C" void sha256_transform_4way(uint32_t *state, const uint32_t *block, int swap);
 extern "C" void scrypt_core_6way(uint32_t *X, uint32_t *V, int N);
 #endif
 
