@@ -558,14 +558,11 @@ void Miner(CWallet *pwallet)
 
                         if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
                         {
-                            if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
-                            {
-                                dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
-                                nHPSTimerStart = GetTimeMillis();
-                                nHashCounter = 0;
-                                updateHashrate(dHashesPerMin);
-                                printf("Total local hashrate %6.0f hashes/min\n", hashrate);
-                            }
+                            dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
+                            nHPSTimerStart = GetTimeMillis();
+                            nHashCounter = 0;
+                            updateHashrate(dHashesPerMin);
+                            printf("Total local hashrate %6.0f hashes/min\n", hashrate);
                         }
                     }
                 }
