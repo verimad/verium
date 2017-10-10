@@ -380,6 +380,7 @@ Value bootstrap(const Array& params, bool fHelp)
     StartShutdown();
 
     result.push_back(Pair("success", true));
+    result.push_back(Pair("comment", "Bootstrap successful; veriumd has been stopped, please restart."));
 
     return result;
 }
