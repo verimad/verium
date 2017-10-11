@@ -22,7 +22,8 @@ LIBPATHS= \
 
 USE_UPNP:=1
 USE_IPV6:=1
-USE_AVX2:=1
+USE_AVX:=1
+USE_AVX2:=0
 
 LIBS= -dead_strip
 
@@ -106,7 +107,9 @@ endif
 ifneq (${USE_IPV6}, -)
 	DEFS += -DUSE_IPV6=$(USE_IPV6)
 endif
-
+ifneq (${USE_AVX}, 1)
+	DEFS += -DUSE_AVX
+endif
 ifneq (${USE_AVX2}, 1)
 	DEFS += -DUSE_AVX2
 endif

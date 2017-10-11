@@ -5,6 +5,7 @@ INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE __STDC_FORMAT_MACROS __STDC_LIMIT_MACROS
 CONFIG += no_include_pwd thread release
 USE_QRCODE = 1
+USE_AVX = 1
 USE_AVX2 = 0
 
 !win32{
@@ -155,6 +156,11 @@ contains(USE_IPV6, -) {
         USE_IPV6=1
     }
     DEFINES += USE_IPV6=$$USE_IPV6
+}
+
+contains(USE_AVX, 1) {
+	message(Building with AVX support)
+	DEFINES += USE_AVX
 }
 
 contains(USE_AVX2, 1) {
