@@ -27,6 +27,10 @@
 #  define MKDIR(d) mkdir(d, 0775)
 #endif
 
+#ifdef MAC_OSX
+#  define fopen64 fopen
+#endif
+
 
 int is_file_within_path(boost::filesystem::path file_path, boost::filesystem::path dir_path)
 {

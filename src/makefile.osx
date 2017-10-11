@@ -22,6 +22,7 @@ LIBPATHS= \
 
 USE_UPNP:=1
 USE_IPV6:=1
+USE_AVX2:=1
 
 LIBS= -dead_strip
 
@@ -106,6 +107,10 @@ ifneq (${USE_IPV6}, -)
 	DEFS += -DUSE_IPV6=$(USE_IPV6)
 endif
 
+ifneq (${USE_AVX2}, 1)
+	DEFS += -DUSE_AVX2
+endif
+
 all: veriumd
 
 LIBS += $(CURDIR)/leveldb/libleveldb.a $(CURDIR)/leveldb/libmemenv.a
@@ -117,6 +122,8 @@ leveldb/libleveldb.a:
 obj/txdb-leveldb.o: leveldb/libleveldb.a
 
 #ASM source
+DEFS += -DUSE_ASM
+
 OBJS += obj/scrypt-arm.o obj/scrypt-x86.o obj/scrypt-x64.o
 
 obj/scrypt-x86.o: scrypt-x86.S
@@ -138,8 +145,6 @@ obj/sha2-x64.o: sha2-x64.S
 
 obj/sha2-arm.o: sha2-arm.S
 	$(CXX) -c $(CFLAGS) -MMD -o $@ $<
-
-DEFS += -DUSE_ASM
 
 # auto-generated dependencies:
 -include obj/*.P
