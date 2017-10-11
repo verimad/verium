@@ -117,6 +117,8 @@ void Shutdown(void* parg)
                     CTxDB().Destroy();
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
                     boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                    if (fBootstrapConfig)
+                        boost::filesystem::rename(GetDataDir() / "bootstrap" / "verium.conf", GetConfigFile());
                     boost::filesystem::remove_all(GetDataDir() / "bootstrap");
 
                     RestartWallet(NULL, true);
@@ -143,6 +145,8 @@ void Shutdown(void* parg)
                 CTxDB().Destroy();
                 boost::filesystem::rename(GetDataDir() / "bootstrap" / "blk0001.dat", GetDataDir() / "blk0001.dat");
                 boost::filesystem::rename(GetDataDir() / "bootstrap" / "txleveldb", GetDataDir() / "txleveldb");
+                if (fBootstrapConfig)
+                    boost::filesystem::rename(GetDataDir() / "bootstrap" / "verium.conf", GetConfigFile());
                 boost::filesystem::remove_all(GetDataDir() / "bootstrap");
 
                 boost::filesystem::path pathBootstrapTurbo(GetDataDir() / "bootstrap_VRM.zip");

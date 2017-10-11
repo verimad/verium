@@ -89,6 +89,7 @@ bool fTimerCheckForUpdate = false;
 bool fSuperNETInstalled = false;
 #endif
 bool fBootstrapTurbo = false;
+bool fBootstrapConfig = false;
 bool fFirstRun = true;
 bool fDebug = false;
 bool fDebugNet = false;

@@ -155,6 +155,7 @@ extern bool fTimerCheckForUpdate;
 extern bool fSuperNETInstalled;
 #endif
 extern bool fBootstrapTurbo;
+extern bool fBootstrapConfig;
 extern bool fFirstRun;
 extern bool fDebug;
 extern bool fDebugNet;
