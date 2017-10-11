@@ -4,7 +4,7 @@
 
 USE_UPNP:=1
 USE_IPV6:=1
-USE_AVX2:=1
+USE_AVX2:=0
 
 
 LINK:=$(CXX)
