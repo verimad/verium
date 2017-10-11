@@ -881,7 +881,7 @@ public:
     uint256 GetWorkHash() const
     {
         uint256 thash;
-        scryptSquaredHash(BEGIN(nVersion), BEGIN(thash));
+        scryptHash(BEGIN(nVersion), BEGIN(thash));
         return thash;
     }
 

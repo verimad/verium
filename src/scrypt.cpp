@@ -441,7 +441,7 @@ static void scrypt_N_1_1_256(const uint32_t *input, uint32_t *output, uint32_t *
 }
 
 #ifdef HAVE_SHA256_4WAY
-static void scrypt_1024_1_1_256_4way(const uint32_t *input,
+static void scrypt_N_1_1_256_4way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
 	uint32_t tstate[4 * 8] __attribute__((aligned(128)));
@@ -480,7 +480,7 @@ static void scrypt_1024_1_1_256_4way(const uint32_t *input,
 
 #ifdef HAVE_SCRYPT_3WAY
 
-static void scrypt_1024_1_1_256_3way(const uint32_t *input,
+static void scrypt_N_1_1_256_3way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
 	uint32_t tstate[3 * 8], ostate[3 * 8];
@@ -507,7 +507,7 @@ static void scrypt_1024_1_1_256_3way(const uint32_t *input,
 }
 
 #ifdef HAVE_SHA256_4WAY
-static void scrypt_1024_1_1_256_12way(const uint32_t *input,
+static void scrypt_N_1_1_256_12way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
 	uint32_t tstate[12 * 8] __attribute__((aligned(128)));
@@ -558,7 +558,7 @@ static void scrypt_1024_1_1_256_12way(const uint32_t *input,
 #endif /* HAVE_SCRYPT_3WAY */
 
 #ifdef HAVE_SCRYPT_6WAY
-static void scrypt_1024_1_1_256_24way(const uint32_t *input,
+static void scrypt_N_1_1_256_24way(const uint32_t *input,
 	uint32_t *output, uint32_t *midstate, unsigned char *scratchpad, int N)
 {
 	uint32_t tstate[24 * 8] __attribute__((aligned(128)));
@@ -655,22 +655,22 @@ bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone)
 		
 #if defined(HAVE_SHA256_4WAY)
 	if (throughput == 4)
-		scrypt_1024_1_1_256_4way(data, dhash, midstate, scratchbuf, N);
+        scrypt_N_1_1_256_4way(data, dhash, midstate, scratchbuf, N);
 	else
 #endif
 #if defined(HAVE_SCRYPT_3WAY) && defined(HAVE_SHA256_4WAY)
 	if (throughput == 12)
-		scrypt_1024_1_1_256_12way(data, dhash, midstate, scratchbuf, N);
+        scrypt_N_1_1_256_12way(data, dhash, midstate, scratchbuf, N);
 	else
 #endif
 #if defined(HAVE_SCRYPT_6WAY)
 	if (throughput == 24)
-		scrypt_1024_1_1_256_24way(data, dhash, midstate, scratchbuf, N);
+        scrypt_N_1_1_256_24way(data, dhash, midstate, scratchbuf, N);
 	else
 #endif
 #if defined(HAVE_SCRYPT_3WAY)
 	if (throughput == 3)
-		scrypt_1024_1_1_256_3way(data, dhash, midstate, scratchbuf, N);
+        scrypt_N_1_1_256_3way(data, dhash, midstate, scratchbuf, N);
 	else
 #endif
 		scrypt_N_1_1_256(data, dhash, midstate, scratchbuf);
@@ -687,7 +687,7 @@ bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone)
 	return false;
 }
 
-void scryptSquaredHash(const void *input, char *output)
+void scryptHash(const void *input, char *output)
 {
     uint32_t midstate[8];
     uint32_t data[20];
