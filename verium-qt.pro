@@ -1,12 +1,12 @@
 TEMPLATE = app
 TARGET = verium-qt
 VERSION = 1.1
-USE_QRCODE = 1
 INCLUDEPATH += src src/json src/qt
 DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE __STDC_FORMAT_MACROS __STDC_LIMIT_MACROS
-CONFIG += no_include_pwd
-CONFIG += thread
-CONFIG += release
+CONFIG += no_include_pwd thread release
+USE_QRCODE = 1
+USE_AVX2 = 1
+
 !win32{
 CONFIG += static
 }
@@ -157,6 +157,12 @@ contains(USE_IPV6, -) {
     DEFINES += USE_IPV6=$$USE_IPV6
 }
 
+contains(USE_AVX2, 1) {
+	message(Building with AVX2 support)
+	DEFINES += USE_AVX2
+}
+
+
 contains(BITCOIN_NEED_QT_PLUGINS, 1) {
     DEFINES += BITCOIN_NEED_QT_PLUGINS
     QTPLUGIN += qcncodecs qjpcodecs qtwcodecs qkrcodecs qtaccessiblewidgets
@@ -293,7 +299,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactiondesc.h \
     src/qt/transactiondescdialog.h \
     src/qt/bitcoinamountfield.h \
-    src/qt/veribitcoinamountfield.h \
     src/wallet.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \

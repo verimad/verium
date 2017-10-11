@@ -343,7 +343,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
         nLastBlockSize = nBlockSize;
         pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees, pindexPrev);
         if (fDebug && GetBoolArg("-printpriority"))
-            printf("CreateNewBlock(): total size %"PRIu64"\n", nBlockSize);
+            printf("CreateNewBlock(): total size %" PRIu64 "\n", nBlockSize);
         if (pFees)
             *pFees = nFees;
 
@@ -503,7 +503,7 @@ void Miner(CWallet *pwallet)
             IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
 
 
-            printf("Running Miner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
+            printf("Running Miner with %" PRIszu " transactions in block (%u bytes)\n", pblock->vtx.size(),
                    ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
             //
