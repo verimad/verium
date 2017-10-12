@@ -346,12 +346,17 @@ int ExtractBootstrapFile(boost::filesystem::path& pathBootstrap)
 
 Value bootstrap(const Array& params, bool fHelp)
 {
-    if (fHelp || params.size() != 0)
+    if (fHelp || params.size() > 1)
         throw runtime_error(
-            "bootstrap\n"
-            "Download and extract blockchain from www.vericoin.info.\n"
+            "bootstrap [overwrite_veriumconf=false]\n"
+            "Download blockchain and optionally a current verium.conf from www.vericoin.info.\n"
             "Daemon exits when finished."
         );
+
+    if (params.size() == 1)
+    {
+        fBootstrapConfig = params[0].get_bool();
+    }
 
     Object result;
     boost::filesystem::path pathBootstrapZip = GetDataDir() / "bootstrap_VRM.zip";
