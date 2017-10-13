@@ -1,13 +1,13 @@
 TEMPLATE = app
 TARGET = verium-qt
-VERSION = 1.0.4
-USE_QRCODE = 1
-USE_SSE2 = 1
+VERSION = 1.1
 INCLUDEPATH += src src/json src/qt
-DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE
-CONFIG += no_include_pwd
-CONFIG += thread
-CONFIG += release
+DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE __STDC_FORMAT_MACROS __STDC_LIMIT_MACROS
+CONFIG += no_include_pwd thread release
+USE_QRCODE = 1
+USE_AVX = 1
+USE_AVX2 = 0
+
 !win32{
 CONFIG += static
 }
@@ -122,14 +122,6 @@ contains(USE_QRCODE, 1) {
     LIBS += -lqrencode
 }
 
-contains(USE_SSE2, 1) {
-DEFINES += USE_SSE2}
-gccsse2.input  = SOURCES_SSE2
-gccsse2.output = $$PWD/build/${QMAKE_FILE_BASE}.o
-gccsse2.commands = $(CXX) -c $(CXXFLAGS) $(INCPATH) -o ${QMAKE_FILE_OUT} ${QMAKE_FILE_NAME} -msse2 -mstackrealign
-QMAKE_EXTRA_COMPILERS += gccsse2
-SOURCES_SSE2 += src/scrypt-sse2.cpp
-
 # use: qmake "USE_UPNP=1" ( enabled by default; default)
 #  or: qmake "USE_UPNP=0" (disabled by default)
 #  or: qmake "USE_UPNP=-" (not supported)
@@ -165,6 +157,17 @@ contains(USE_IPV6, -) {
     }
     DEFINES += USE_IPV6=$$USE_IPV6
 }
+
+contains(USE_AVX, 1) {
+	message(Building with AVX support)
+	DEFINES += USE_AVX
+}
+
+contains(USE_AVX2, 1) {
+	message(Building with AVX2 support)
+	DEFINES += USE_AVX2
+}
+
 
 contains(BITCOIN_NEED_QT_PLUGINS, 1) {
     DEFINES += BITCOIN_NEED_QT_PLUGINS
@@ -244,7 +247,6 @@ contains(USE_O3, 1) {
 }
 
 QMAKE_CXXFLAGS_WARN_ON = -fdiagnostics-show-option -Wall -Wextra -Wno-ignored-qualifiers -Wformat -Wformat-security -Wno-unused-parameter -Wstack-protector
-
 # Input
 DEPENDPATH += src src/json src/qt
 HEADERS += src/qt/bitcoingui.h \
@@ -254,7 +256,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/coincontroldialog.h \
     src/qt/coincontroltreewidget.h \
     src/qt/sendcoinsdialog.h \
-    src/qt/sendbitcoinsdialog.h \
     src/qt/addressbookpage.h \
     src/qt/signverifymessagedialog.h \
     src/qt/aboutdialog.h \
@@ -303,7 +304,6 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/transactiondesc.h \
     src/qt/transactiondescdialog.h \
     src/qt/bitcoinamountfield.h \
-    src/qt/veribitcoinamountfield.h \
     src/wallet.h \
     src/keystore.h \
     src/qt/transactionfilterproxy.h \
@@ -315,10 +315,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/csvmodelwriter.h \
     src/crypter.h \
     src/qt/sendcoinsentry.h \
-    src/qt/sendbitcoinsentry.h \
     src/qt/qvalidatedlineedit.h \
     src/qt/bitcoinunits.h \
-    src/qt/veribitcoinunits.h \
     src/qt/qvaluecombobox.h \
     src/qt/askpassphrasedialog.h \
     src/qt/askpassphrasepage.h \
@@ -347,7 +345,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/addresstablemodel.cpp \
     src/qt/optionsdialog.cpp \
     src/qt/sendcoinsdialog.cpp \
-    src/qt/sendbitcoinsdialog.cpp \
     src/qt/coincontroldialog.cpp \
     src/qt/coincontroltreewidget.cpp \
     src/qt/addressbookpage.cpp \
@@ -380,7 +377,6 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/transactiondescdialog.cpp \
     src/qt/bitcoinstrings.cpp \
     src/qt/bitcoinamountfield.cpp \
-    src/qt/veribitcoinamountfield.cpp \
     src/wallet.cpp \
     src/keystore.cpp \
     src/qt/transactionfilterproxy.cpp \
@@ -398,10 +394,8 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/csvmodelwriter.cpp \
     src/crypter.cpp \
     src/qt/sendcoinsentry.cpp \
-    src/qt/sendbitcoinsentry.cpp \
     src/qt/qvalidatedlineedit.cpp \
     src/qt/bitcoinunits.cpp \
-    src/qt/veribitcoinunits.cpp \
     src/qt/qvaluecombobox.cpp \
     src/qt/askpassphrasedialog.cpp \
     src/qt/askpassphrasepage.cpp \
@@ -417,10 +411,16 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/forumspage.cpp \
     src/qt/blockchainpage.cpp \
     src/noui.cpp \
-    src/scrypt.cpp \
     src/qt/webview.cpp \
     src/qt/postdialog.cpp \
     src/qt/whatsnewdialog.cpp \
+	src/scrypt.cpp \
+	src/scrypt-x64.S \
+	src/scrypt-x86.S \
+	src/scrypt-arm.S \
+	src/sha2-x64.S \
+	src/sha2-x86.S \
+	src/sha2-arm.S \
 
 RESOURCES += \
     src/qt/bitcoin.qrc
@@ -428,7 +428,6 @@ RESOURCES += \
 FORMS += \
     src/qt/forms/coincontroldialog.ui \
     src/qt/forms/sendcoinsdialog.ui \
-    src/qt/forms/sendbitcoinsdialog.ui \
     src/qt/forms/forumspage.ui \
     src/qt/forms/blockchainpage.ui \
     src/qt/forms/addressbookpage.ui \
@@ -438,7 +437,6 @@ FORMS += \
     src/qt/forms/transactiondescdialog.ui \
     src/qt/forms/overviewpage.ui \
     src/qt/forms/sendcoinsentry.ui \
-    src/qt/forms/sendbitcoinsentry.ui \
     src/qt/forms/askpassphrasedialog.ui \
     src/qt/forms/askpassphrasepage.ui \
     src/qt/forms/rpcconsole.ui \

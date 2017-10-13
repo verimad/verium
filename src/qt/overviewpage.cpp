@@ -256,17 +256,13 @@ void OverviewPage::setBalance(qint64 balance, qint64 unconfirmedBalance, qint64 
 void OverviewPage::setStatistics()
 {
     // calculate stats
-    double minerate;
+    int minerate;
     double nethashrate = GetPoWKHashPM();
     double blocktime = (double)calculateBlocktime(pindexBest)/60;
     double totalhashrate = hashrate;
-    if (totalhashrate == 0.0)
-    {
-        minerate = 0.0;
-    }
-    else
-    {
-        minerate = 16.666667*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60
+    if (totalhashrate == 0.0){ minerate = 0;}
+    else{
+        minerate = 0.694*(nethashrate*blocktime)/(totalhashrate);  //((100/((totalhashrate_Hpm/(nethashrate_kHpm*1000))*100))*blocktime_min)/60*24
     }
 
     // display stats

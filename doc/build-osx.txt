@@ -35,7 +35,7 @@ but you can get the current version from http://developer.apple.com
 
 2.  Install dependencies from MacPorts
 
-sudo port install boost db48 openssl miniupnpc qt5-mac gcc49 wget
+sudo port install boost db48 openssl miniupnpc qt5-mac gcc49 wget minizip curl
 
 Optionally install qrencode (and set USE_QRCODE=1):
 sudo port install qrencode

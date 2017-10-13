@@ -10,7 +10,6 @@
 #include "transactiontablemodel.h"
 #include "addressbookpage.h"
 #include "sendcoinsdialog.h"
-#include "sendbitcoinsdialog.h"
 #include "signverifymessagedialog.h"
 #include "optionsdialog.h"
 #include "aboutdialog.h"
@@ -182,9 +181,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create Address Page
     addressBookPage = new AddressBookPage(AddressBookPage::ForEditing, AddressBookPage::AddressBookTab);
 
-    // Create VeriBit Page
-    sendBitCoinsPage = new SendBitCoinsDialog(this);
-
     // Create Forums Page
     forumsPage = new ForumsPage();
 
@@ -202,7 +198,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(transactionsPage);
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
-    centralWidget->addWidget(sendBitCoinsPage);
     centralWidget->addWidget(forumsPage);
     centralWidget->addWidget(blockchainPage);
     setCentralWidget(centralWidget);
@@ -306,8 +301,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
 
     connect(askPassphrasePage, SIGNAL(lockWalletFeatures(bool)), this, SLOT(lockWalletFeatures(bool)));
     connect(encryptWalletPage, SIGNAL(lockWalletFeatures(bool)), this, SLOT(lockWalletFeatures(bool)));
-    connect(sendCoinsPage, SIGNAL(gotoSendBitCoins()), this, SLOT(gotoSendBitCoinsPage()));
-    connect(sendBitCoinsPage, SIGNAL(gotoSendCoins()), this, SLOT(gotoSendCoinsPage()));
 
     // Clicking on a transaction on the overview page simply sends you to transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), this, SLOT(gotoHistoryPage()));
@@ -645,7 +638,6 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         receiveCoinsPage->setModel(walletModel->getAddressTableModel());
         transactionView->setModel(walletModel);
         addressBookPage->setModel(walletModel->getAddressTableModel());
-        sendBitCoinsPage->setModel(walletModel);
         forumsPage->setModel(walletModel);
         blockchainPage->setModel(walletModel);
 
@@ -846,7 +838,11 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
 
     QDateTime lastBlockDate = clientModel->getLastBlockDate();
+    QDateTime GenBlockDate = clientModel->getGenesisBlockDate();
+    int lastBlock = clientModel->getNumBlocksOfPeers();
     int secs = lastBlockDate.secsTo(QDateTime::currentDateTime());
+    int totalHours = GenBlockDate.daysTo(QDateTime::currentDateTime())*24;
+    int currentHour = totalHours - (secs/(60*60));
     // Represent time from last generated block in human readable text
     if(secs <= 0)
     {
@@ -870,7 +866,7 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
 
     // Set icon state: spinning if catching up, tick otherwise
-    if(secs < 90*60 && count >= nTotalBlocks)
+    if(secs < 60*60 && count >= lastBlock)
     {
         tooltip = tr("Up to date") + QString(".\n") + tr("Downloaded %1 blocks of transaction history.").arg(count);
         overviewPage->setStatistics();
@@ -880,18 +876,17 @@ void BitcoinGUI::setNumBlocks(int count, int nTotalBlocks)
     }
     else
     {
-        int nRemainingBlocks = nTotalBlocks - count;
-        float nPercentageDone = count / (nTotalBlocks * 0.01f);
+        float nPercentageDone = currentHour / (totalHours * 0.01f);
 
         if (strStatusBarWarnings.isEmpty())
         {
-            progressBar->setFormat(tr("Synchronizing with Network: ~%1 Block%2 Remaining").arg(nRemainingBlocks).arg(nRemainingBlocks == 1 ? "" : "s"));
-            progressBar->setMaximum(nTotalBlocks);
-            progressBar->setValue(count);
+            progressBar->setFormat(tr("Synchronizing with Network (%1%)").arg(nPercentageDone, 0, 'f', 1));
+            progressBar->setMaximum(totalHours);
+            progressBar->setValue(currentHour);
             progressBar->setVisible(true);
         }
         labelBlocksIcon->show();
-        tooltip = tr("Syncing") + QString(".\n") + tr("Downloaded %1 of %2 blocks of transaction history (%3% done).").arg(count).arg(nTotalBlocks).arg(nPercentageDone, 0, 'f', 2);
+        tooltip = tr("Syncing") + QString(".\n") + tr("Downloaded %1 blocks of transaction history (%2% done).").arg(count).arg(nPercentageDone, 0, 'f', 1);
         labelBlocksIcon->setPixmap(QIcon(":/icons/notsynced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
 
         overviewPage->showOutOfSyncWarning(true);
@@ -1095,15 +1090,6 @@ void BitcoinGUI::gotoAddressBookPage()
     dlg.exec();
 }
 
-void BitcoinGUI::gotoSendBitCoinsPage()
-{
-    sendCoinsAction->setChecked(true);
-    centralWidget->setCurrentWidget(sendBitCoinsPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
 void BitcoinGUI::gotoForumsPage()
 {
     forumsAction->setChecked(true);
@@ -1182,15 +1168,11 @@ void BitcoinGUI::dropEvent(QDropEvent *event)
         {
             if (sendCoinsPage->handleURI(uri.toString()))
                 nValidUrisFound++;
-            else if (sendBitCoinsPage->handleURI(uri.toString()))
-                nValidUrisFoundBit++;
         }
 
         // if valid URIs were found
         if (nValidUrisFound)
             gotoSendCoinsPage();
-        else if (nValidUrisFoundBit)
-            gotoSendBitCoinsPage();
         else
             notificator->notify(Notificator::Warning, tr("URI handling"), tr("URI can not be parsed! This can be caused by an invalid Verium address or malformed URI parameters."));
     }
@@ -1205,11 +1187,6 @@ void BitcoinGUI::handleURI(QString strURI)
     {
         showNormalIfMinimized();
         gotoSendCoinsPage();
-    }
-    else if (sendBitCoinsPage->handleURI(strURI))
-    {
-        showNormalIfMinimized();
-        gotoSendBitCoinsPage();
     }
     else
         notificator->notify(Notificator::Warning, tr("URI handling"), tr("URI can not be parsed! This can be caused by an invalid Verium address or malformed URI parameters."));

@@ -1,38 +1,65 @@
 #ifndef SCRYPT_H
 #define SCRYPT_H
+
 #include <stdlib.h>
 #include <stdint.h>
+#include <stddef.h>
+#include <inttypes.h>
+#include "util.h"
 
-static const int Nsize = 1048576;
 
-void scrypt_N_1_1_256(const void *input, char *output, void *scratchpad);
-void scrypt_N_1_1_256_sp_generic(const void *input, char *output, void *scratchpad);
+static const int SCRYPT_SCRATCHPAD_SIZE = 134218239;
+static const int N = 1048576;
 
-#if defined(USE_SSE2)
-extern void scrypt_detect_sse2(unsigned int cpuid_edx);
-void scrypt_N_1_1_256_sp_sse2(const void *input, char *output, void *scratchpad);
-extern void (*scrypt_N_1_1_256_sp)(const void *input, char *output, void *scratchpad);
+int scrypt_best_throughput();
+
+bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone);
+
+void scryptHash(const void *input, char *output);
+extern unsigned char *scrypt_buffer_alloc();
+extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
+extern "C" void sha256_transform(uint32_t *state, const uint32_t *block, int swap);
+
+#if defined(__x86_64__) && !defined(USE_AVX2)
+#define SCRYPT_MAX_WAYS 12
+#define HAVE_SCRYPT_3WAY 1
+#define HAVE_SHA256_4WAY 1
+#define scrypt_best_throughput() 3;
+extern "C" int sha256_use_4way();
+extern "C" void sha256_init_4way(uint32_t *state);
+extern "C" void sha256_transform_4way(uint32_t *state, const uint32_t *block, int swap);
+extern "C" void scrypt_core_3way(uint32_t *X, uint32_t *V, int N);
 #endif
 
-void
-PBKDF2_SHA256(const uint8_t *passwd, size_t passwdlen, const uint8_t *salt,
-    size_t saltlen, uint64_t c, uint8_t *buf, size_t dkLen);
-
-
-static inline uint32_t scrypt_le32dec(const void *pp)
-{
-        const uint8_t *p = (uint8_t const *)pp;
-        return ((uint32_t)(p[0]) + ((uint32_t)(p[1]) << 8) +
-            ((uint32_t)(p[2]) << 16) + ((uint32_t)(p[3]) << 24));
-}
-
-static inline void scrypt_le32enc(void *pp, uint32_t x)
-{
-        uint8_t *p = (uint8_t *)pp;
-        p[0] = x & 0xff;
-        p[1] = (x >> 8) & 0xff;
-        p[2] = (x >> 16) & 0xff;
-        p[3] = (x >> 24) & 0xff;
-}
-
+#if defined(__x86_64__) && defined(USE_AVX2)
+#define SCRYPT_MAX_WAYS 24
+#define HAVE_SCRYPT_6WAY 1
+#define HAVE_SHA256_4WAY 1
+#define HAVE_SHA256_8WAY 1
+#define scrypt_best_throughput() 6;
+extern "C" int sha256_use_8way();
+extern "C" void sha256_init_8way(uint32_t *state);
+extern "C" void sha256_transform_8way(uint32_t *state, const uint32_t *block, int swap);
+extern "C" int sha256_use_4way();
+extern "C" void sha256_init_4way(uint32_t *state);
+extern "C" void sha256_transform_4way(uint32_t *state, const uint32_t *block, int swap);
+extern "C" void scrypt_core_6way(uint32_t *X, uint32_t *V, int N);
 #endif
+
+#elif defined(__i386__)
+#define SCRYPT_MAX_WAYS 1
+#define HAVE_SHA256_4WAY 1
+#define scrypt_best_throughput() 1
+extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
+extern "C" int sha256_use_4way();
+extern "C" void sha256_init_4way(uint32_t *state);
+extern "C" void sha256_transform_4way(uint32_t *state, const uint32_t *block, int swap);
+#endif
+
+#define bswap_32(x) ((((x) << 24) & 0xff000000u) | (((x) << 8) & 0x00ff0000u) \
+                   | (((x) >> 8) & 0x0000ff00u) | (((x) >> 24) & 0x000000ffu))
+
+static inline uint32_t swab32(uint32_t v)
+{
+    return bswap_32(v);
+}

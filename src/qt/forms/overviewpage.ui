@@ -1006,7 +1006,7 @@
           <string notr="true">QLabel {color: #444748}</string>
          </property>
          <property name="text">
-          <string>Estimated block hit within (hrs):</string>
+          <string>Mined block within (days):</string>
          </property>
         </widget>
        </item>

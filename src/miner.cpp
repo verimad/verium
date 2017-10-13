@@ -343,7 +343,7 @@ CBlock* CreateNewBlock(CWallet* pwallet, int64_t* pFees)
         nLastBlockSize = nBlockSize;
         pblock->vtx[0].vout[0].nValue = GetProofOfWorkReward(nFees, pindexPrev);
         if (fDebug && GetBoolArg("-printpriority"))
-            printf("CreateNewBlock(): total size %"PRIu64"\n", nBlockSize);
+            printf("CreateNewBlock(): total size %" PRIu64 "\n", nBlockSize);
         if (pFees)
             *pFees = nFees;
 
@@ -428,12 +428,13 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 {
     uint256 hashBlock = pblock->GetWorkHash();
     uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
+    
+    printf("CheckWork() : new proof-of-work block found  \n  hash: %s  \ntarget: %s\n", hashBlock.GetHex().c_str(), hashTarget.GetHex().c_str());
 
     if (hashBlock > hashTarget)
         return error("CheckWork() : proof-of-work not meeting target");
 
     //// debug print
-    printf("CheckWork() : new proof-of-work block found  \n  hash: %s  \ntarget: %s\n", hashBlock.GetHex().c_str(), hashTarget.GetHex().c_str());
     pblock->print();
     printf("generated %s\n", FormatMoney(pblock->vtx[0].vout[0].nValue).c_str());
 
@@ -465,9 +466,10 @@ bool CheckWork(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 ////////////////////////////////////////////////////////////////////////////
 
 static bool fGenerateVerium = false;
-static int64_t timeElapsed = 45000;
+static int64_t timeElapsed = 30000;
 double dHashesPerMin = 0.0;
 int64_t nHPSTimerStart = 0;
+unsigned int nExtraNonce = 0;
 
 void Miner(CWallet *pwallet)
 {
@@ -475,10 +477,9 @@ void Miner(CWallet *pwallet)
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("verium-miner");
 
-    // Each thread has its own key and counter
+    // Each thread has it's own nonce
     CReserveKey reservekey(pwallet);
-    unsigned int nExtraNonce = 0;
-    void *scratchpad = malloc(SCRYPT_SCRATCHPAD_SIZE);
+    nExtraNonce += 1;
 
     try
     {
@@ -486,7 +487,7 @@ void Miner(CWallet *pwallet)
         {
             while ((!fTestNet && vNodes.size() < 2) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
-                MilliSleep(30000);
+                MilliSleep(5000);
             }
 
             //
@@ -502,7 +503,7 @@ void Miner(CWallet *pwallet)
             IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
 
 
-            printf("Running Miner with %"PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
+            printf("Running Miner with %" PRIszu " transactions in block (%u bytes)\n", pblock->vtx.size(),
                    ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
             //
@@ -525,53 +526,43 @@ void Miner(CWallet *pwallet)
             while (fGenerateVerium)
             {
                 unsigned int nHashesDone = 0;
-                uint256 thash;
-                while (fGenerateVerium)
+                if (fGenerateVerium)
                 {
                     // scrypt^2
-                    scrypt_N_1_1_256(BEGIN(pblock->nVersion), BEGIN(thash), scratchpad);
-
-                    if (thash <= hashTarget)
+                    int nHashes = 0;
+                    if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes))
                     {
                         // Found a solution
-                        printf("Miner found a solution");
+                        printf("Miner found a solution\n");
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
                         CheckWork(pblock.get(), *pwallet, reservekey);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
-                        break;
                     }
-                    pblock->nNonce += 1;
-                    nHashesDone += 1;
-                    if ((pblock->nNonce & 0xF) == 0)
-                        break;                   
+                    nHashesDone += nHashes;
+                    pblock->nNonce += nHashes;
                 }
 
                 // Hash meter
                 static int64_t nHashCounter;
-                if (nHPSTimerStart == 0)
-                {
-                    nHPSTimerStart = GetTimeMillis();
-                    nHashCounter = 0;
-                }
-                else
-                    nHashCounter += nHashesDone;
-                if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
                 {
                     static CCriticalSection cs;
                     {
                         LOCK(cs);
+                        if (nHPSTimerStart == 0)
+                        {
+                            nHPSTimerStart = GetTimeMillis();
+                            nHashCounter = 0;
+                        }
+                        else
+                            nHashCounter += nHashesDone;
+
                         if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
                         {
                             dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
                             nHPSTimerStart = GetTimeMillis();
                             nHashCounter = 0;
-                            static int64_t nLogTime;
                             updateHashrate(dHashesPerMin);
-                            if (GetTime() - nLogTime > 30 * 60)
-                            {
-                                nLogTime = GetTime();
-                                printf("hashrate %6.0f hashes/min\n", dHashesPerMin);
-                            }
+                            printf("Total local hashrate %6.0f hashes/min\n", hashrate);
                         }
                     }
                 }
@@ -599,8 +590,8 @@ void Miner(CWallet *pwallet)
     }
     catch (boost::thread_interrupted)
     {
-        free(scratchpad);
         hashrate = 0;
+        nExtraNonce = 0;
         printf("Miner terminated\n");
         throw;
     }
