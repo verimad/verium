@@ -31,15 +31,11 @@
 #include "guiutil.h"
 #include "rpcconsole.h"
 #include "forumspage.h"
-#include "blockchainpage.h"
 #include "ui_forumspage.h"
-#include "ui_blockchainpage.h"
 #include "downloader.h"
 #include "updatedialog.h"
 #include "whatsnewdialog.h"
 #include "rescandialog.h"
-#include "cookiejar.h"
-#include "webview.h"
 
 #include "JlCompress.h"
 #include "walletdb.h"
@@ -54,6 +50,7 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QDesktopServices>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QMenu>
@@ -184,9 +181,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     // Create Forums Page
     forumsPage = new ForumsPage();
 
-    // Create Blockchain Page
-    blockchainPage = new BlockchainPage();
-
     // Create Sign Message Dialog
     signVerifyMessageDialog = new SignVerifyMessageDialog(this);
 
@@ -199,7 +193,6 @@ BitcoinGUI::BitcoinGUI(QWidget *parent):
     centralWidget->addWidget(receiveCoinsPage);
     centralWidget->addWidget(sendCoinsPage);
     centralWidget->addWidget(forumsPage);
-    centralWidget->addWidget(blockchainPage);
     setCentralWidget(centralWidget);
 
     // Create status bar
@@ -408,12 +401,6 @@ void BitcoinGUI::createActions()
     forumsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
     tabGroup->addAction(forumsAction);
 
-    blockchainAction = new QAction(QIcon(":/icons/blockchain"), tr("BlockChain"), this);
-    blockchainAction->setToolTip(tr("Explore the Verium Blockchain"));
-    blockchainAction->setCheckable(true);
-    blockchainAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_9));
-    tabGroup->addAction(blockchainAction);
-
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(overviewAction, SIGNAL(triggered()), this, SLOT(gotoOverviewPage()));
     connect(sendCoinsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -424,8 +411,6 @@ void BitcoinGUI::createActions()
     connect(historyAction, SIGNAL(triggered()), this, SLOT(gotoHistoryPage()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(forumsAction, SIGNAL(triggered()), this, SLOT(gotoForumsPage()));
-    connect(blockchainAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
-    connect(blockchainAction, SIGNAL(triggered()), this, SLOT(gotoBlockchainPage()));
 
     quitAction = new QAction(QIcon(":/icons/quit"), tr("E&xit"), this);
     quitAction->setToolTip(tr("Quit Application"));
@@ -576,7 +561,6 @@ void BitcoinGUI::createToolBars()
     toolbar->addAction(receiveCoinsAction);
     toolbar->addAction(historyAction);
     toolbar->addAction(forumsAction);
-    toolbar->addAction(blockchainAction);
 }
 
 void BitcoinGUI::setClientModel(ClientModel *clientModel)
@@ -639,7 +623,6 @@ void BitcoinGUI::setWalletModel(WalletModel *walletModel)
         transactionView->setModel(walletModel);
         addressBookPage->setModel(walletModel->getAddressTableModel());
         forumsPage->setModel(walletModel);
-        blockchainPage->setModel(walletModel);
 
         signVerifyMessageDialog->setModel(walletModel);
 
@@ -1099,15 +1082,6 @@ void BitcoinGUI::gotoForumsPage()
     disconnect(exportAction, SIGNAL(triggered()), 0, 0);
 }
 
-void BitcoinGUI::gotoBlockchainPage()
-{
-    blockchainAction->setChecked(true);
-    centralWidget->setCurrentWidget(blockchainPage);
-
-    exportAction->setEnabled(false);
-    disconnect(exportAction, SIGNAL(triggered()), 0, 0);
-}
-
 void BitcoinGUI::resizeEvent(QResizeEvent *e)
 {
     if (resizeGUICalled) return;  // Don't allow resizeEvent to be called twice
@@ -1162,7 +1136,6 @@ void BitcoinGUI::dropEvent(QDropEvent *event)
     if(event->mimeData()->hasUrls())
     {
         int nValidUrisFound = 0;
-        int nValidUrisFoundBit = 0;
         QList<QUrl> uris = event->mimeData()->urls();
         foreach(const QUrl &uri, uris)
         {

@@ -32,28 +32,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="WebView" name="webView" native="true">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="url" stdset="0">
-      <url>
-       <string>about:blank</string>
-      </url>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" alignment="Qt::AlignHCenter|Qt::AlignBottom">
+   <item row="0" column="0" alignment="Qt::AlignHCenter|Qt::AlignBottom">
     <widget class="QFrame" name="frame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -122,7 +101,7 @@
          <string>Back</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/back</normaloff>:/icons/back</iconset>
         </property>
         <property name="iconSize">
@@ -157,7 +136,7 @@
          <string>Reload</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/reload</normaloff>:/icons/reload</iconset>
         </property>
         <property name="iconSize">
@@ -192,7 +171,7 @@
          <string>Home</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/home</normaloff>:/icons/home</iconset>
         </property>
         <property name="iconSize">
@@ -227,7 +206,7 @@
          <string>Forward</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../bitcoin.qrc">
           <normaloff>:/icons/forward</normaloff>:/icons/forward</iconset>
         </property>
         <property name="iconSize">
@@ -243,13 +222,8 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>WebView</class>
-   <extends>QWidget</extends>
-   <header>webview.h</header>
-  </customwidget>
- </customwidgets>
- <resources/>
+ <resources>
+  <include location="../bitcoin.qrc"/>
+ </resources>
  <connections/>
 </ui>
