@@ -109,7 +109,7 @@ QMAKE_LFLAGS *= -fstack-protector-all --param ssp-buffer-size=1 -Wl,-rpath,./lib
 }
 # for extra security on Windows: enable ASLR and DEP via GCC linker flags
 windows:QMAKE_LFLAGS *= -Wl,--dynamicbase -Wl,--nxcompat -Wl,--large-address-aware
-#windows:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
+windows:QMAKE_LFLAGS += -static-libgcc -static-libstdc++
 
 # use: qmake "USE_QRCODE=1"
 # libqrencode (http://fukuchi.org/works/qrencode/index.en.html) must be installed for support
@@ -201,10 +201,10 @@ windows:CONFIG(release, debug|release): LIBS += -L$$PWD/src/quazip/release/ -lqu
 else:windows:CONFIG(debug, debug|release): LIBS += -L$$PWD/src/quazip/debug/ -lquazip -lz
 else: LIBS += -L$$PWD/src/quazip/ -lquazip -lz
 
-windows-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/libquazip.a
-else:windows-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/libquazip.a
-else:windows:!windows-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/quazip.lib
-else:windows:!windows-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/quazip.lib
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/libquazip.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/libquazip.a
+else:windows:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/release/quazip.lib
+else:windows:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/src/quazip/debug/quazip.lib
 else: PRE_TARGETDEPS += $$PWD/src/quazip/libquazip.a
 
 windows:CONFIG(release, debug|release): QUAZIPLIB=release
@@ -498,7 +498,7 @@ isEmpty(BOOST_INCLUDE_PATH) {
     macx:BOOST_INCLUDE_PATH = /opt/local/include
 }
 
-windows:DEFINES += windows
+windows:DEFINES += WIN32
 windows:RC_FILE = src/qt/res/bitcoin-qt.rc
 
 windows:!contains(MINGW_THREAD_BUGFIX, 0) {
