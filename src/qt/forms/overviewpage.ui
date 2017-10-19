@@ -599,7 +599,7 @@
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
        </property>
        <property name="horizontalSpacing">
-        <number>70</number>
+        <number>90</number>
        </property>
        <property name="verticalSpacing">
         <number>15</number>

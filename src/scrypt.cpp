@@ -513,7 +513,7 @@ static void scrypt_N_1_1_256_12way(const uint32_t *input,
 	uint32_t tstate[12 * 8] __attribute__((aligned(128)));
 	uint32_t ostate[12 * 8] __attribute__((aligned(128)));
 	uint32_t W[12 * 32] __attribute__((aligned(128)));
-	uint32_t X[12 * 32] __attribute__((aligned(128)));
+    uint32_t X[12 * 32] __attribute__((aligned(128)));
 	uint32_t *V;
 	int i, j, k;
 	
