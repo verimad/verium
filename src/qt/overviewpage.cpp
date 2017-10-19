@@ -7,7 +7,6 @@
 #include "walletmodel.h"
 #include "clientmodel.h"
 #include "bitcoinunits.h"
-#include "cookiejar.h"
 #include "optionsmodel.h"
 #include "transactiontablemodel.h"
 #include "transactionfilterproxy.h"
@@ -15,13 +14,11 @@
 #include "guiconstants.h"
 #include "bitcoingui.h"
 #include "bitcoinrpc.h"
-#include "webview.h"
 
 #include <QAbstractItemDelegate>
 #include <QPainter>
 #include <QDesktopServices>
 #include <QUrl>
-#include <QWebView>
 #include <QGraphicsView>
 
 using namespace GUIUtil;

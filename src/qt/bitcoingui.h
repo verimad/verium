@@ -20,9 +20,7 @@ class SignVerifyMessageDialog;
 class Notificator;
 class RPCConsole;
 class Downloader;
-class WebView;
 class ForumsPage;
-class BlockchainPage;
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -81,7 +79,6 @@ private:
     AddressBookPage *receiveCoinsPage;
     SendCoinsDialog *sendCoinsPage;
     ForumsPage *forumsPage;
-    BlockchainPage *blockchainPage;
 
     QLabel *labelEncryptionIcon;
     QLabel *labelBalanceIcon;
@@ -103,7 +100,6 @@ private:
     QAction *sendCoinsAction;
     QAction *sendBitCoinsAction;
     QAction *forumsAction;
-    QAction *blockchainAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
     QAction *verifyMessageAction;
@@ -197,8 +193,6 @@ private slots:
     void gotoSendCoinsPage();
     /** Switch to Forums page */
     void gotoForumsPage();
-    /** Switch to Blockchain page */
-    void gotoBlockchainPage();
 
     void resizeGUI();
     void logout();
@@ -211,10 +205,6 @@ private slots:
 
     /** Show configuration dialog */
     void optionsClicked();
-    /** Show forums page */
-    void forumClicked();
-    /** Show web page */
-    void webClicked();
     /** Show about dialog */
     void aboutClicked();
     /** Show about PoWT dialog */
