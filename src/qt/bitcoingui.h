@@ -205,10 +205,6 @@ private slots:
 
     /** Show configuration dialog */
     void optionsClicked();
-    /** Show forums page */
-    void forumClicked();
-    /** Show web page */
-    void webClicked();
     /** Show about dialog */
     void aboutClicked();
     /** Show about PoWT dialog */

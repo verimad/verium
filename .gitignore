@@ -2,6 +2,8 @@
 build
 debug
 release
+.gitignore
+.gitattributes
 src/*.exe
 src/verium
 src/veriumd
