@@ -528,7 +528,6 @@ void BitcoinGUI::createMenuBar()
     help->setFont(qFont);
     help->addAction(openRPCConsoleAction);
     help->addSeparator();
-    help->addAction(webAction);
     help->addAction(checkForUpdateAction);
     help->addSeparator();
     help->addAction(aboutAction);
