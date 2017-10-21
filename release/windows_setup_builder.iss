@@ -45,6 +45,7 @@ Name: "fonts";
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
+Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss" 
 Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main;
 Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
 Source: "fonts\Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
@@ -77,7 +78,7 @@ begin
       Targetfile := ExpandConstant('{app}\wallet.dat');
       if not FileExists(Targetfile) then 
         begin
-          if MsgBox('No Wallet has been found. Would you like to import an existing wallet? If you skip this step a wallet will be created once {#ProgramName} is started.',mbConfirmation,MB_YESNO) = IDYES then
+          if MsgBox('No Wallet has been found. Would you like to import an existing wallet? If not a new wallet will be created once {#ProgramName} is started.',mbConfirmation,MB_YESNO) = IDYES then
             begin
               ImportWalletFileName := '';
               if GetOpenFileName('', ImportWalletFileName, '', 'wallet files (*.dat)|*.dat|All Files|*.*', 'dat') then
