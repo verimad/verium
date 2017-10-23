@@ -13,7 +13,7 @@ static const int N = 1048576;
 
 int scrypt_best_throughput();
 
-bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone);
+bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone, unsigned char *scratchbuf);
 
 void scryptHash(const void *input, char *output);
 extern unsigned char *scrypt_buffer_alloc();

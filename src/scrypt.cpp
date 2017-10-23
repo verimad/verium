@@ -621,7 +621,7 @@ bool fulltest(const uint32_t *hash, const uint32_t *target)
 	return true;
 }
 
-bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone)
+bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone, unsigned char *scratchbuf)
 {
 	uint32_t pdata[20];
 	uint32_t data[SCRYPT_MAX_WAYS * 20];
@@ -630,10 +630,6 @@ bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone)
 	uint32_t n;
 	int throughput = scrypt_best_throughput();
 	int i;
-	
-	unsigned char *scratchbuf = scrypt_buffer_alloc();
-	if (!scratchbuf)
-		return false;
 
 	for (int i = 0; i < 20; i++)
 		pdata[i] = be32dec(&((const uint32_t *)input)[i]);
@@ -675,7 +671,6 @@ bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone)
 #endif
 		scrypt_N_1_1_256(data, dhash, midstate, scratchbuf);
 		
-	free(scratchbuf);
 	*nHashesDone = throughput;
 
 	for (i = 0; i < throughput; i++) {

@@ -480,120 +480,124 @@ void Miner(CWallet *pwallet)
     // Each thread has it's own nonce
     CReserveKey reservekey(pwallet);
     nExtraNonce += 1;
-
-    try
+    unsigned char *scratchbuf = scrypt_buffer_alloc();
+    if (scratchbuf)
     {
-        while (fGenerateVerium)
+        try
         {
-            while ((!fTestNet && vNodes.size() < 2) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
-            {
-                MilliSleep(5000);
-            }
-
-            //
-            // Create new block
-            //
-            unsigned int nTransactionsUpdatedLast = nTransactionsUpdated;
-            CBlockIndex* pindexPrev = pindexBest;
-
-            int64_t nFees;
-            auto_ptr<CBlock> pblock(CreateNewBlock(pwallet, &nFees));
-            if (!pblock.get())
-                return;
-            IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
-
-
-            printf("Running Miner with %" PRIszu " transactions in block (%u bytes)\n", pblock->vtx.size(),
-                   ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
-
-            //
-            // Pre-build hash buffers
-            //
-            char pmidstatebuf[32+16]; char* pmidstate = alignup<16>(pmidstatebuf);
-            char pdatabuf[128+16];    char* pdata     = alignup<16>(pdatabuf);
-            char phash1buf[64+16];    char* phash1    = alignup<16>(phash1buf);
-
-            FormatHashBuffers(pblock.get(), pmidstate, pdata, phash1);
-
-            unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
-
-            //
-            // Search
-            //
-
-            int64_t nStart = GetTime();
-            uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
             while (fGenerateVerium)
             {
-                unsigned int nHashesDone = 0;
-                if (fGenerateVerium)
+                while ((!fTestNet && vNodes.size() < 2) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
                 {
-                    // scrypt^2
-                    int nHashes = 0;
-                    if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes))
-                    {
-                        // Found a solution
-                        printf("Miner found a solution\n");
-                        SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        CheckWork(pblock.get(), *pwallet, reservekey);
-                        SetThreadPriority(THREAD_PRIORITY_LOWEST);
-                    }
-                    nHashesDone += nHashes;
-                    pblock->nNonce += nHashes;
+                    MilliSleep(5000);
                 }
 
-                // Hash meter
-                static int64_t nHashCounter;
-                {
-                    static CCriticalSection cs;
-                    {
-                        LOCK(cs);
-                        if (nHPSTimerStart == 0)
-                        {
-                            nHPSTimerStart = GetTimeMillis();
-                            nHashCounter = 0;
-                        }
-                        else
-                            nHashCounter += nHashesDone;
+                //
+                // Create new block
+                //
+                unsigned int nTransactionsUpdatedLast = nTransactionsUpdated;
+                CBlockIndex* pindexPrev = pindexBest;
 
-                        if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
-                        {
-                            dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
-                            nHPSTimerStart = GetTimeMillis();
-                            nHashCounter = 0;
-                            updateHashrate(dHashesPerMin);
-                            printf("Total local hashrate %6.0f hashes/min\n", hashrate);
-                        }
-                    }
-                }
-
-                // Check for stop or if block needs to be rebuilt
-                boost::this_thread::interruption_point();
-                if (!fGenerateVerium)
-                    break;
-                if (fShutdown)
+                int64_t nFees;
+                auto_ptr<CBlock> pblock(CreateNewBlock(pwallet, &nFees));
+                if (!pblock.get())
                     return;
-                if (!fTestNet && vNodes.size() < 2)
-                    break;
-                if (pblock->nNonce >= 0xffff0000)
-                    break;
-                if (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60)
-                    break;
-                if (pindexPrev != pindexBest)
-                    break;
+                IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
 
-                // Update nTime every few seconds
-                pblock->UpdateTime(pindexPrev);
-                nBlockTime = ByteReverse(pblock->nTime);
+
+                printf("Running Miner with %" PRIszu " transactions in block (%u bytes)\n", pblock->vtx.size(),
+                       ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
+
+                //
+                // Pre-build hash buffers
+                //
+                char pmidstatebuf[32+16]; char* pmidstate = alignup<16>(pmidstatebuf);
+                char pdatabuf[128+16];    char* pdata     = alignup<16>(pdatabuf);
+                char phash1buf[64+16];    char* phash1    = alignup<16>(phash1buf);
+
+                FormatHashBuffers(pblock.get(), pmidstate, pdata, phash1);
+
+                unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
+
+                //
+                // Search
+                //
+
+                int64_t nStart = GetTime();
+                uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
+                while (fGenerateVerium)
+                {
+                    unsigned int nHashesDone = 0;
+                    if (fGenerateVerium)
+                    {
+                        // scrypt^2
+                        int nHashes = 0;
+                        if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes, scratchbuf))
+                        {
+                            // Found a solution
+                            printf("Miner found a solution\n");
+                            SetThreadPriority(THREAD_PRIORITY_NORMAL);
+                            CheckWork(pblock.get(), *pwallet, reservekey);
+                            SetThreadPriority(THREAD_PRIORITY_LOWEST);
+                        }
+                        nHashesDone += nHashes;
+                        pblock->nNonce += nHashes;
+                    }
+
+                    // Hash meter
+                    static int64_t nHashCounter;
+                    {
+                        static CCriticalSection cs;
+                        {
+                            LOCK(cs);
+                            if (nHPSTimerStart == 0)
+                            {
+                                nHPSTimerStart = GetTimeMillis();
+                                nHashCounter = 0;
+                            }
+                            else
+                                nHashCounter += nHashesDone;
+
+                            if (GetTimeMillis() - nHPSTimerStart > timeElapsed)
+                            {
+                                dHashesPerMin = 60000.0 * nHashCounter / (GetTimeMillis() - nHPSTimerStart);
+                                nHPSTimerStart = GetTimeMillis();
+                                nHashCounter = 0;
+                                updateHashrate(dHashesPerMin);
+                                printf("Total local hashrate %6.0f hashes/min\n", hashrate);
+                            }
+                        }
+                    }
+
+                    // Check for stop or if block needs to be rebuilt
+                    boost::this_thread::interruption_point();
+                    if (!fGenerateVerium)
+                        break;
+                    if (fShutdown)
+                        return;
+                    if (!fTestNet && vNodes.size() < 2)
+                        break;
+                    if (pblock->nNonce >= 0xffff0000)
+                        break;
+                    if (nTransactionsUpdated != nTransactionsUpdatedLast && GetTime() - nStart > 60)
+                        break;
+                    if (pindexPrev != pindexBest)
+                        break;
+
+                    // Update nTime every few seconds
+                    pblock->UpdateTime(pindexPrev);
+                    nBlockTime = ByteReverse(pblock->nTime);
+                }
             }
         }
-    }
-    catch (boost::thread_interrupted)
-    {
-        hashrate = 0;
-        nExtraNonce = 0;
-        printf("Miner terminated\n");
-        throw;
+        catch (boost::thread_interrupted)
+        {
+            free(scratchbuf);
+            hashrate = 0;
+            nExtraNonce = 0;
+            printf("Miner terminated\n");
+            throw;
+        }
     }
 }
 
