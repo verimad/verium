@@ -11,7 +11,7 @@ if [ "${arch}" = "x86_64" ]; then
     QtLIBPATH="${HOME}/programs/Qt/5.5/gcc_64"
 else
     arch="32bit"
-    QtLIBPATH="${HOME}/Qt/5.4/gcc"
+    QtLIBPATH="${HOME}/Qt5.4.2/5.4/gcc"
 fi
 
 if [ -f verium-qt ] && [ -f verium.conf ]; then
@@ -34,7 +34,7 @@ if [ -f verium-qt ] && [ -f verium.conf ]; then
     ldd verium-qt | grep libminiupnpc | awk '{ printf("%s\0", $3); }' | xargs -0 -I{} cp {} Verium_${version}_${arch}/libs/
     ldd verium-qt | grep libqrencode | awk '{ printf("%s\0", $3); }' | xargs -0 -I{} cp {} Verium_${version}_${arch}/libs/
     cp ${QtLIBPATH}/lib/libQt*.so.5 Verium_${version}_${arch}/libs/
-    cp ${QtLIBPATH}/lib/libicu*.so.54 Verium_${version}_${arch}/libs/
+    cp ${QtLIBPATH}/lib/libicu*.so.53 Verium_${version}_${arch}/libs/
     cp ${QtLIBPATH}/plugins/platforms/lib*.so Verium_${version}_${arch}/platforms/
     cp ${QtLIBPATH}/plugins/imageformats/lib*.so Verium_${version}_${arch}/imageformats/
     strip Verium_${version}_${arch}/verium-qt
@@ -45,7 +45,7 @@ if [ -f verium-qt ] && [ -f verium.conf ]; then
     if [ -f Verium_${version}_${arch}.run ]; then
         rm -f Verium_${version}_${arch}.run
     fi
-    makeself.sh --notemp Verium_${version}_${arch} Verium_${version}_${arch}.run "\nCopyright (c) 2014-2017 The Verium Developers\nVerium will start when the installation is complete...\n" ./verium-qt \&
+    ./makeself.sh --notemp Verium_${version}_${arch} Verium_${version}_${arch}.run "\nCopyright (c) 2014-2017 The Verium Developers\nVerium will start when the installation is complete...\n" ./verium-qt \&
     sudo rm -fr Verium_${version}_${arch}/
     echo "Package created in: $PWD/Verium_${version}_${arch}.run\n"
 else
