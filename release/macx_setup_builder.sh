@@ -2,7 +2,7 @@
 
 # Note: The structure of this package depends on the -rpath,./lib to be set at compile/link time.
 
-version="1.0.0"
+version="1.1.0"
 arch=`uname -m`
 
 if [ "${arch}" = "x86_64" ]; then
@@ -11,10 +11,9 @@ else
     arch="32bit"
 fi
 
-if [ -f Verium-Qt.app/Contents/MacOS/Verium-Qt ] && [ -f verium.conf ] && [ -f README ]; then
+if [ -f Verium-Qt.app/Contents/MacOS/Verium-Qt ] && [ -f verium.conf ] ; then
     echo "Building Verium_${version}_${arch}.pkg ...\n"
     cp verium.conf Verium-Qt.app/Contents/MacOS/
-    cp README Verium-Qt.app/Contents/MacOS/
 
     # Remove the old archive
     if [ -f Verium_${version}_${arch}.pkg ]; then
