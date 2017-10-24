@@ -11,7 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 USE_QRCODE = 1
-USE_AVX = 0
+USE_AVX = 1
 USE_AVX2 = 0
 
 # Profiling on linux
