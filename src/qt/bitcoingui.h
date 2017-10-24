@@ -98,7 +98,6 @@ private:
     QAction *quitAction;
     QAction *logoutAction;
     QAction *sendCoinsAction;
-    QAction *sendBitCoinsAction;
     QAction *forumsAction;
     QAction *addressBookAction;
     QAction *signMessageAction;
@@ -108,8 +107,6 @@ private:
     QAction *aboutQtAction;
     QAction *receiveCoinsAction;
     QAction *optionsAction;
-    QAction *forumAction;
-    QAction *webAction;
     QAction *toggleHideAction;
     QAction *exportAction;
     QAction *encryptWalletAction;

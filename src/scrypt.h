@@ -13,7 +13,7 @@ static const int N = 1048576;
 
 int scrypt_best_throughput();
 
-bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone);
+bool scrypt_N_1_1_256_multi(void *input, uint256 hashTarget, int *nHashesDone, unsigned char *scratchbuf);
 
 void scryptHash(const void *input, char *output);
 extern unsigned char *scrypt_buffer_alloc();
@@ -46,8 +46,8 @@ extern "C" void sha256_transform_4way(uint32_t *state, const uint32_t *block, in
 extern "C" void scrypt_core_6way(uint32_t *X, uint32_t *V, int N);
 #endif
 
-#elif defined(__i386__)
-#define SCRYPT_MAX_WAYS 1
+#if defined(__i386__)
+#define SCRYPT_MAX_WAYS 4
 #define HAVE_SHA256_4WAY 1
 #define scrypt_best_throughput() 1
 extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
@@ -63,3 +63,4 @@ static inline uint32_t swab32(uint32_t v)
 {
     return bswap_32(v);
 }
+#endif

@@ -480,9 +480,8 @@ void Miner(CWallet *pwallet)
     // Each thread has it's own nonce
     CReserveKey reservekey(pwallet);
     nExtraNonce += 1;
-
     try
-    {
+    {       
         while (fGenerateVerium)
         {
             while ((!fTestNet && vNodes.size() < 2) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
@@ -490,37 +489,30 @@ void Miner(CWallet *pwallet)
                 MilliSleep(5000);
             }
 
-            //
+            //Build buffer and check for memory availability
+            unsigned char *scratchbuf = scrypt_buffer_alloc();
+            if(!scratchbuf){break;
+            }
+
             // Create new block
-            //
             unsigned int nTransactionsUpdatedLast = nTransactionsUpdated;
             CBlockIndex* pindexPrev = pindexBest;
-
             int64_t nFees;
             auto_ptr<CBlock> pblock(CreateNewBlock(pwallet, &nFees));
             if (!pblock.get())
                 return;
             IncrementExtraNonce(pblock.get(), pindexPrev, nExtraNonce);
-
-
             printf("Running Miner with %" PRIszu " transactions in block (%u bytes)\n", pblock->vtx.size(),
                    ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
-            //
             // Pre-build hash buffers
-            //
             char pmidstatebuf[32+16]; char* pmidstate = alignup<16>(pmidstatebuf);
             char pdatabuf[128+16];    char* pdata     = alignup<16>(pdatabuf);
             char phash1buf[64+16];    char* phash1    = alignup<16>(phash1buf);
-
             FormatHashBuffers(pblock.get(), pmidstate, pdata, phash1);
-
             unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
 
-            //
             // Search
-            //
-
             int64_t nStart = GetTime();
             uint256 hashTarget = CBigNum().SetCompact(pblock->nBits).getuint256();
             while (fGenerateVerium)
@@ -530,7 +522,7 @@ void Miner(CWallet *pwallet)
                 {
                     // scrypt^2
                     int nHashes = 0;
-                    if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes))
+                    if (scrypt_N_1_1_256_multi(BEGIN(pblock->nVersion), hashTarget, &nHashes, scratchbuf))
                     {
                         // Found a solution
                         printf("Miner found a solution\n");
@@ -586,6 +578,7 @@ void Miner(CWallet *pwallet)
                 pblock->UpdateTime(pindexPrev);
                 nBlockTime = ByteReverse(pblock->nTime);
             }
+            free(scratchbuf);
         }
     }
     catch (boost::thread_interrupted)

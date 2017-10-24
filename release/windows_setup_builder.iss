@@ -12,7 +12,7 @@
 #define ProgramName "Verium"
 
 ; Enter the Version Number of your binaries
-#define VersionNumber "1.0.0"
+#define VersionNumber "1.1.0"
 
 ; Enter the Name of the Folder created in \Appdata\Roaming where your binaries will place the user files, including wallet, conf file, blockchain info etc.
 #define RoamingName "Verium"
@@ -28,10 +28,9 @@
 ; Enter the Name of the config file you wish to include                 
 #define configfile "verium.conf"
 
-; Enter the Name of the bootstrap file you wish to include                 
-#define bootstrapfile "bootstrap.dat"
-
 [Setup]
+AppPublisher=VeriCoin
+AppPublisherURL=http://www.vericoin.info/
 AppName={#ProgramName}
 AppVersion={#VersionNumber}
 DefaultDirName={pf32}\{#ProgramName}
@@ -42,16 +41,12 @@ SolidCompression=yes
 OutputDir=SETUP
 
 [Dirs]
-Name: "imageformats";
-Name: "platforms";
 Name: "fonts";
 
 [Files]
 Source: "*.exe"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
-Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss"
+Source: "*.dll"; DestDir: "{app}"; Components: main; Excludes: "*.iss" 
 Source: "fonts\*.ttf"; DestDir: "{app}\fonts"; Components: main;
-Source: "imageformats\*"; DestDir: "{app}\imageformats"; Components: main;
-Source: "platforms\*"; DestDir: "{app}\platforms"; Components: main;
 Source: {#configfile}; DestDir: "{userappdata}\{#RoamingName}"; Components: config; Flags: uninsneveruninstall
 Source: "fonts\Lato-Regular.TTF"; DestDir: "{fonts}"; FontInstall: "Lato"; Flags: onlyifdoesntexist uninsneveruninstall
 
@@ -68,7 +63,7 @@ Name: desktopicon\user; Description: "For the current user only"; GroupDescripti
 
 [Components]
 Name: main; Description: Main Program; Types: full compact custom; Flags: fixed
-Name: config; Description: A config file including nodes to synchronize with the network; Types: full custom
+Name: config; Description: A config file including nodes to synchronize with the network; Types: full custom; Flags: fixed
 
 [Code]
 var
@@ -83,7 +78,7 @@ begin
       Targetfile := ExpandConstant('{app}\wallet.dat');
       if not FileExists(Targetfile) then 
         begin
-          if MsgBox('No Wallet has been found. Would you like to import an existing wallet? If you skip this step a wallet will be created once {#ProgramName} is started.',mbConfirmation,MB_YESNO) = IDYES then
+          if MsgBox('No Wallet has been found. Would you like to import an existing wallet? If not a new wallet will be created once {#ProgramName} is started.',mbConfirmation,MB_YESNO) = IDYES then
             begin
               ImportWalletFileName := '';
               if GetOpenFileName('', ImportWalletFileName, '', 'wallet files (*.dat)|*.dat|All Files|*.*', 'dat') then
