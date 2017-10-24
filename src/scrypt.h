@@ -47,7 +47,7 @@ extern "C" void scrypt_core_6way(uint32_t *X, uint32_t *V, int N);
 #endif
 
 #if defined(__i386__)
-#define SCRYPT_MAX_WAYS 1
+#define SCRYPT_MAX_WAYS 4
 #define HAVE_SHA256_4WAY 1
 #define scrypt_best_throughput() 1
 extern "C" void scrypt_core(uint32_t *X, uint32_t *V, int N);
