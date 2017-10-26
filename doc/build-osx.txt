@@ -15,34 +15,35 @@ Douglas Huff <dhuff@jrbobdobbs.org>
 See readme-qt.rst for instructions on building Verium QT, the
 graphical user interface.
 
-Tested on 10.5 and 10.6 and 10.9.5 intel.  PPC is not supported because it's big-endian.
+Tested up to 10.13
 
-All of the commands should be executed in Terminal.app.. it's in
-/Applications/Utilities
+1.  Download and install xcode from the app store.
 
-You need to install XCode with all the options checked so that the compiler and
-everything is available in /usr not just /Developer I think it comes on the DVD
-but you can get the current version from http://developer.apple.com
+2. run 'sudo xcode-select --install' to install the command line tools.
 
-0.  Download and install xcode from the app store.
-0a. If Xcode 5.X, go to Xcode->Preferences->Downloads and install Comand Line Tools.
-    Otherwise, run 'sudo xcode-select --install' to install the command line tools.
+3.  Download and install MacPorts from http://www.macports.org/
 
-1.  Download and install MacPorts from http://www.macports.org/
-
-1a. (for 10.7 Lion)
+3a. (for 10.7 Lion)
     Edit /opt/local/etc/macports/macports.conf and uncomment "build_arch i386"
 
-2.  Install dependencies from MacPorts
+4.  Install dependencies from MacPorts
 
-sudo port install boost db48 openssl miniupnpc qt5-mac gcc49 wget minizip curl
+sudo port install db48@+no_java openssl miniupnpc boost@1.59.0_3+no_single+no_static+python27 curl
 
-Optionally install qrencode (and set USE_QRCODE=1):
-sudo port install qrencode
+5. In terminal do this
 
-2a. You may also need to copy the qt5 makespec folder for macx-g++42 to macx-g++49 if it does not exist, then set the compilers in qmake.conf to gcc-mp-4.9 and g++-mp-4.9.  If using Qt Creator, add the Qt mkspec macx-g++49 to Kits, and add the compiler/path to Compilers.
+	cd
+	vim .bash_profile
+	i
 
-3.  Clone the github tree to get the source code:
+6. Into this file paste this line or confirm it's there
+
+	export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
+7. Save file and quit by hitting escape and typing wq and then return
+	
+
+6.  Clone the github tree to get the source code:
 
 git clone https://github.com/verium/verium.git
 

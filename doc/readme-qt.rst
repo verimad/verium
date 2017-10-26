@@ -60,21 +60,37 @@ Windows build instructions:
 Mac OS X
 --------
 
-- Download and install the `Qt Creator 5`. It is recommended to also install Apple's Xcode with UNIX tools.
+- Download and install XCode from the app store.
 
-- Download and install `MacPorts`_.
+- Now install compiler dependencies by running this in the terminal
+
+::
+
+	sudo xcode-select --install
+
+- Download and install MacPorts for your version of macOS
 
 - Execute the following commands in a terminal to get the dependencies:
 
 ::
 
 	sudo port selfupdate
-	sudo port install boost db48 miniupnpc
+	sudo port install db48@+no_java openssl miniupnpc qt5 boost@1.59.0_3+no_single+no_static+python27 qrencode curl
 
-- Open the .pro file in Qt Creator and build as normal (cmd-B)
+- Create file .bash_profile in your user directory and add these two lines, save and close file
 
-.. _`Qt Mac OS X SDK`: http://qt.nokia.com/downloads/
-.. _`MacPorts`: http://www.macports.org/
+::
+	export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+	export PATH="/opt/local/libexec/qt5/bin:$PATH"
+	
+- Close terminal application and reopen
+
+- Now build the qt wallet
+
+::
+	cd verium
+	qmake verium-qt.pro
+	make -f Makefile
 
 
 Build configuration options
