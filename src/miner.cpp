@@ -477,21 +477,21 @@ void Miner(CWallet *pwallet)
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("verium-miner");
 
+    //Build buffer and check for memory availability
+    bool memory = true;
+    unsigned char *scratchbuf = scrypt_buffer_alloc();
+    if(!scratchbuf){memory = false;}
+
     // Each thread has it's own nonce
     CReserveKey reservekey(pwallet);
     nExtraNonce += 1;
     try
     {       
-        while (fGenerateVerium)
+        while (fGenerateVerium && memory)
         {
             while ((!fTestNet && vNodes.size() < 2) || IsInitialBlockDownload() || nBestHeight < GetNumBlocksOfPeers())
             {
                 MilliSleep(5000);
-            }
-
-            //Build buffer and check for memory availability
-            unsigned char *scratchbuf = scrypt_buffer_alloc();
-            if(!scratchbuf){break;
             }
 
             // Create new block
@@ -578,11 +578,11 @@ void Miner(CWallet *pwallet)
                 pblock->UpdateTime(pindexPrev);
                 nBlockTime = ByteReverse(pblock->nTime);
             }
-            free(scratchbuf);
         }
     }
     catch (boost::thread_interrupted)
     {
+        free(scratchbuf);
         hashrate = 0;
         nExtraNonce = 0;
         printf("Miner terminated\n");
