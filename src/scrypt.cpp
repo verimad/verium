@@ -562,6 +562,11 @@ static inline void PBKDF2_SHA256_128_32_8way(uint32_t *tstate,
 
 #endif /* HAVE_SHA256_8WAY */
 
+#ifndef SCRYPT_MAX_WAYS
+#define SCRYPT_MAX_WAYS 1
+#define scrypt_best_throughput() 1
+#endif
+
 unsigned char *scrypt_buffer_alloc()
 {
     return (unsigned char*)malloc((size_t)N * SCRYPT_MAX_WAYS * 128 + 63);
