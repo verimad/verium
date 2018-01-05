@@ -35,6 +35,16 @@ Value getsubsidy(const Array& params, bool fHelp)
     return (uint64_t)GetProofOfWorkReward(0,pindexBest->pprev);
 }
 
+Value getblocktime(const Array& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+            "getblocktime\n"
+            "Returns an integer of current blocktime in seconds.");
+
+    return (uint64_t)calculateBlocktime(pindexBest->pprev);
+}
+
 // Key used by getwork/getblocktemplate miners.
 // Allocated in InitRPCMining, free'd in ShutdownRPCMining
 static CReserveKey* pMiningKey = NULL;
